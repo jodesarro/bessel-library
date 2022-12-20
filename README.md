@@ -2,7 +2,7 @@
 
 <p align="right"><a href="README.pt-br.md">Leia em português (br)</a></p>
 
-A C++ library with routines to evaluate Bessel functions for real or complex arguments.
+Bessel functions: a C++ library with routines to evaluate Bessel functions of real or complex arguments.
 
 ## Available features
 

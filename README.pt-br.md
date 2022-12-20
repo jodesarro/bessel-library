@@ -2,7 +2,7 @@
 
 <p align="right"><a href="README.md">Read in English</a></p>
 
-Uma biblioteca em C++ com rotinas para calcular as funções de Bessel para argumentos reais ou complexos.
+Funções de Bessel: uma biblioteca em C++ com rotinas para calcular funções de Bessel de argumentos reais ou complexos.
 
 ## Recursos
 
