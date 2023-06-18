@@ -1,8 +1,6 @@
-# Funções de Bessel
+# Biblioteca de Bessel: uma biblioteca em C++ com rotinas para calcular funções de Bessel de argumentos reais ou complexos
 
 <p align="right"><a href="README.md">Read in English</a></p>
-
-Funções de Bessel: uma biblioteca em C++ com rotinas para calcular funções de Bessel de argumentos reais ou complexos.
 
 ## Recursos
 
@@ -36,10 +34,16 @@ A função `bessel::cyl_j0(z)` foi comparada com os valores tabulados do Capítu
 |<nobr>*J*<sub>0</sub>(4+*i*2)</nobr>  |-1.3787022 ×10<sup>0</sup> <br/>+*i*3.9054236×10<sup>-1</sup>|-1.378702234392483×10<sup>0</sup> <br/>+*i*3.905423570667093×10<sup>-1</sup>|-1.37870223439248**4**×10<sup>0</sup><br/>+*i*3.90542357066709**4**×10<sup>-1</sup>|
 |<nobr>*J*<sub>0</sub>(20+*i*10)</nobr>|+1.5460268 ×10<sup>+3</sup><br/>-*i*1.0391216×10<sup>+3</sup>|+1.546026837210333×10<sup>+3</sup><br/>-*i*1.039121575995158×10<sup>+3</sup>|+1.546026837210333×10<sup>+3</sup><br/>-*i*1.039121575995158×10<sup>+3</sup>       |
 
+## Autoria
+
+Os códigos e rotinas foram desenvolvidos e são atualizados por <a href="https://www.researchgate.net/profile/Jhonas-de-Sarro">Jhonas O. de Sarro</a> ([@jodesarro]( https://github.com/jodesarro )).
+
 ## Licença
 
-Este projeto está protegido sob a licença <a href="LICENSE">MIT License</a> e tem [@jodesarro]( https://github.com/jodesarro ) como seu principal autor.
+Este projeto está protegido sob a licença <a href="LICENSE">MIT License</a>.
 
 ## Referências
-[1] S. Zhang and J. Jin, "Computation of Special Functions", Wiley, 1996.<br/>
-[2] Wolfram Alpha, acessado em 09 abril 2022, <https://www.wolframalpha.com/>.
+
+[1] S. Zhang and J. Jin, "Computation of Special Functions", Wiley, 1996.
+
+[2] Wolfram Alpha, accessed 09 April 2022, <https://www.wolframalpha.com/>.
