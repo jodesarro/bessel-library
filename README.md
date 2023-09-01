@@ -4,12 +4,19 @@
 
 ## Available features
 
-### <nobr>*J*<sub>0</sub>(*z*)</nobr>
-  - Function: `bessel::cyl_j0(z)`.
-  - Description: Cylindrical Bessel function of ordinary order for real and complex arguments.
-  - Implementation: For real argument, the routine returns the implementation from C++ standard library.
-  For complex argument, the routine calculates the ascending series when <nobr>|*z*| ≤ 12</nobr> and Stokes semiconvergent series otherwise with the same idea and truncations presented in Chapter 5 of [[1](#references)] for Fortran.
-  Remark that for <nobr>|*z*| > 12</nobr>, `bessel::cyl_j0(z)` strongly depends on the accuracy of functions `std::sin(z)` and `std::cos(z)`.
+### <nobr>*J*<sub>n</sub>(*z*)</nobr>
+  - **Function:** `bessel::cyl_j(n,z)`.
+  - **Description:** Cylindrical Bessel function of the first kind for an integer order *n* and a real or complex argument *z*.
+  - **Implementation for real arguments:** The routine returns the implementation from C++ standard library.
+  - **Implementation for complex arguments:** For <nobr>|*n*| ≤ 1</nobr>, the routine calculates the ascending series if <nobr>|*z*| ≤ 12</nobr> or the Stokes semiconvergent series otherwise.
+  For <nobr>|*n*| > 1</nobr>, the routine makes use of a forward recurrence if <nobr>*n* < |*z*|/4</nobr> or a backward recurrence otherwise.
+  The implementation follows the same idea as the routines presented in Chapter 5 of <nobr>Ref. [[1](#references)]</nobr> for Fortran.
+
+### <nobr>*J*<sub>n</sub>'(*z*)</nobr>
+  - **Function:** `bessel::cyl_j_diff(n,z)`.
+  - **Description:** Derivative of <nobr>*J*<sub>n</sub>(*z*)</nobr> with respect to *z*.
+  - **Implementation for real arguments:** The routine uses a recurrence relation together with the implementation from C++ standard library.
+  - **Implementation for complex arguments:** The routine returns `-bessel::cyl_j(1,z)` if <nobr>*n* = 0</nobr> or uses `bessel::cyl_j(n,z)` in a recurrence relation otherwise.
 
 ### New features
   - Unfortunately there are no new features expected anytime soon.
@@ -21,18 +28,19 @@ See <a href="usage-example.cpp">usage-example.cpp</a> as an example of usage.
 
 ## Validity
 
-The function `bessel::cyl_j0(z)` was compared with tabulated values of Chapter 5.9 of [[1](#references)] and with the values of function BesselJ[0,*z*] of [[2](#references)] as one can see in the table below.
+For some given parameters, the functions were compared with the function BesselJ[*n*,*z*] of <nobr>Ref. [[2](#references)]</nobr>. The results are listed below.
 
-|                                      | From [[1](#references)]                                     | From [[2](#references)]                                                    | From `bessel::cyl_j0(z)`                                                          |
-|--------------------------------------|-------------------------------------------------------------|----------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
-|<nobr>*J*<sub>0</sub>(1+*i*0)</nobr>  |+7.65197687×10<sup>-1</sup><br/>+*i*0×10<sup>0</sup>         |+7.651976865579665×10<sup>-1</sup><br/>+*i*0×10<sup>0</sup>                 |+7.65197686557966**6**×10<sup>-1</sup><br/>+*i*0×10<sup>0</sup>                    |
-|<nobr>*J*<sub>0</sub>(5+*i*0)</nobr>  |-1.77596771×10<sup>-1</sup><br/>+*i*0×10<sup>0</sup>         |-1.775967713143383×10<sup>-1</sup><br/>+*i*0×10<sup>0</sup>                 |-1.77596771314338**4**×10<sup>-1</sup><br/>+*i*0×10<sup>0</sup>                    |
-|<nobr>*J*<sub>0</sub>(10+*i*0)</nobr> |-2.45935764×10<sup>-1</sup><br/>+*i*0×10<sup>0</sup>         |-2.459357644513483×10<sup>-1</sup><br/>+*i*0×10<sup>0</sup>                 |-2.459357644513**713**×10<sup>-1</sup><br/>+*i*0×10<sup>0</sup>                    |
-|<nobr>*J*<sub>0</sub>(25+*i*0)</nobr> |+9.62667833×10<sup>-2</sup><br/>+*i*0×10<sup>0</sup>         |+9.626678327595811×10<sup>-2</sup><br/>+*i*0×10<sup>0</sup>                 |+9.62667832759581**2**×10<sup>-2</sup><br/>+*i*0×10<sup>0</sup>                    |
-|<nobr>*J*<sub>0</sub>(50+*i*0)</nobr> |+5.58123277×10<sup>-2</sup><br/>+*i*0×10<sup>0</sup>         |+5.581232766925181×10<sup>-2</sup><br/>+*i*0×10<sup>0</sup>                 |+5.581232766925181×10<sup>-2</sup><br/>+*i*0×10<sup>0</sup>                        |
-|<nobr>*J*<sub>0</sub>(100+*i*0)</nobr>|+1.99858503×10<sup>-2</sup><br/>+*i*0×10<sup>0</sup>         |+1.998585030422312×10<sup>-2</sup><br/>+*i*0×10<sup>0</sup>                 |+1.99858503042231**1**×10<sup>-2</sup><br/>+*i*0×10<sup>0</sup>                    |
-|<nobr>*J*<sub>0</sub>(4+*i*2)</nobr>  |-1.3787022 ×10<sup>0</sup> <br/>+*i*3.9054236×10<sup>-1</sup>|-1.378702234392483×10<sup>0</sup> <br/>+*i*3.905423570667093×10<sup>-1</sup>|-1.37870223439248**4**×10<sup>0</sup><br/>+*i*3.90542357066709**4**×10<sup>-1</sup>|
-|<nobr>*J*<sub>0</sub>(20+*i*10)</nobr>|+1.5460268 ×10<sup>+3</sup><br/>-*i*1.0391216×10<sup>+3</sup>|+1.546026837210333×10<sup>+3</sup><br/>-*i*1.039121575995158×10<sup>+3</sup>|+1.546026837210333×10<sup>+3</sup><br/>-*i*1.039121575995158×10<sup>+3</sup>       |
+|                                            | From Ref. [[2](#references)]                                                   | From this library                                                                    |
+|--------------------------------------------|--------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+|<nobr>*J*<sub>0</sub>(3.2-*i*1.7)</nobr>    |-1.030282834527403×10<sup>0</sup><br/>  +*i*5.419144653871709×10<sup>-1</sup>   |-1.03028283452740**4**×10<sup>0</sup><br/>  +*i*5.41914465387170**5**×10<sup>-1</sup> |
+|<nobr>*J*<sub>0</sub>(-15.1-*i*83.9)</nobr> |-9.079800270662861×10<sup>+34</sup><br/>-*i*7.605394317402608×10<sup>+34</sup>  |-9.079800270662**912**×10<sup>+34</sup><br/>-*i*7.6053943174026**56**×10<sup>+34</sup>|
+|<nobr>*J*<sub>-1</sub>(-2.8+*i*7.7)</nobr>  |+1.405657382170826×10<sup>+2</sup><br/> +*i*2.583924513755478×10<sup>+2</sup>   |+1.40565738217082**8**×10<sup>+2</sup><br/> +*i*2.58392451375547**9**×10<sup>+2</sup> |
+|<nobr>*J*<sub>3</sub>(4+*i*29)</nobr>       |+1.807884960557100×10<sup>+11</sup><br/>+*i*1.717728203190626×10<sup>+11</sup>  |+1.807884960557100×10<sup>+11</sup><br/>    +*i*1.717728203190626×10<sup>+11</sup>    |
+|<nobr>*J*<sub>-14</sub>(42-*i*8)</nobr>     |-1.109381836657852×10<sup>+2</sup><br/> +*i*4.649254392531784×10<sup>+1</sup>   |-1.109381836657852×10<sup>+2</sup><br/>     +*i*4.64925439253178**5**×10<sup>+1</sup> |
+|<nobr>*J*<sub>100</sub>(71+*i*30)</nobr>    |-1.873523256314857×10<sup>-4</sup><br/> +*i*2.688597190207697×10<sup>-6</sup>   |-1.8735232563148**47**×10<sup>-4</sup><br/> +*i*2.68859719020**8606**×10<sup>-6</sup> |
+|<nobr>*J*<sub>0</sub>'(-11+*i*18)</nobr>    |-5.427270167814426×10<sup>+6</sup><br/> +*i*1.444852021146701×10<sup>+6</sup>   |-5.427270167814426×10<sup>+6</sup><br/>     +*i*1.44485202114670**2**×10<sup>+6</sup> |
+|<nobr>*J*<sub>-9</sub>'(-6.6-*i*3.6)</nobr> |+1.608080761747265×10<sup>-1</sup><br/> -*i*1.505778965628776×10<sup>-1</sup>   |+1.60808076174726**4**×10<sup>-1</sup><br/> -*i*1.50577896562877**1**×10<sup>-1</sup> |
+|<nobr>*J*<sub>47</sub>'(2.71+*i*3.14)</nobr>|-4.836547831119548×10<sup>-45</sup><br/>+*i*3.403725372134759×10<sup>-44</sup>  |-4.8365478311195**86**×10<sup>-45</sup><br/>+*i*3.40372537213475**6**×10<sup>-44</sup>|
 
 ## Authorship
 
@@ -46,4 +54,4 @@ This project is protected under <a href="LICENSE">MIT License</a>.
 
 [1] S. Zhang and J. Jin, "Computation of Special Functions", Wiley, 1996.
 
-[2] Wolfram Alpha, accessed 09 April 2022, <https://www.wolframalpha.com/>.
+[2] Wolfram Alpha, accessed 01 September 2023, <https://www.wolframalpha.com/>.
