@@ -28,6 +28,8 @@ Veja <a href="usage-example.cpp">usage-example.cpp</a> como exemplo de uso.
 
 ## Validação
 
+As rotinas foram escritas para atingir resultados com precisão simples para <nobr>Im(*z*) ≤ 22</nobr>.
+
 Para determinados parâmetros, as funções foram comparadas com a função BesselJ[*n*,*z*] da <nobr>Ref. [[2](#referências)]</nobr>. Os resultados estão dispostos na tabela a seguir.
 
 |                                            | Da Ref. [[2](#references)]                                                   | Desta biblioteca                                                                    |
