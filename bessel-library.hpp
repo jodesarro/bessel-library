@@ -158,9 +158,37 @@ static std::complex<T> __cyl_j0( const std::complex<T> _z )
     {
         return std::complex<T> (T(1), T(0));
     }
-    else if ( std::abs(z) <= T(12) )
+    else if ( std::abs(z) <= T(14.201) )
     {
         return __ascending_series_cyl_j0(z);
+    }
+    else if ( std::abs(z) < T(14.35) )
+    {
+        return __semiconvergent_series_cyl_j0(z, 13);
+    }
+    else if ( std::abs(z) < T(14.5) )
+    {
+        return __semiconvergent_series_cyl_j0(z, 14);
+    }
+    else if ( std::abs(z) < T(15.5) )
+    {
+        return __semiconvergent_series_cyl_j0(z, 15);
+    }
+    else if ( std::abs(z) < T(16) )
+    {
+        return __semiconvergent_series_cyl_j0(z, 16);
+    }
+    else if ( std::abs(z) < T(16.5) )
+    {
+        return __semiconvergent_series_cyl_j0(z, 16.5);
+    }
+    else if ( std::abs(z) < T(17) )
+    {
+        return __semiconvergent_series_cyl_j0(z, 17);
+    }
+    else if ( std::abs(z) < T(17.5) )
+    {
+        return __semiconvergent_series_cyl_j0(z, 17.5);
     }
     else if ( std::abs(z) < T(35) )
     {
@@ -192,9 +220,37 @@ static std::complex<T> __cyl_j1( const std::complex<T> _z )
     {
         return std::complex<T> (T(0), T(0));
     }
-    else if ( std::abs(z) <= T(12) )
+    else if ( std::abs(z) <= T(14.201) )
     {
         return z_sign*__ascending_series_cyl_j1(z);
+    }
+    else if ( std::abs(z) < T(14.35) )
+    {
+        return z_sign*__semiconvergent_series_cyl_j1(z, 13);
+    }
+    else if ( std::abs(z) < T(14.5) )
+    {
+        return z_sign*__semiconvergent_series_cyl_j1(z, 14);
+    }
+    else if ( std::abs(z) < T(15.5) )
+    {
+        return z_sign*__semiconvergent_series_cyl_j1(z, 15);
+    }
+    else if ( std::abs(z) < T(16) )
+    {
+        return z_sign*__semiconvergent_series_cyl_j1(z, 16);
+    }
+    else if ( std::abs(z) < T(16.5) )
+    {
+        return z_sign*__semiconvergent_series_cyl_j1(z, 16.5);
+    }
+    else if ( std::abs(z) < T(17) )
+    {
+        return z_sign*__semiconvergent_series_cyl_j1(z, 17);
+    }
+    else if ( std::abs(z) < T(17.5) )
+    {
+        return z_sign*__semiconvergent_series_cyl_j1(z, 17.5);
     }
     else if ( std::abs(z) < T(35) )
     {
@@ -208,13 +264,6 @@ static std::complex<T> __cyl_j1( const std::complex<T> _z )
     {
         return z_sign*__semiconvergent_series_cyl_j1(z, 8);
     }
-}
-
-template<typename T>
-static inline std::complex<T> __cyl_j0_diff( const std::complex<T> _z )
-{
-    // Since dJ0(z)=-J1(z)
-    return -__cyl_j1( _z );
 }
 
 template<typename T>
@@ -304,20 +353,25 @@ static std::complex<T> __backward_recurrence_cyl_j( const int _n, const std::com
 {
     std::complex<T> bn;
 
-    int m = __ini_for_br_1(std::abs(_z), T(200));
-    if ( m >= _n )
+    int nm = _n;
+    int m = __ini_for_br_1( std::abs(_z), T(std::numeric_limits<T>::max_exponent10) );
+    if ( m < _n )
     {
-        m = __ini_for_br_2(T(_n), std::abs(_z), T(15));
+        nm = m;
     }
-    
+    else
+    {
+        m = __ini_for_br_2( T(_n), std::abs(_z), T(std::numeric_limits<T>::max_digits10) );
+    }
+  
     std::complex<T> cf2 = std::complex<T>(T(0), T(0));
     std::complex<T> cf1 = std::complex<T>(1.0e-100, T(0));
-    std::complex<T> cf, cs;
+    std::complex<T> cf;
 
     for ( int k=m; k>=0; k-- )
     {
         cf = T(2)*T(k+1)*cf1/_z-cf2;
-        if ( k == _n )
+        if ( k == nm )
         {
             bn = cf;
         }
@@ -325,6 +379,7 @@ static std::complex<T> __backward_recurrence_cyl_j( const int _n, const std::com
         cf1 = cf;
     }
     
+    std::complex<T> cs;
     std::complex<T> j0 = __cyl_j0(_z);
     std::complex<T> j1 = __cyl_j1(_z);
     if ( std::abs(j0) > std::abs(j1) )
@@ -334,15 +389,28 @@ static std::complex<T> __backward_recurrence_cyl_j( const int _n, const std::com
     else
     {
         cs = j1/cf2;
-    }   
-    bn *= cs;
+    }
+    
+    if ( !std::isnormal(abs(cs)) )
+    {
+        bn = __forward_recurrence_cyl_j(_n,_z);
+    }
+    else
+    {
+        bn *= cs;
+    }
 
     return bn;
 }
 
 template<typename T>
-std::complex<T> cyl_j( const int _n, const std::complex<T> _z )
+std::complex<T> cyl_j( const int _n, const std::complex<T> _z, const bool _warnings=true )
 {
+    if ( abs(imag(_z)) > T(21) && _warnings )
+    {
+        std::cerr << "Warning: '|imag(_z)| > 21' in calculating 'cyl_j(" << _n << ", " << _z << ")'; accuracy may be lost."  << std::endl;
+    }
+
     if ( _n == 0 )
     {
         return __cyl_j0( _z );
@@ -355,7 +423,7 @@ std::complex<T> cyl_j( const int _n, const std::complex<T> _z )
     {
         return -__cyl_j1( _z );
     }
-    else if ( std::abs(_z) == T(0) )
+    else if ( std::abs(std::abs(_z) - T(0)) <= std::numeric_limits<T>::epsilon() )
     {
         return std::complex<T> ( T(0), T(0) );
     }
@@ -389,15 +457,16 @@ std::complex<T> cyl_j( const int _n, const std::complex<T> _z )
 }
 
 template<typename T>
-std::complex<T> cyl_j_diff( const int _n, const std::complex<T> _z )
+std::complex<T> cyl_j_diff( const int _n, const std::complex<T> _z, const bool _warnings=true )
 {
     if ( _n == 0 )
     {
-        return __cyl_j0_diff( _z );
+        // Since dJ0(z)=-J1(z)
+        return -cyl_j(1, _z, _warnings );
     }
     else
     {
-        return cyl_j(_n-1,_z)-T(_n)*cyl_j(_n,_z)/_z;
+        return cyl_j(_n-1,_z,_warnings)-T(_n)*cyl_j(_n,_z,_warnings)/_z;
     }
 }
 
