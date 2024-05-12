@@ -29,7 +29,7 @@ Veja <a href="usage-example.cpp">usage-example.cpp</a> como exemplo de uso.
 
 ## Validação
 
-As rotinas foram escritas para atingir resultados com precisão simples para <nobr>|Im(*z*)| ≤ 22</nobr> quando comparada com a função BesselJ[*n*,*z*] da <nobr>Ref. [[2](#referências)]</nobr>.
+As rotinas foram escritas para atingir resultados com precisão simples para <nobr>|Im(*z*)| ≤ 21</nobr> quando comparada com a função BesselJ[*n*,*z*] da <nobr>Ref. [[2](#referências)]</nobr>.
 
 ## Autoria
 
