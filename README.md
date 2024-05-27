@@ -4,7 +4,7 @@ See Refs. [[1–3](#references)] for more information concerning Bessel function
 
 ## Available features
 
-### $J_\nu(z)$—Cylindrical Bessel function of the first kind
+### _J_<sub>_ν_</sub>(_z_)—Cylindrical Bessel function of the first kind
 
 #### Function `bessel::cyl_j(_nu, _z, _scaled, _flags)`
 - **Description:** Calculation of cylindrical Bessel function of the first kind of real order $\nu$ and complex argument $z$, that is, $J_\nu(z)$.
@@ -82,7 +82,7 @@ See Refs. [[1–3](#references)] for more information concerning Bessel function
   }
   ```
 
-### $Y_\nu(z)$—Cylindrical Bessel function of the second kind
+### _Y_<sub>_ν_</sub>(_z_)—Cylindrical Bessel function of the second kind
 
 #### Function `bessel::cyl_y(_nu, _z, _scaled, _flags)`
 - **Description:** Calculation of cylindrical Bessel function of the second kind (also known as Neumann function) of real order $\nu$ and complex argument $z$, that is, $Y_\nu(z)$ [also written as $N_\nu(z)$].
