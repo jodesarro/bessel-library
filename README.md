@@ -2,6 +2,10 @@
 
 See Refs. [[1–3](#references)] for more information concerning Bessel functions.
 
+## How to use
+
+The library is in a header-only library style, i.e., there is nothing to build, you only have to include the *<a href="bessel-library.hpp">bessel-library.hpp</a>* file into your project.
+
 ## Available features
 
 ### _J_<sub>_ν_</sub>(_z_)—Cylindrical Bessel function of the first kind
@@ -163,10 +167,6 @@ See Refs. [[1–3](#references)] for more information concerning Bessel function
 ### New features coming soon
   - Implementation of Hankel functions.
   - Implementation of Airy functions.
-
-## How to use
-
-The library is in a header-only library style, i.e., there is nothing to build, you only have to include the *<a href="bessel-library.hpp">bessel-library.hpp</a>* file into your project.
 
 ## Authorship
 
