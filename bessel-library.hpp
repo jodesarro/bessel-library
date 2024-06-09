@@ -1,24 +1,41 @@
 // Bessel library: A C++ library with routines to evaluate Bessel functions of real or complex arguments (https://github.com/jodesarro/bessel-library)
 // MIT License Copyright (c) 2021 Jhonas Olivati de Sarro (https://github.com/jodesarro/bessel-library/blob/main/LICENSE)
 
-// See Refs. [1–3] for more information concerning Bessel functions.
+// See Refs. [[1–3](#references)] for more information concerning Bessel functions and their computation.
 
 //-v------------------------------------------------------------------------
 // CHANGELOG
+// 0.1.3 Jun 09, 2024 (current version)
+//  - Inclusion of Hankel functions cyl_h1 and cyl_h2 for integer or real orders and real or complex arguments.
+//  - Inclusion of Airy functions airy_ai and airy_bi for real or complex arguments.
+//  - Functions mod_i and mod_k were consistently renamed to cyl_i and cyl_k.
+//  - The flags now print the number of components set to zero due to underflow.
+//  - Routines zairy_, zbesh_, zbesj_, zbesy_, zbesi_, zbesk_ and zbiry_, based on version 930101 of D. E. Amos routines (https://doi.org/10.1145/7921.214331, ACM domain)
+//      were changed (reverted) to be based on slatec ([3], public domain) versions to avoid copyright conflicts between ACM and MIT licenses and permissions. The
+//      versions 0.1.1 and 0.1.2 of this code, and github commits related to them, shall be deleted and must be disconsidered and discarded by all users.
+//  - Revision and reorganization of all slatec functions.
+//  - Creation of functions d1mach and i1mach to make easier to compare with original slatec versions. 
+// 0.1.2 Jun 06, 2024
+//  - Inclusion of modified Bessel functions mod_i and mod_k for integer or real orders and real or complex arguments.
+// 0.1.1 May 27, 2024
+//  - Routines zairy_, zbesh_, zbesj_, and zbesy_, updated to the version 930101 of D. E. Amos routines (https://doi.org/10.1145/7921.214331).
+//  - Inclusion of routines zbesi_, zbesk_, zbiry_ accordingly to version 930101 of D. E. Amos routines (https://doi.org/10.1145/7921.214331).
+//  - Inclusion of C++ callable functions to overload cyl_j and cyl_y for real arguments.
+//  - Static declarations removed for thread safety.
 // 0.1.0 May 26, 2024
 //  - Routines for cyl_j based on Ref. [2] were replaced by D. E. Amos Fortran 77 routines of SLATEC library [3].
-//  - D. E. Amos routines zairy.f, zbesh.f, zbesj.f, zbesy.f, and all their dependencies, were converted to C using f2c (Availabe at: https://www.netlib.org/f2c/. Accessed: May 25, 2024).
+//  - D. E. Amos routines zairy_.f, zbesh_.f, zbesj_.f, zbesy_.f, and all their dependencies, were converted to C using f2c (Availabe at: https://www.netlib.org/f2c/. Accessed: May 25, 2024).
 //  - Replacement of all functions d1mach amd i1mach by C macros of float.h.
 //  - Corrections of the translated f2c version and elimination of external dependencies.
 //  - Reorganization of the whole code to be easily callable from C++.
 //  - Inclusion of cylindrical Bessel functions of the second kind (or Neumann functions) cyl_y.
 //  - Calculation of negative orders for cyl_j and cyl_y through Eq. (5.5.4) of Ref. [2].
 //  - Now, cyl, Bessel functions of the first and second kinds, cyl_j and cyl_y, are available also for real (positive or negative) orders.
-//  - Inclusion of cyl_j and cyl_y that returns an array of an integer sequence of orders.
+//  - Inclusion of cyl_j and cyl_y that returns an array of an int sequence of orders.
 //  - Inclusion of parameters to print flag messages, and to return scaled versions of cyl_j and cyl_y.
 //  - Inclusion of namespace bessel::slatec to call all slatec routines.
 // 0.0.0 until May 12, 2024 
-//  - Routines for cylindrical Bessel functions of the first kind and integer order written based on Ref. [2].
+//  - Routines for cylindrical Bessel functions of the first kind and int order written based on Ref. [2].
 // CHANGELOG
 //-^------------------------------------------------------------------------
 
@@ -52,58 +69,104 @@ namespace bessel::slatec
 
 //-v------------------------------------------------------------------------
 // MAIN D. E. AMOS (SLATEC) ROUTINES DECLARATIONS
-int zairy(double *zr, double *zi, int *id, int *kode, double *air, double *aii, int *nz, int *ierr);
-int zbesh(double *zr, double *zi, double *fnu, int *kode, int *m, int *n, double *cyr, double *cyi, int *nz, int *ierr);
-int zbesj(double *zr, double *zi, double *fnu, int *kode, int *n, double *cyr, double *cyi, int *nz, int *ierr);
-int zbesy(double *zr, double *zi, double *fnu, int *kode, int *n, double *cyr, double *cyi, int *nz, double *cwrkr, double *cwrki, int *ierr);
+int zbesj_(double *zr, double *zi, double *fnu, int *kode, int *n, double *cyr, double *cyi, int *nz, int *ierr);
+int zbesy_(double *zr, double *zi, double *fnu, int *kode, int *n, double *cyr, double *cyi, int *nz, double *cwrkr, double *cwrki, int *ierr);
+int zbesh_(double *zr, double *zi, double *fnu, int *kode, int *m, int *n, double *cyr, double *cyi, int *nz, int *ierr);
+int zbesi_(double *zr, double *zi, double *fnu, int *kode, int *n, double *cyr, double *cyi, int *nz, int *ierr);
+int zbesk_(double *zr, double *zi, double *fnu, int *kode, int *n, double *cyr, double *cyi, int *nz, int *ierr);
+int zairy_(double *zr, double *zi, int *id, int *kode, double *air, double *aii, int *nz, int *ierr);
+int zbiry_(double *zr, double *zi, int *id, int *kode, double *bir, double *bii, int *ierr);
 // MAIN D. E. AMOS (SLATEC) ROUTINES DECLARATIONS
 //-^------------------------------------------------------------------------
 
 
 //-v------------------------------------------------------------------------
 // DEPENDENCY AMOS/SLATEC ROUTINES DECLARATIONS
-double zabs(double *zr, double *zi);
-int zexp(double *ar, double *ai, double *br, double *bi);
-int zdiv(double *ar, double *ai, double *br, double *bi, double *cr, double *ci);
-int zsqrt(double *ar, double *ai, double *br, double *bi);
-int zlog(double *ar, double *ai, double *br, double *bi, int *ierr);
-int zs1s2(double *zrr, double *zri, double *s1r, double *s1i, double *s2r, double *s2i, int *nz, double *ascle, double *alim, int *iuf);
-int zasyi(double *zr, double *zi, double *fnu, int *kode, int *n, double *yr, double *yi, int *nz, double *rl, double *tol, double *elim, double *alim);
-int zacai(double *zr, double *zi, double *fnu,	int *kode, int *mr, int *n, double *yr, double *yi, int *nz, double *rl, double *tol, double *elim,	double *alim);
-int zuni2(double *zr, double *zi, double *fnu, int *kode, int *n, double *yr, double *yi, int *nz, int *nlast, double *fnul, double *tol, double *elim, double *alim);
-int zuni1(double *zr, double *zi, double *fnu, int *kode, int *n, double *yr, double *yi, int *nz, int *nlast, double *fnul, double *tol, double *elim, double *alim);
-int zbuni(double *zr, double *zi, double *fnu, int *kode, int *n, double *yr, double *yi, int *nz, int *nui, int *nlast, double *fnul, double *tol, double *elim, double *alim);
+double zabs_(double *zr, double *zi);
+int zexp_(double *ar, double *ai, double *br, double *bi);
+int zdiv_(double *ar, double *ai, double *br, double *bi, double *cr, double *ci);
+int zsqrt_(double *ar, double *ai, double *br, double *bi);
+int zlog_(double *ar, double *ai, double *br, double *bi, int *ierr);
+int zs1s2_(double *zrr, double *zri, double *s1r, double *s1i, double *s2r, double *s2i, int *nz, double *ascle, double *alim, int *iuf);
+int zasyi_(double *zr, double *zi, double *fnu, int *kode, int *n, double *yr, double *yi, int *nz, double *rl, double *tol, double *elim, double *alim);
+int zacai_(double *zr, double *zi, double *fnu,	int *kode, int *mr, int *n, double *yr, double *yi, int *nz, double *rl, double *tol, double *elim,	double *alim);
+int zuni1_(double *zr, double *zi, double *fnu, int *kode, int *n, double *yr, double *yi, int *nz, int *nlast, double *fnul, double *tol, double *elim, double *alim);
+int zuni2_(double *zr, double *zi, double *fnu, int *kode, int *n, double *yr, double *yi, int *nz, int *nlast, double *fnul, double *tol, double *elim, double *alim);
+int zbuni_(double *zr, double *zi, double *fnu, int *kode, int *n, double *yr, double *yi, int *nz, int *nui, int *nlast, double *fnul, double *tol, double *elim, double *alim);
 int zmlri_(double *zr, double *zi, double *fnu, int *kode, int *n, double *yr, double *yi, int *nz, double *tol);
-int zmlt(double *ar, double *ai, double *br, double *bi, double *cr, double *ci);
-double dgamln(double *z__, int *ierr);
-int zseri(double *zr, double *zi, double *fnu, int *kode, int *n, double *yr, double *yi, int *nz, double *tol, double *elim, double *alim);
-int zunik(double *zrr, double *zri, double *fnu, int *ikflg, int *ipmtr, double *tol, int *init, double *phir, double *phii, double *zeta1r, double *zeta1i, double *zeta2r, double *zeta2i, double *sumr, double *sumi, double *cwrkr, double *cwrki);
-int zunhj(double *zr, double *zi, double *fnu, int *ipmtr, double *tol, double *phir, double *phii, double *argr, double *argi, double *zeta1r, double *zeta1i, double *zeta2r, double *zeta2i, double *asumr, double *asumi, double *bsumr, double *bsumi);
-int zuchk(double *yr, double *yi, int *nz, double *ascle, double *tol);
-int zuoik(double *zr, double *zi, double *fnu, int *kode, int *ikflg, int *n, double *yr, double *yi, int *nuf, double *tol, double *elim, double *alim);
-int zbknu(double *zr, double *zi, double *fnu, int *kode, int *n, double *yr, double *yi, int *nz, double *tol, double *elim, double *alim);
-int zrati(double *zr, double *zi, double *fnu, int *n, double *cyr, double *cyi, double *tol);
-int zwrsk(double *zrr, double *zri, double *fnu, int *kode, int *n, double *yr, double *yi, int *nz, double *cwr, double *cwi, double *tol, double *elim, double *alim);
-int zbinu(double *zr, double *zi, double *fnu, int *kode, int *n, double *cyr, double *cyi, int *nz, double *rl, double *fnul, double *tol, double *elim, double *alim);
-int zshch(double *zr, double *zi, double *cshr,	double *cshi, double *cchr, double *cchi);
-int zkscl(double *zrr, double *zri, double *fnu, int *n, double *yr, double *yi, int *nz, double *rzr, double *rzi, double *ascle, double *tol, double *elim);
-int zacon(double *zr, double *zi, double *fnu, int *kode, int *mr, int *n, double *yr, double *yi, int *nz, double *rl, double *fnul, double *tol, double *elim, double *alim);
-int zbunk(double *zr, double *zi, double *fnu, int *kode, int *mr, int *n, double *yr, double *yi, int *nz, double *tol, double *elim, double *alim);
-int zunk1(double *zr, double *zi, double *fnu, int *kode, int *mr, int *n, double *yr, double *yi, int *nz, double *tol, double *elim, double *alim);
-int zunk2(double *zr, double *zi, double *fnu, int *kode, int *mr, int *n, double *yr, double *yi, int *nz, double *tol, double *elim, double *alim);
+int zmlt_(double *ar, double *ai, double *br, double *bi, double *cr, double *ci);
+double dgamln_(double *z__, int *ierr);
+int zseri_(double *zr, double *zi, double *fnu, int *kode, int *n, double *yr, double *yi, int *nz, double *tol, double *elim, double *alim);
+int zunik_(double *zrr, double *zri, double *fnu, int *ikflg, int *ipmtr, double *tol, int *init, double *phir, double *phii, double *zeta1r, double *zeta1i, double *zeta2r, double *zeta2i, double *sumr, double *sumi, double *cwrkr, double *cwrki);
+int zunhj_(double *zr, double *zi, double *fnu, int *ipmtr, double *tol, double *phir, double *phii, double *argr, double *argi, double *zeta1r, double *zeta1i, double *zeta2r, double *zeta2i, double *asumr, double *asumi, double *bsumr, double *bsumi);
+int zuchk_(double *yr, double *yi, int *nz, double *ascle, double *tol);
+int zuoik_(double *zr, double *zi, double *fnu, int *kode, int *ikflg, int *n, double *yr, double *yi, int *nuf, double *tol, double *elim, double *alim);
+int zbknu_(double *zr, double *zi, double *fnu, int *kode, int *n, double *yr, double *yi, int *nz, double *tol, double *elim, double *alim);
+int zrati_(double *zr, double *zi, double *fnu, int *n, double *cyr, double *cyi, double *tol);
+int zwrsk_(double *zrr, double *zri, double *fnu, int *kode, int *n, double *yr, double *yi, int *nz, double *cwr, double *cwi, double *tol, double *elim, double *alim);
+int zbinu_(double *zr, double *zi, double *fnu, int *kode, int *n, double *cyr, double *cyi, int *nz, double *rl, double *fnul, double *tol, double *elim, double *alim);
+int zshch_(double *zr, double *zi, double *cshr,	double *cshi, double *cchr, double *cchi);
+int zkscl_(double *zrr, double *zri, double *fnu, int *n, double *yr, double *yi, int *nz, double *rzr, double *rzi, double *ascle, double *tol, double *elim);
+int zacon_(double *zr, double *zi, double *fnu, int *kode, int *mr, int *n, double *yr, double *yi, int *nz, double *rl, double *fnul, double *tol, double *elim, double *alim);
+int zbunk_(double *zr, double *zi, double *fnu, int *kode, int *mr, int *n, double *yr, double *yi, int *nz, double *tol, double *elim, double *alim);
+int zunk1_(double *zr, double *zi, double *fnu, int *kode, int *mr, int *n, double *yr, double *yi, int *nz, double *tol, double *elim, double *alim);
+int zunk2_(double *zr, double *zi, double *fnu, int *kode, int *mr, int *n, double *yr, double *yi, int *nz, double *tol, double *elim, double *alim);
 // DEPENDENCY AMOS/SLATEC ROUTINES DECLARATIONS
 //-^------------------------------------------------------------------------
 
 
 //-v------------------------------------------------------------------------
 // TABLE OF GLOBAL CONSTANT VALUES
-static int c__0 = 0;
-static int c__1 = 1;
-static int c__2 = 2;
-static double c_b10 = .5;
-static double c_b11 = 0.;
-static double M_LOG10_2 = log10(2.);
+int c__0 = 0;
+int c__1 = 1;
+int c__2 = 2;
+int c__4 = 4;
+int c__5 = 5;
+int c__9 = 9;
+int c__14 = 14;
+int c__15 = 15;
+int c__16 = 16;
+double c_b10 = .5;
+double c_b11 = 0.;
 // TABLE OF GLOBAL CONSTANT VALUES
+//-^------------------------------------------------------------------------
+
+
+//-v------------------------------------------------------------------------
+// FUNCTIONS OF GLOBAL CONSTANT VALUES
+double d1mach_(int *c__n)
+{
+    switch(*c__n)
+    {
+        case 1:
+            return DBL_MIN; break;
+        case 2:
+            return DBL_MAX; break;
+        case 4:
+            return DBL_EPSILON; break;
+        case 5:
+            return log10(2.); break;
+        default:
+            return 0.; break;
+    }
+}
+int i1mach_(int *c__n)
+{
+    switch(*c__n)
+    {
+        case 9:
+            return INT_MAX; break;
+        case 14:
+            return DBL_MANT_DIG; break;
+        case 15:
+            return -DBL_MIN_EXP; break;
+        case 16:
+            return DBL_MAX_EXP; break;
+        default:
+            return 0; break;
+    }
+}
+// FUNCTIONS OF GLOBAL CONSTANT VALUES
 //-^------------------------------------------------------------------------
 
 
@@ -138,13 +201,14 @@ inline double pow_dd(double *x, double *y) { return pow(*x,*y); }
 */
 
 /* DECK ZABS */
-double zabs(double *zr, double *zi)
+/* Subroutine */
+double zabs_(double *zr, double *zi)
 {
     /* System generated locals */
     double ret_val;
 
     /* Local variables */
-    static double q, s, u, v;
+    double q, s, u, v;
 
 /* ***BEGIN PROLOGUE  ZABS */
 /* ***SUBSIDIARY */
@@ -189,16 +253,15 @@ L10:
 L20:
     ret_val = 0.;
     return ret_val;
-} /* zabs */
+} /* zabs_ */
 
 /* DECK ZEXP */
 /* Subroutine */
-int zexp(double *ar, double *ai, double *br, 
+int zexp_(double *ar, double *ai, double *br, 
 	double *bi)
 {
-
     /* Local variables */
-    static double ca, cb, zm;
+    double ca, cb, zm;
 
 /* ***BEGIN PROLOGUE  ZEXP */
 /* ***SUBSIDIARY */
@@ -224,14 +287,14 @@ int zexp(double *ar, double *ai, double *br,
     *br = ca;
     *bi = cb;
     return 0;
-} /* zexp */
+} /* zexp_ */
 
 /* DECK ZDIV */
 /* Subroutine */
-int zdiv(double *ar, double *ai, double *br, 
+int zdiv_(double *ar, double *ai, double *br, 
 	double *bi, double *cr, double *ci)
 {
-    static double ca, cb, cc, cd, bm;
+    double ca, cb, cc, cd, bm;
 
 /* ***BEGIN PROLOGUE  ZDIV */
 /* ***SUBSIDIARY */
@@ -251,7 +314,7 @@ int zdiv(double *ar, double *ai, double *br,
 /*   910415  Prologue converted to Version 4.0 format.  (BAB) */
 /* ***END PROLOGUE  ZDIV */
 /* ***FIRST EXECUTABLE STATEMENT  ZDIV */
-    bm = 1. / zabs(br, bi);
+    bm = 1. / zabs_(br, bi);
     cc = *br * bm;
     cd = *bi * bm;
     ca = (*ar * cc + *ai * cd) * bm;
@@ -259,21 +322,20 @@ int zdiv(double *ar, double *ai, double *br,
     *cr = ca;
     *ci = cb;
     return 0;
-} /* zdiv */
+} /* zdiv_ */
 
 /* DECK ZSQRT */
 /* Subroutine */
-int zsqrt(double *ar, double *ai, double *br, 
+int zsqrt_(double *ar, double *ai, double *br, 
 	double *bi)
 {
     /* Initialized data */
-
-    static double drt = .7071067811865475244008443621;
-    static double dpi = 3.141592653589793238462643383;
+    double drt = .7071067811865475244008443621;
+    double dpi = 3.141592653589793238462643383;
 
     /* Local variables */
-    static double zm;
-    static double dtheta;
+    double zm;
+    double dtheta;
 
 /* ***BEGIN PROLOGUE  ZSQRT */
 /* ***SUBSIDIARY */
@@ -293,7 +355,7 @@ int zsqrt(double *ar, double *ai, double *br,
 /*   910415  Prologue converted to Version 4.0 format.  (BAB) */
 /* ***END PROLOGUE  ZSQRT */
 /* ***FIRST EXECUTABLE STATEMENT  ZSQRT */
-    zm = zabs(ar, ai);
+    zm = zabs_(ar, ai);
     zm = sqrt(zm);
     if (*ar == 0.) {
 	goto L10;
@@ -347,21 +409,20 @@ L70:
     *br = zm * drt;
     *bi = -zm * drt;
     return 0;
-} /* zsqrt */
+} /* zsqrt_ */
 
 /* DECK ZLOG */
 /* Subroutine */
-int zlog(double *ar, double *ai, double *br, 
+int zlog_(double *ar, double *ai, double *br, 
 	double *bi, int *ierr)
 {
     /* Initialized data */
-
-    static double dpi = 3.141592653589793238462643383;
-    static double dhpi = 1.570796326794896619231321696;
+    double dpi = 3.141592653589793238462643383;
+    double dhpi = 1.570796326794896619231321696;
 
     /* Local variables */
-    static double zm;
-    static double dtheta;
+    double zm;
+    double dtheta;
 
 /* ***BEGIN PROLOGUE  ZLOG */
 /* ***SUBSIDIARY */
@@ -422,29 +483,28 @@ L40:
 	dtheta += dpi;
     }
 L50:
-    zm = zabs(ar, ai);
+    zm = zabs_(ar, ai);
     *br = log(zm);
     *bi = dtheta;
     return 0;
 L60:
     *ierr = 1;
     return 0;
-} /* zlog */
+} /* zlog_ */
 
 /* DECK ZS1S2 */
 /* Subroutine */
-int zs1s2(double *zrr, double *zri, double *s1r,
+int zs1s2_(double *zrr, double *zri, double *s1r,
 	 double *s1i, double *s2r, double *s2i, int *nz, 
 	double *ascle, double *alim, int *iuf)
 {
     /* Initialized data */
-
-    static double zeror = 0.;
-    static double zeroi = 0.;
+    double zeror = 0.;
+    double zeroi = 0.;
 
     /* Local variables */
-    static double aa, c1i, as1, as2, c1r, aln, s1di, s1dr;
-    static int idum;
+    double aa, c1i, as1, as2, c1r, aln, s1di, s1dr;
+    int idum;
 
 /* ***BEGIN PROLOGUE  ZS1S2 */
 /* ***SUBSIDIARY */
@@ -472,8 +532,8 @@ int zs1s2(double *zrr, double *zri, double *s1r,
 /*     COMPLEX CZERO,C1,S1,S1D,S2,ZR */
 /* ***FIRST EXECUTABLE STATEMENT  ZS1S2 */
     *nz = 0;
-    as1 = zabs(s1r, s1i);
-    as2 = zabs(s2r, s2i);
+    as1 = zabs_(s1r, s1i);
+    as2 = zabs_(s2r, s2i);
     if (*s1r == 0. && *s1i == 0.) {
 	goto L10;
     }
@@ -489,11 +549,11 @@ int zs1s2(double *zrr, double *zri, double *s1r,
     if (aln < -(*alim)) {
 	goto L10;
     }
-    zlog(&s1dr, &s1di, &c1r, &c1i, &idum);
+    zlog_(&s1dr, &s1di, &c1r, &c1i, &idum);
     c1r = c1r - *zrr - *zrr;
     c1i = c1i - *zri - *zri;
-    zexp(&c1r, &c1i, s1r, s1i);
-    as1 = zabs(s1r, s1i);
+    zexp_(&c1r, &c1i, s1r, s1i);
+    as1 = zabs_(s1r, s1i);
     ++(*iuf);
 L10:
     aa = max(as1,as2);
@@ -507,42 +567,41 @@ L10:
     *nz = 1;
     *iuf = 0;
     return 0;
-} /* zs1s2 */
+} /* zs1s2_ */
 
 /* DECK ZASYI */
 /* Subroutine */
-int zasyi(double *zr, double *zi, double *fnu, 
+int zasyi_(double *zr, double *zi, double *fnu, 
 	int *kode, int *n, double *yr, double *yi, int *
 	nz, double *rl, double *tol, double *elim, double *
 	alim)
 {
     /* Initialized data */
-
-    static double pi = 3.14159265358979324;
-    static double rtpi = .159154943091895336;
-    static double zeror = 0.;
-    static double zeroi = 0.;
-    static double coner = 1.;
-    static double conei = 0.;
+    double pi = 3.14159265358979324;
+    double rtpi = .159154943091895336;
+    double zeror = 0.;
+    double zeroi = 0.;
+    double coner = 1.;
+    double conei = 0.;
 
     /* System generated locals */
     int i__1, i__2;
     double d__1, d__2;
 
     /* Local variables */
-    static int i__, j, k, m;
-    static double s, aa, bb;
-    static int ib;
-    static double ak, bk;
-    static int il, jl;
-    static double az;
-    static int nn;
-    static double p1i, s2i, p1r, s2r, cki, dki, fdn, arg, aez, arm, ckr, 
+    int i__, j, k, m;
+    double s, aa, bb;
+    int ib;
+    double ak, bk;
+    int il, jl;
+    double az;
+    int nn;
+    double p1i, s2i, p1r, s2r, cki, dki, fdn, arg, aez, arm, ckr, 
 	    dkr, czi, ezi, sgn;
-    static int inu;
-    static double raz, czr, ezr, sqk, sti, rzi, tzi, str, rzr, tzr, ak1i, 
+    int inu;
+    double raz, czr, ezr, sqk, sti, rzi, tzi, str, rzr, tzr, ak1i, 
 	    ak1r, cs1i, cs2i, cs1r, cs2r, dnu2, rtr1, dfnu, atol;
-    static int koded;
+    int koded;
 
 /* ***BEGIN PROLOGUE  ZASYI */
 /* ***SUBSIDIARY */
@@ -572,8 +631,8 @@ int zasyi(double *zr, double *zi, double *fnu,
     /* Function Body */
 /* ***FIRST EXECUTABLE STATEMENT  ZASYI */
     *nz = 0;
-    az = zabs(zr, zi);
-    arm = DBL_MIN * 1e3;
+    az = zabs_(zr, zi);
+    arm = d1mach_(&c__1) * 1e3;
     rtr1 = sqrt(arm);
     il = min(2,*n);
     dfnu = *fnu + (*n - il);
@@ -585,7 +644,7 @@ int zasyi(double *zr, double *zi, double *fnu,
     sti = -(*zi) * raz;
     ak1r = rtpi * str * raz;
     ak1i = rtpi * sti * raz;
-    zsqrt(&ak1r, &ak1i, &ak1r, &ak1i);
+    zsqrt_(&ak1r, &ak1i, &ak1r, &ak1i);
     czr = *zr;
     czi = *zi;
     if (*kode != 2) {
@@ -603,8 +662,8 @@ L10:
 	goto L20;
     }
     koded = 0;
-    zexp(&czr, &czi, &str, &sti);
-    zmlt(&ak1r, &ak1i, &str, &sti, &ak1r, &ak1i);
+    zexp_(&czr, &czi, &str, &sti);
+    zmlt_(&ak1r, &ak1i, &str, &sti, &ak1r, &ak1i);
 L20:
     fdn = 0.;
     if (dnu2 > rtr1) {
@@ -663,7 +722,7 @@ L30:
 	dki = ezi;
 	i__2 = jl;
 	for (j = 1; j <= i__2; ++j) {
-	    zdiv(&ckr, &cki, &dkr, &dki, &str, &sti);
+	    zdiv_(&ckr, &cki, &dkr, &dki, &str, &sti);
 	    ckr = str * sqk;
 	    cki = sti * sqk;
 	    cs2r += ckr;
@@ -693,9 +752,9 @@ L50:
 	tzi = *zi + *zi;
 	d__1 = -tzr;
 	d__2 = -tzi;
-	zexp(&d__1, &d__2, &str, &sti);
-	zmlt(&str, &sti, &p1r, &p1i, &str, &sti);
-	zmlt(&str, &sti, &cs2r, &cs2i, &str, &sti);
+	zexp_(&d__1, &d__2, &str, &sti);
+	zmlt_(&str, &sti, &p1r, &p1i, &str, &sti);
+	zmlt_(&str, &sti, &cs2r, &cs2i, &str, &sti);
 	s2r += str;
 	s2i += sti;
 L60:
@@ -729,7 +788,7 @@ L60:
     if (koded == 0) {
 	return 0;
     }
-    zexp(&czr, &czi, &ckr, &cki);
+    zexp_(&czr, &czi, &ckr, &cki);
     i__1 = nn;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	str = yr[i__] * ckr - yi[i__] * cki;
@@ -744,28 +803,27 @@ L100:
 L110:
     *nz = -2;
     return 0;
-} /* zasyi */
+} /* zasyi_ */
 
 /* DECK ZACAI */
 /* Subroutine */
-int zacai(double *zr, double *zi, double *fnu, 
+int zacai_(double *zr, double *zi, double *fnu, 
 	int *kode, int *mr, int *n, double *yr, double *
 	yi, int *nz, double *rl, double *tol, double *elim, 
 	double *alim)
 {
     /* Initialized data */
-
-    static double pi = 3.14159265358979324;
+    double pi = 3.14159265358979324;
 
     /* Local variables */
-    static double az;
-    static int nn, nw;
-    static double yy, c1i, c2i, c1r, c2r, arg;
-    static int iuf;
-    static double cyi[2], fmr, sgn;
-    static int inu;
-    static double cyr[2], zni, znr, dfnu;
-    static double ascle, csgni, csgnr, cspni, cspnr;
+    double az;
+    int nn, nw;
+    double yy, c1i, c2i, c1r, c2r, arg;
+    int iuf;
+    double cyi[2], fmr, sgn;
+    int inu;
+    double cyr[2], zni, znr, dfnu;
+    double ascle, csgni, csgnr, cspni, cspnr;
 
 /* ***BEGIN PROLOGUE  ZACAI */
 /* ***SUBSIDIARY */
@@ -802,7 +860,7 @@ int zacai(double *zr, double *zi, double *fnu,
     *nz = 0;
     znr = -(*zr);
     zni = -(*zi);
-    az = zabs(zr, zi);
+    az = zabs_(zr, zi);
     nn = *n;
     dfnu = *fnu + (*n - 1);
     if (az <= 2.) {
@@ -815,7 +873,7 @@ L10:
 /* ----------------------------------------------------------------------- */
 /*     POWER SERIES FOR THE I FUNCTION */
 /* ----------------------------------------------------------------------- */
-    zseri(&znr, &zni, fnu, kode, &nn, &yr[1], &yi[1], &nw, tol, elim, alim);
+    zseri_(&znr, &zni, fnu, kode, &nn, &yr[1], &yi[1], &nw, tol, elim, alim);
     goto L40;
 L20:
     if (az < *rl) {
@@ -824,7 +882,7 @@ L20:
 /* ----------------------------------------------------------------------- */
 /*     ASYMPTOTIC EXPANSION FOR LARGE Z FOR THE I FUNCTION */
 /* ----------------------------------------------------------------------- */
-    zasyi(&znr, &zni, fnu, kode, &nn, &yr[1], &yi[1], &nw, rl, tol, elim, 
+    zasyi_(&znr, &zni, fnu, kode, &nn, &yr[1], &yi[1], &nw, rl, tol, elim, 
 	    alim);
     if (nw < 0) {
 	goto L80;
@@ -842,7 +900,7 @@ L40:
 /* ----------------------------------------------------------------------- */
 /*     ANALYTIC CONTINUATION TO THE LEFT HALF PLANE FOR THE K FUNCTION */
 /* ----------------------------------------------------------------------- */
-    zbknu(&znr, &zni, fnu, kode, &c__1, cyr, cyi, &nw, tol, elim, alim);
+    zbknu_(&znr, &zni, fnu, kode, &c__1, cyr, cyi, &nw, tol, elim, alim);
     if (nw != 0) {
 	goto L80;
     }
@@ -879,8 +937,8 @@ L60:
 	goto L70;
     }
     iuf = 0;
-    ascle = DBL_MIN * 1e3 / *tol;
-    zs1s2(&znr, &zni, &c1r, &c1i, &c2r, &c2i, &nw, &ascle, alim, &iuf);
+    ascle = d1mach_(&c__1) * 1e3 / *tol;
+    zs1s2_(&znr, &zni, &c1r, &c1i, &c2r, &c2i, &nw, &ascle, alim, &iuf);
     *nz += nw;
 L70:
     yr[1] = cspnr * c1r - cspni * c1i + csgnr * c2r - csgni * c2i;
@@ -892,39 +950,38 @@ L80:
 	*nz = -2;
     }
     return 0;
-} /* zacai */
+} /* zacai_ */
 
 /* DECK ZUNI1 */
 /* Subroutine */
-int zuni1(double *zr, double *zi, double *fnu, 
+int zuni1_(double *zr, double *zi, double *fnu, 
 	int *kode, int *n, double *yr, double *yi, int *
 	nz, int *nlast, double *fnul, double *tol, double *
 	elim, double *alim)
 {
     /* Initialized data */
-
-    static double zeror = 0.;
-    static double zeroi = 0.;
-    static double coner = 1.;
+    double zeror = 0.;
+    double zeroi = 0.;
+    double coner = 1.;
 
     /* System generated locals */
     int i__1;
 
     /* Local variables */
-    static int i__, k, m, nd;
-    static double fn;
-    static int nn, nw;
-    static double c2i, c2m, c1r, c2r, s1i, s2i, rs1, s1r, s2r, cyi[2];
-    static int nuf;
-    static double bry[3], cyr[2], sti, rzi, str, rzr, aphi, cscl, phii, 
+    int i__, k, m, nd;
+    double fn;
+    int nn, nw;
+    double c2i, c2m, c1r, c2r, s1i, s2i, rs1, s1r, s2r, cyi[2];
+    int nuf;
+    double bry[3], cyr[2], sti, rzi, str, rzr, aphi, cscl, phii, 
 	    crsc;
-    static double phir;
-    static int init;
-    static double csrr[3], cssr[3], rast, sumi, sumr;
-    static int iflag;
-    static double ascle, cwrki[16];
-    static double cwrkr[16];
-    static double zeta1i, zeta2i, zeta1r, zeta2r;
+    double phir;
+    int init;
+    double csrr[3], cssr[3], rast, sumi, sumr;
+    int iflag;
+    double ascle, cwrki[16];
+    double cwrkr[16];
+    double zeta1i, zeta2i, zeta1r, zeta2r;
 
 /* ***BEGIN PROLOGUE  ZUNI1 */
 /* ***SUBSIDIARY */
@@ -973,20 +1030,20 @@ int zuni1(double *zr, double *zi, double *fnu,
     csrr[0] = crsc;
     csrr[1] = coner;
     csrr[2] = cscl;
-    bry[0] = DBL_MIN * 1e3 / *tol;
+    bry[0] = d1mach_(&c__1) * 1e3 / *tol;
 /* ----------------------------------------------------------------------- */
 /*     CHECK FOR UNDERFLOW AND OVERFLOW ON FIRST MEMBER */
 /* ----------------------------------------------------------------------- */
     fn = max(*fnu,1.);
     init = 0;
-    zunik(zr, zi, &fn, &c__1, &c__1, tol, &init, &phir, &phii, &zeta1r, &
+    zunik_(zr, zi, &fn, &c__1, &c__1, tol, &init, &phir, &phii, &zeta1r, &
 	    zeta1i, &zeta2r, &zeta2i, &sumr, &sumi, cwrkr, cwrki);
     if (*kode == 1) {
 	goto L10;
     }
     str = *zr + zeta2r;
     sti = *zi + zeta2i;
-    rast = fn / zabs(&str, &sti);
+    rast = fn / zabs_(&str, &sti);
     str = str * rast * rast;
     sti = -sti * rast * rast;
     s1r = -zeta1r + str;
@@ -1006,14 +1063,14 @@ L30:
     for (i__ = 1; i__ <= i__1; ++i__) {
 	fn = *fnu + (nd - i__);
 	init = 0;
-	zunik(zr, zi, &fn, &c__1, &c__0, tol, &init, &phir, &phii, &zeta1r, &
+	zunik_(zr, zi, &fn, &c__1, &c__0, tol, &init, &phir, &phii, &zeta1r, &
 		zeta1i, &zeta2r, &zeta2i, &sumr, &sumi, cwrkr, cwrki);
 	if (*kode == 1) {
 	    goto L40;
 	}
 	str = *zr + zeta2r;
 	sti = *zi + zeta2i;
-	rast = fn / zabs(&str, &sti);
+	rast = fn / zabs_(&str, &sti);
 	str = str * rast * rast;
 	sti = -sti * rast * rast;
 	s1r = -zeta1r + str;
@@ -1039,7 +1096,7 @@ L50:
 /* ----------------------------------------------------------------------- */
 /*     REFINE  TEST AND SCALE */
 /* ----------------------------------------------------------------------- */
-	aphi = zabs(&phir, &phii);
+	aphi = zabs_(&phir, &phii);
 	rs1 += log(aphi);
 	if (abs(rs1) > *elim) {
 	    goto L110;
@@ -1068,7 +1125,7 @@ L60:
 	if (iflag != 1) {
 	    goto L70;
 	}
-	zuchk(&s2r, &s2i, &nw, bry, tol);
+	zuchk_(&s2r, &s2i, &nw, bry, tol);
 	if (nw != 0) {
 	    goto L110;
 	}
@@ -1083,13 +1140,13 @@ L70:
     if (nd <= 2) {
 	goto L100;
     }
-    rast = 1. / zabs(zr, zi);
+    rast = 1. / zabs_(zr, zi);
     str = *zr * rast;
     sti = -(*zi) * rast;
     rzr = (str + str) * rast;
     rzi = (sti + sti) * rast;
     bry[1] = 1. / bry[0];
-    bry[2] = DBL_MAX;
+    bry[2] = d1mach_(&c__2);
     s1r = cyr[0];
     s1i = cyi[0];
     s2r = cyr[1];
@@ -1151,7 +1208,7 @@ L110:
     if (nd == 0) {
 	goto L100;
     }
-    zuoik(zr, zi, fnu, kode, &c__1, &nd, &yr[1], &yi[1], &nuf, tol, elim, 
+    zuoik_(zr, zi, fnu, kode, &c__1, &nd, &yr[1], &yi[1], &nuf, tol, elim, 
 	    alim);
     if (nuf < 0) {
 	goto L120;
@@ -1182,47 +1239,46 @@ L130:
 /* L140: */
     }
     return 0;
-} /* zuni1 */
+} /* zuni1_ */
 
 /* DECK ZUNI2 */
 /* Subroutine */
-int zuni2(double *zr, double *zi, double *fnu, 
+int zuni2_(double *zr, double *zi, double *fnu, 
 	int *kode, int *n, double *yr, double *yi, int *
 	nz, int *nlast, double *fnul, double *tol, double *
 	elim, double *alim)
 {
     /* Initialized data */
-
-    static double zeror = 0.;
-    static double zeroi = 0.;
-    static double coner = 1.;
-    static double cipr[4] = { 1.,0.,-1.,0. };
-    static double cipi[4] = { 0.,1.,0.,-1. };
-    static double hpi = 1.57079632679489662;
-    static double aic = 1.265512123484645396;
+    double zeror = 0.;
+    double zeroi = 0.;
+    double coner = 1.;
+    double cipr[4] = { 1.,0.,-1.,0. };
+    double cipi[4] = { 0.,1.,0.,-1. };
+    double hpi = 1.57079632679489662;
+    double aic = 1.265512123484645396;
 
     /* System generated locals */
     int i__1;
 
     /* Local variables */
-    static int i__, j, k, nd;
-    static double fn;
-    static int in, nn, nw;
-    static double c2i, c2m, c1r, c2r, s1i, s2i, rs1, s1r, s2r, aii, ang, 
+    int i__, j, k, nd;
+    double fn;
+    int in, nn, nw;
+    double c2i, c2m, c1r, c2r, s1i, s2i, rs1, s1r, s2r, aii, ang, 
 	    car;
-    static int nai;
-    static double air, zbi, cyi[2], sar;
-    static int nuf, inu;
-    static double bry[3], raz, sti, zbr, zni, cyr[2], rzi, str, znr, rzr, 
+    int nai;
+    double air, zbi, cyi[2], sar;
+    int nuf, inu;
+    double bry[3], raz, sti, zbr, zni, cyr[2], rzi, str, znr, rzr, 
 	    daii, cidi, aarg;
-    static int ndai;
-    static double dair, aphi, argi, cscl, phii, crsc, argr;
-    static int idum;
-    static double phir, csrr[3], cssr[3], rast;
-    static int iflag;
-    static double ascle, asumi, bsumi;
-    static double asumr, bsumr;
-    static double zeta1i, zeta2i, zeta1r, zeta2r;
+    int ndai;
+    double dair, aphi, argi, cscl, phii, crsc, argr;
+    int idum;
+    double phir, csrr[3], cssr[3], rast;
+    int iflag;
+    double ascle, asumi, bsumi;
+    double asumr, bsumr;
+    double zeta1i, zeta2i, zeta1r, zeta2r;
 
 /* ***BEGIN PROLOGUE  ZUNI2 */
 /* ***SUBSIDIARY */
@@ -1272,7 +1328,7 @@ int zuni2(double *zr, double *zi, double *fnu,
     csrr[0] = crsc;
     csrr[1] = coner;
     csrr[2] = cscl;
-    bry[0] = DBL_MIN * 1e3 / *tol;
+    bry[0] = d1mach_(&c__1) * 1e3 / *tol;
 /* ----------------------------------------------------------------------- */
 /*     ZN IS IN THE RIGHT HALF PLANE AFTER ROTATION BY CI OR -CI */
 /* ----------------------------------------------------------------------- */
@@ -1304,14 +1360,14 @@ L10:
 /*     CHECK FOR UNDERFLOW AND OVERFLOW ON FIRST MEMBER */
 /* ----------------------------------------------------------------------- */
     fn = max(*fnu,1.);
-    zunhj(&znr, &zni, &fn, &c__1, tol, &phir, &phii, &argr, &argi, &zeta1r, &
+    zunhj_(&znr, &zni, &fn, &c__1, tol, &phir, &phii, &argr, &argi, &zeta1r, &
 	    zeta1i, &zeta2r, &zeta2i, &asumr, &asumi, &bsumr, &bsumi);
     if (*kode == 1) {
 	goto L20;
     }
     str = zbr + zeta2r;
     sti = zbi + zeta2i;
-    rast = fn / zabs(&str, &sti);
+    rast = fn / zabs_(&str, &sti);
     str = str * rast * rast;
     sti = -sti * rast * rast;
     s1r = -zeta1r + str;
@@ -1330,7 +1386,7 @@ L40:
     i__1 = nn;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	fn = *fnu + (nd - i__);
-	zunhj(&znr, &zni, &fn, &c__0, tol, &phir, &phii, &argr, &argi, &
+	zunhj_(&znr, &zni, &fn, &c__0, tol, &phir, &phii, &argr, &argi, &
 		zeta1r, &zeta1i, &zeta2r, &zeta2i, &asumr, &asumi, &bsumr, &
 		bsumi);
 	if (*kode == 1) {
@@ -1338,7 +1394,7 @@ L40:
 	}
 	str = zbr + zeta2r;
 	sti = zbi + zeta2i;
-	rast = fn / zabs(&str, &sti);
+	rast = fn / zabs_(&str, &sti);
 	str = str * rast * rast;
 	sti = -sti * rast * rast;
 	s1r = -zeta1r + str;
@@ -1365,8 +1421,8 @@ L60:
 /*     REFINE  TEST AND SCALE */
 /* ----------------------------------------------------------------------- */
 /* ----------------------------------------------------------------------- */
-	aphi = zabs(&phir, &phii);
-	aarg = zabs(&argr, &argi);
+	aphi = zabs_(&phir, &phii);
+	aarg = zabs_(&argr, &argi);
 	rs1 = rs1 + log(aphi) - log(aarg) * .25 - aic;
 	if (abs(rs1) > *elim) {
 	    goto L120;
@@ -1385,8 +1441,8 @@ L70:
 /*     SCALE S1 TO KEEP INTERMEDIATE ARITHMETIC ON SCALE NEAR */
 /*     EXPONENT EXTREMES */
 /* ----------------------------------------------------------------------- */
-	zairy(&argr, &argi, &c__0, &c__2, &air, &aii, &nai, &idum);
-	zairy(&argr, &argi, &c__1, &c__2, &dair, &daii, &ndai, &idum);
+	zairy_(&argr, &argi, &c__0, &c__2, &air, &aii, &nai, &idum);
+	zairy_(&argr, &argi, &c__1, &c__2, &dair, &daii, &ndai, &idum);
 	str = dair * bsumr - daii * bsumi;
 	sti = dair * bsumi + daii * bsumr;
 	str += air * asumr - aii * asumi;
@@ -1402,7 +1458,7 @@ L70:
 	if (iflag != 1) {
 	    goto L80;
 	}
-	zuchk(&s2r, &s2i, &nw, bry, tol);
+	zuchk_(&s2r, &s2i, &nw, bry, tol);
 	if (nw != 0) {
 	    goto L120;
 	}
@@ -1426,13 +1482,13 @@ L80:
     if (nd <= 2) {
 	goto L110;
     }
-    raz = 1. / zabs(zr, zi);
+    raz = 1. / zabs_(zr, zi);
     str = *zr * raz;
     sti = -(*zi) * raz;
     rzr = (str + str) * raz;
     rzi = (sti + sti) * raz;
     bry[1] = 1. / bry[0];
-    bry[2] = DBL_MAX;
+    bry[2] = d1mach_(&c__2);
     s1r = cyr[0];
     s1i = cyi[0];
     s2r = cyr[1];
@@ -1494,7 +1550,7 @@ L120:
     if (nd == 0) {
 	goto L110;
     }
-    zuoik(zr, zi, fnu, kode, &c__1, &nd, &yr[1], &yi[1], &nuf, tol, elim, 
+    zuoik_(zr, zi, fnu, kode, &c__1, &nd, &yr[1], &yi[1], &nuf, tol, elim, 
 	    alim);
     if (nuf < 0) {
 	goto L140;
@@ -1543,11 +1599,11 @@ L150:
 /* L160: */
     }
     return 0;
-} /* zuni2 */
+} /* zuni2_ */
 
 /* DECK ZBUNI */
 /* Subroutine */
-int zbuni(double *zr, double *zi, double *fnu, 
+int zbuni_(double *zr, double *zi, double *fnu, 
 	int *kode, int *n, double *yr, double *yi, int *
 	nz, int *nui, int *nlast, double *fnul, double *tol, 
 	double *elim, double *alim)
@@ -1556,15 +1612,15 @@ int zbuni(double *zr, double *zi, double *fnu,
     int i__1;
 
     /* Local variables */
-    static int i__, k;
-    static double ax, ay;
-    static int nl, nw;
-    static double c1i, c1m, c1r, s1i, s2i, s1r, s2r, cyi[2], gnu, raz, 
+    int i__, k;
+    double ax, ay;
+    int nl, nw;
+    double c1i, c1m, c1r, s1i, s2i, s1r, s2r, cyi[2], gnu, raz, 
 	    cyr[2], sti, bry[3], rzi, str, rzr, dfnu;
-    static double fnui;
-    static int iflag;
-    static double ascle, csclr, cscrr;
-    static int iform;
+    double fnui;
+    int iflag;
+    double ascle, csclr, cscrr;
+    int iform;
 
 /* ***BEGIN PROLOGUE  ZBUNI */
 /* ***SUBSIDIARY */
@@ -1613,7 +1669,7 @@ int zbuni(double *zr, double *zi, double *fnu,
 /*     ASYMPTOTIC EXPANSION FOR I(FNU,Z) FOR LARGE FNU APPLIED IN */
 /*     -PI/3.LE.ARG(Z).LE.PI/3 */
 /* ----------------------------------------------------------------------- */
-    zuni1(zr, zi, &gnu, kode, &c__2, cyr, cyi, &nw, nlast, fnul, tol, elim, 
+    zuni1_(zr, zi, &gnu, kode, &c__2, cyr, cyi, &nw, nlast, fnul, tol, elim, 
 	    alim);
     goto L20;
 L10:
@@ -1622,7 +1678,7 @@ L10:
 /*     APPLIED IN PI/3.LT.ABS(ARG(Z)).LE.PI/2 WHERE M=+I OR -I */
 /*     AND HPI=PI/2 */
 /* ----------------------------------------------------------------------- */
-    zuni2(zr, zi, &gnu, kode, &c__2, cyr, cyi, &nw, nlast, fnul, tol, elim, 
+    zuni2_(zr, zi, &gnu, kode, &c__2, cyr, cyi, &nw, nlast, fnul, tol, elim, 
 	    alim);
 L20:
     if (nw < 0) {
@@ -1631,11 +1687,11 @@ L20:
     if (nw != 0) {
 	goto L90;
     }
-    str = zabs(cyr, cyi);
+    str = zabs_(cyr, cyi);
 /* ---------------------------------------------------------------------- */
 /*     SCALE BACKWARD RECURRENCE, BRY(3) IS DEFINED BUT NEVER USED */
 /* ---------------------------------------------------------------------- */
-    bry[0] = DBL_MIN * 1e3 / *tol;
+    bry[0] = d1mach_(&c__1) * 1e3 / *tol;
     bry[1] = 1. / bry[0];
     bry[2] = bry[1];
     iflag = 2;
@@ -1661,7 +1717,7 @@ L25:
     s1i = cyi[1] * csclr;
     s2r = cyr[0] * csclr;
     s2i = cyi[0] * csclr;
-    raz = 1. / zabs(zr, zi);
+    raz = 1. / zabs_(zr, zi);
     str = *zr * raz;
     sti = -(*zi) * raz;
     rzr = (str + str) * raz;
@@ -1762,7 +1818,7 @@ L60:
 /*     ASYMPTOTIC EXPANSION FOR I(FNU,Z) FOR LARGE FNU APPLIED IN */
 /*     -PI/3.LE.ARG(Z).LE.PI/3 */
 /* ----------------------------------------------------------------------- */
-    zuni1(zr, zi, fnu, kode, n, &yr[1], &yi[1], &nw, nlast, fnul, tol, elim, 
+    zuni1_(zr, zi, fnu, kode, n, &yr[1], &yi[1], &nw, nlast, fnul, tol, elim, 
 	    alim);
     goto L80;
 L70:
@@ -1771,7 +1827,7 @@ L70:
 /*     APPLIED IN PI/3.LT.ABS(ARG(Z)).LE.PI/2 WHERE M=+I OR -I */
 /*     AND HPI=PI/2 */
 /* ----------------------------------------------------------------------- */
-    zuni2(zr, zi, fnu, kode, n, &yr[1], &yi[1], &nw, nlast, fnul, tol, elim, 
+    zuni2_(zr, zi, fnu, kode, n, &yr[1], &yi[1], &nw, nlast, fnul, tol, elim, 
 	    alim);
 L80:
     if (nw < 0) {
@@ -1782,7 +1838,7 @@ L80:
 L90:
     *nlast = *n;
     return 0;
-} /* zbuni */
+} /* zbuni_ */
 
 /* DECK ZMLRI */
 /* Subroutine */
@@ -1791,31 +1847,30 @@ int zmlri_(double *zr, double *zi, double *fnu,
 	nz, double *tol)
 {
     /* Initialized data */
-
-    static double zeror = 0.;
-    static double zeroi = 0.;
-    static double coner = 1.;
-    static double conei = 0.;
+    double zeror = 0.;
+    double zeroi = 0.;
+    double coner = 1.;
+    double conei = 0.;
 
     /* System generated locals */
     int i__1, i__2;
     double d__1, d__2, d__3;
 
     /* Local variables */
-    static int i__, k, m;
-    static double ak, bk, ap, at;
-    static int kk, km;
-    static double az, p1i, p2i, p1r, p2r, ack, cki, fnf, fkk, ckr;
-    static int iaz;
-    static double rho;
-    static int inu;
-    static double pti, raz, sti, rzi, ptr, str, tst, rzr, rho2, flam, 
+    int i__, k, m;
+    double ak, bk, ap, at;
+    int kk, km;
+    double az, p1i, p2i, p1r, p2r, ack, cki, fnf, fkk, ckr;
+    int iaz;
+    double rho;
+    int inu;
+    double pti, raz, sti, rzi, ptr, str, tst, rzr, rho2, flam, 
 	    fkap, scle, tfnf;
-    static int idum;
-    static int ifnu;
-    static double sumi, sumr;
-    static int itime;
-    static double cnormi, cnormr;
+    int idum;
+    int ifnu;
+    double sumi, sumr;
+    int itime;
+    double cnormi, cnormr;
 
 /* ***BEGIN PROLOGUE  ZMLRI */
 /* ***SUBSIDIARY */
@@ -1842,9 +1897,9 @@ int zmlri_(double *zr, double *zi, double *fnu,
 
     /* Function Body */
 /* ***FIRST EXECUTABLE STATEMENT  ZMLRI */
-    scle = DBL_MIN / *tol;
+    scle = d1mach_(&c__1) / *tol;
     *nz = 0;
-    az = zabs(zr, zi);
+    az = zabs_(zr, zi);
     iaz = (int) az;
     ifnu = (int) (*fnu);
     inu = ifnu + *n - 1;
@@ -1878,7 +1933,7 @@ int zmlri_(double *zr, double *zi, double *fnu,
 	p1i = pti;
 	ckr += rzr;
 	cki += rzi;
-	ap = zabs(&p2r, &p2i);
+	ap = zabs_(&p2r, &p2i);
 	if (ap > tst * ak * ak) {
 	    goto L20;
 	}
@@ -1916,16 +1971,16 @@ L20:
 	p1i = pti;
 	ckr += rzr;
 	cki += rzi;
-	ap = zabs(&p2r, &p2i);
+	ap = zabs_(&p2r, &p2i);
 	if (ap < tst) {
 	    goto L30;
 	}
 	if (itime == 2) {
 	    goto L40;
 	}
-	ack = zabs(&ckr, &cki);
+	ack = zabs_(&ckr, &cki);
 	flam = ack + sqrt(ack * ack - 1.);
-	fkap = ap / zabs(&p1r, &p1i);
+	fkap = ap / zabs_(&p1r, &p1i);
 	rho = min(flam,fkap);
 	tst *= sqrt(rho / (rho * rho - 1.));
 	itime = 2;
@@ -1954,7 +2009,7 @@ L40:
     d__1 = fkk + tfnf + 1.;
     d__2 = fkk + 1.;
     d__3 = tfnf + 1.;
-    bk = dgamln(&d__1, &idum) - dgamln(&d__2, &idum) - dgamln(&d__3, &idum)
+    bk = dgamln_(&d__1, &idum) - dgamln_(&d__2, &idum) - dgamln_(&d__3, &idum)
 	    ;
     bk = exp(bk);
     sumr = zeror;
@@ -2026,11 +2081,11 @@ L90:
     if (*kode == 2) {
 	ptr = zeror;
     }
-    zlog(&rzr, &rzi, &str, &sti, &idum);
+    zlog_(&rzr, &rzi, &str, &sti, &idum);
     p1r = -fnf * str + ptr;
     p1i = -fnf * sti + pti;
     d__1 = fnf + 1.;
-    ap = dgamln(&d__1, &idum);
+    ap = dgamln_(&d__1, &idum);
     ptr = p1r - ap;
     pti = p1i;
 /* ----------------------------------------------------------------------- */
@@ -2039,14 +2094,14 @@ L90:
 /* ----------------------------------------------------------------------- */
     p2r += sumr;
     p2i += sumi;
-    ap = zabs(&p2r, &p2i);
+    ap = zabs_(&p2r, &p2i);
     p1r = 1. / ap;
-    zexp(&ptr, &pti, &str, &sti);
+    zexp_(&ptr, &pti, &str, &sti);
     ckr = str * p1r;
     cki = sti * p1r;
     ptr = p2r * p1r;
     pti = -p2i * p1r;
-    zmlt(&ckr, &cki, &ptr, &pti, &cnormr, &cnormi);
+    zmlt_(&ckr, &cki, &ptr, &pti, &cnormr, &cnormi);
     i__1 = *n;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	str = yr[i__] * cnormr - yi[i__] * cnormi;
@@ -2062,10 +2117,10 @@ L110:
 
 /* DECK ZMLT */
 /* Subroutine */
-int zmlt(double *ar, double *ai, double *br, 
+int zmlt_(double *ar, double *ai, double *br, 
 	double *bi, double *cr, double *ci)
 {
-    static double ca, cb;
+    double ca, cb;
 
 /* ***BEGIN PROLOGUE  ZMLT */
 /* ***SUBSIDIARY */
@@ -2090,14 +2145,14 @@ int zmlt(double *ar, double *ai, double *br,
     *cr = ca;
     *ci = cb;
     return 0;
-} /* zmlt */
+} /* zmlt_ */
 
 /* DECK DGAMLN */
-double dgamln(double *z__, int *ierr)
+/* Subroutine */
+double dgamln_(double *z__, int *ierr)
 {
     /* Initialized data */
-
-    static double gln[100] = { 0.,0.,.693147180559945309,
+    double gln[100] = { 0.,0.,.693147180559945309,
 	    1.791759469228055,3.17805383034794562,4.78749174278204599,
 	    6.579251212010101,8.5251613610654143,10.6046029027452502,
 	    12.8018274800814696,15.1044125730755153,17.5023078458738858,
@@ -2131,7 +2186,7 @@ double dgamln(double *z__, int *ierr)
 	    331.717887196928473,336.261181979198477,340.815058870799018,
 	    345.379407062266854,349.954118040770237,354.539085519440809,
 	    359.134205369575399 };
-    static double cf[22] = { .0833333333333333333,-.00277777777777777778,
+    double cf[22] = { .0833333333333333333,-.00277777777777777778,
 	    7.93650793650793651e-4,-5.95238095238095238e-4,
 	    8.41750841750841751e-4,-.00191752691752691753,
 	    .00641025641025641026,-.0295506535947712418,.179644372368830573,
@@ -2140,19 +2195,19 @@ double dgamln(double *z__, int *ierr)
 	    -15238221.5394074162,382900751.391414141,-10882266035.7843911,
 	    347320283765.002252,-12369602142269.2745,488788064793079.335,
 	    -21320333960919373.9 };
-    static double con = 1.83787706640934548;
+    double con = 1.83787706640934548;
 
     /* System generated locals */
     int i__1;
     double ret_val;
 
     /* Local variables */
-    static int i__, k;
-    static double s, t1, fz, zm;
-    static int mz, nz;
-    static double zp;
-    static int i1m;
-    static double fln, tlg, rln, trm, tst, zsq, zinc, zmin, zdmy, wdtol;
+    int i__, k;
+    double s, t1, fz, zm;
+    int mz, nz;
+    double zp;
+    int i1m;
+    double fln, tlg, rln, trm, tst, zsq, zinc, zmin, zdmy, wdtol;
 
 /* ***BEGIN PROLOGUE  DGAMLN */
 /* ***SUBSIDIARY */
@@ -2222,10 +2277,10 @@ double dgamln(double *z__, int *ierr)
     ret_val = gln[nz - 1];
     return ret_val;
 L10:
-    wdtol = DBL_EPSILON;
+    wdtol = d1mach_(&c__4);
     wdtol = max(wdtol,5e-19);
-    i1m = DBL_MANT_DIG;
-    rln = M_LOG10_2 * i1m;
+    i1m = i1mach_(&c__14);
+    rln = d1mach_(&c__5) * i1m;
     fln = min(rln,20.);
     fln = max(fln,3.);
     fln += -3.;
@@ -2278,44 +2333,43 @@ L50:
 
 
 L70:
-    ret_val = DBL_MAX;
+    ret_val = d1mach_(&c__2);
     *ierr = 1;
     return ret_val;
-} /* dgamln */
+} /* dgamln_ */
 
 /* DECK ZSERI */
 /* Subroutine */
-int zseri(double *zr, double *zi, double *fnu, 
+int zseri_(double *zr, double *zi, double *fnu, 
 	int *kode, int *n, double *yr, double *yi, int *
 	nz, double *tol, double *elim, double *alim)
 {
     /* Initialized data */
-
-    static double zeror = 0.;
-    static double zeroi = 0.;
-    static double coner = 1.;
-    static double conei = 0.;
+    double zeror = 0.;
+    double zeroi = 0.;
+    double coner = 1.;
+    double conei = 0.;
 
     /* System generated locals */
     int i__1;
 
     /* Local variables */
-    static int i__, k, l, m;
-    static double s, aa;
-    static int ib;
-    static double ak;
-    static int il;
-    static double az;
-    static int nn;
-    static double wi[2], rs, ss;
-    static int nw;
-    static double wr[2], s1i, s2i, s1r, s2r, cki, acz, arm, ckr, czi, hzi,
+    int i__, k, l, m;
+    double s, aa;
+    int ib;
+    double ak;
+    int il;
+    double az;
+    int nn;
+    double wi[2], rs, ss;
+    int nw;
+    double wr[2], s1i, s2i, s1r, s2r, cki, acz, arm, ckr, czi, hzi,
 	     raz, czr, sti, hzr, rzi, str, rzr, ak1i, ak1r, rtr1, dfnu;
-    static int idum;
-    static double atol;
-    static double fnup;
-    static int iflag;
-    static double coefi, ascle, coefr, crscr;
+    int idum;
+    double atol;
+    double fnup;
+    int iflag;
+    double coefi, ascle, coefr, crscr;
 
 /* ***BEGIN PROLOGUE  ZSERI */
 /* ***SUBSIDIARY */
@@ -2348,11 +2402,11 @@ int zseri(double *zr, double *zi, double *fnu,
     /* Function Body */
 /* ***FIRST EXECUTABLE STATEMENT  ZSERI */
     *nz = 0;
-    az = zabs(zr, zi);
+    az = zabs_(zr, zi);
     if (az == 0.) {
 	goto L160;
     }
-    arm = DBL_MIN * 1e3;
+    arm = d1mach_(&c__1) * 1e3;
     rtr1 = sqrt(arm);
     crscr = 1.;
     iflag = 0;
@@ -2366,11 +2420,11 @@ int zseri(double *zr, double *zi, double *fnu,
     if (az <= rtr1) {
 	goto L10;
     }
-    zmlt(&hzr, &hzi, &hzr, &hzi, &czr, &czi);
+    zmlt_(&hzr, &hzi, &hzr, &hzi, &czr, &czi);
 L10:
-    acz = zabs(&czr, &czi);
+    acz = zabs_(&czr, &czi);
     nn = *n;
-    zlog(&hzr, &hzi, &ckr, &cki, &idum);
+    zlog_(&hzr, &hzi, &ckr, &cki, &idum);
 L20:
     dfnu = *fnu + (nn - 1);
     fnup = dfnu + 1.;
@@ -2379,7 +2433,7 @@ L20:
 /* ----------------------------------------------------------------------- */
     ak1r = ckr * dfnu;
     ak1i = cki * dfnu;
-    ak = dgamln(&fnup, &idum);
+    ak = dgamln_(&fnup, &idum);
     ak1r -= ak;
     if (*kode == 2) {
 	ak1r -= *zr;
@@ -2452,7 +2506,7 @@ L70:
 	if (iflag == 0) {
 	    goto L80;
 	}
-	zuchk(&s2r, &s2i, &nw, &ascle, tol);
+	zuchk_(&s2r, &s2i, &nw, &ascle, tol);
 	if (nw != 0) {
 	    goto L30;
 	}
@@ -2463,7 +2517,7 @@ L80:
 	if (i__ == il) {
 	    goto L90;
 	}
-	zdiv(&coefr, &coefi, &hzr, &hzi, &str, &sti);
+	zdiv_(&coefr, &coefi, &hzr, &hzi, &str, &sti);
 	coefr = str * dfnu;
 	coefi = sti * dfnu;
 L90:
@@ -2519,7 +2573,7 @@ L120:
 	yi[k] = cki;
 	ak += -1.;
 	--k;
-	if (zabs(&ckr, &cki) > ascle) {
+	if (zabs_(&ckr, &cki) > ascle) {
 	    goto L140;
 	}
 /* L130: */
@@ -2562,24 +2616,23 @@ L170:
 L190:
     *nz = -(*nz);
     return 0;
-} /* zseri */
+} /* zseri_ */
 
 /* DECK ZUNIK */
 /* Subroutine */
-int zunik(double *zrr, double *zri, double *fnu,
+int zunik_(double *zrr, double *zri, double *fnu,
 	 int *ikflg, int *ipmtr, double *tol, int *init, 
 	double *phir, double *phii, double *zeta1r, double *
 	zeta1i, double *zeta2r, double *zeta2i, double *sumr, 
 	double *sumi, double *cwrkr, double *cwrki)
 {
     /* Initialized data */
-
-    static double zeror = 0.;
-    static double zeroi = 0.;
-    static double coner = 1.;
-    static double conei = 0.;
-    static double con[2] = { .398942280401432678,1.25331413731550025 };
-    static double c__[120] = { 1.,-.208333333333333333,.125,
+    double zeror = 0.;
+    double zeroi = 0.;
+    double coner = 1.;
+    double conei = 0.;
+    double con[2] = { .398942280401432678,1.25331413731550025 };
+    double c__[120] = { 1.,-.208333333333333333,.125,
 	    .334201388888888889,-.401041666666666667,.0703125,
 	    -1.02581259645061728,1.84646267361111111,-.8912109375,.0732421875,
 	    4.66958442342624743,-11.2070026162229938,8.78912353515625,
@@ -2625,11 +2678,11 @@ int zunik(double *zrr, double *zri, double *fnu,
     double d__1, d__2;
 
     /* Local variables */
-    static int i__, j, k, l;
-    static double ac, si, ti, sr, tr, t2i, t2r, rfn, sri, sti, zni, srr, 
+    int i__, j, k, l;
+    double ac, si, ti, sr, tr, t2i, t2r, rfn, sri, sti, zni, srr, 
 	    str, znr;
-    static int idum;
-    static double test, crfni, crfnr;
+    int idum;
+    double test, crfni, crfnr;
 
 /* ***BEGIN PROLOGUE  ZUNIK */
 /* ***SUBSIDIARY */
@@ -2679,7 +2732,7 @@ int zunik(double *zrr, double *zri, double *fnu,
 /* ----------------------------------------------------------------------- */
 /*     OVERFLOW TEST (ZR/FNU TOO SMALL) */
 /* ----------------------------------------------------------------------- */
-    test = DBL_MIN * 1e3;
+    test = d1mach_(&c__1) * 1e3;
     ac = *fnu * test;
     if (abs(*zrr) > ac || abs(*zri) > ac) {
 	goto L15;
@@ -2696,25 +2749,25 @@ L15:
     ti = *zri * rfn;
     sr = coner + (tr * tr - ti * ti);
     si = conei + (tr * ti + ti * tr);
-    zsqrt(&sr, &si, &srr, &sri);
+    zsqrt_(&sr, &si, &srr, &sri);
     str = coner + srr;
     sti = conei + sri;
-    zdiv(&str, &sti, &tr, &ti, &znr, &zni);
-    zlog(&znr, &zni, &str, &sti, &idum);
+    zdiv_(&str, &sti, &tr, &ti, &znr, &zni);
+    zlog_(&znr, &zni, &str, &sti, &idum);
     *zeta1r = *fnu * str;
     *zeta1i = *fnu * sti;
     *zeta2r = *fnu * srr;
     *zeta2i = *fnu * sri;
-    zdiv(&coner, &conei, &srr, &sri, &tr, &ti);
+    zdiv_(&coner, &conei, &srr, &sri, &tr, &ti);
     srr = tr * rfn;
     sri = ti * rfn;
-    zsqrt(&srr, &sri, &cwrkr[16], &cwrki[16]);
+    zsqrt_(&srr, &sri, &cwrkr[16], &cwrki[16]);
     *phir = cwrkr[16] * con[*ikflg - 1];
     *phii = cwrki[16] * con[*ikflg - 1];
     if (*ipmtr != 0) {
 	return 0;
     }
-    zdiv(&coner, &conei, &sr, &si, &t2r, &t2i);
+    zdiv_(&coner, &conei, &sr, &si, &t2r, &t2i);
     cwrkr[1] = coner;
     cwrki[1] = conei;
     crfnr = coner;
@@ -2786,35 +2839,34 @@ L60:
     *phir = cwrkr[16] * con[1];
     *phii = cwrki[16] * con[1];
     return 0;
-} /* zunik */
+} /* zunik_ */
 
 /* DECK ZUNHJ */
 /* Subroutine */
-int zunhj(double *zr, double *zi, double *fnu, 
+int zunhj_(double *zr, double *zi, double *fnu, 
 	int *ipmtr, double *tol, double *phir, double *phii, 
 	double *argr, double *argi, double *zeta1r, double *
 	zeta1i, double *zeta2r, double *zeta2i, double *asumr, 
 	double *asumi, double *bsumr, double *bsumi)
 {
     /* Initialized data */
-
-    static double ar[14] = { 1.,.104166666666666667,.0835503472222222222,
+    double ar[14] = { 1.,.104166666666666667,.0835503472222222222,
 	    .12822657455632716,.291849026464140464,.881627267443757652,
 	    3.32140828186276754,14.9957629868625547,78.9230130115865181,
 	    474.451538868264323,3207.49009089066193,24086.5496408740049,
 	    198923.119169509794,1791902.00777534383 };
-    static double gpi = 3.14159265358979324;
-    static double thpi = 4.71238898038468986;
-    static double zeror = 0.;
-    static double zeroi = 0.;
-    static double coner = 1.;
-    static double conei = 0.;
-    static double br[14] = { 1.,-.145833333333333333,
+    double gpi = 3.14159265358979324;
+    double thpi = 4.71238898038468986;
+    double zeror = 0.;
+    double zeroi = 0.;
+    double coner = 1.;
+    double conei = 0.;
+    double br[14] = { 1.,-.145833333333333333,
 	    -.0987413194444444444,-.143312053915895062,-.317227202678413548,
 	    -.942429147957120249,-3.51120304082635426,-15.7272636203680451,
 	    -82.2814390971859444,-492.355370523670524,-3316.21856854797251,
 	    -24827.6742452085896,-204526.587315129788,-1838444.9170682099 };
-    static double c__[105] = { 1.,-.208333333333333333,.125,
+    double c__[105] = { 1.,-.208333333333333333,.125,
 	    .334201388888888889,-.401041666666666667,.0703125,
 	    -1.02581259645061728,1.84646267361111111,-.8912109375,.0732421875,
 	    4.66958442342624743,-11.2070026162229938,8.78912353515625,
@@ -2849,7 +2901,7 @@ int zunhj(double *zr, double *zi, double *fnu,
 	    -645364869245.376503,287900649906.150589,-87867072178.0232657,
 	    17634730606.8349694,-2167164983.22379509,143157876.718888981,
 	    -3871833.44257261262,18257.7554742931747 };
-    static double alfa[180] = { -.00444444444444444444,
+    double alfa[180] = { -.00444444444444444444,
 	    -9.22077922077922078e-4,-8.84892884892884893e-5,
 	    1.65927687832449737e-4,2.4669137274179291e-4,
 	    2.6599558934625478e-4,2.61824297061500945e-4,
@@ -2938,7 +2990,7 @@ int zunhj(double *zr, double *zi, double *fnu,
 	    5.72637002558129372e-4,4.42089819465802277e-4,
 	    3.24724948503090564e-4,2.20342042730246599e-4,
 	    1.28412898401353882e-4,4.82005924552095464e-5 };
-    static double beta[210] = { .0179988721413553309,
+    double beta[210] = { .0179988721413553309,
 	    .00559964911064388073,.00288501402231132779,.00180096606761053941,
 	    .00124753110589199202,9.22878876572938311e-4,
 	    7.14430421727287357e-4,5.71787281789704872e-4,
@@ -3040,7 +3092,7 @@ int zunhj(double *zr, double *zi, double *fnu,
 	    .00257411652877287315,.00245389126236094427,.00230460058071795494,
 	    .00213684837686712662,.00195896528478870911,.00177737008679454412,
 	    .00159690280765839059,.00142111975664438546 };
-    static double gama[30] = { .629960524947436582,.251984209978974633,
+    double gama[30] = { .629960524947436582,.251984209978974633,
 	    .154790300415655846,.110713062416159013,.0857309395527394825,
 	    .0697161316958684292,.0586085671893713576,.0504698873536310685,
 	    .0442600580689154809,.0393720661543509966,.0354283195924455368,
@@ -3051,38 +3103,38 @@ int zunhj(double *zr, double *zi, double *fnu,
 	    .0150729501494095594,.0144193250839954639,.0138184805735341786,
 	    .0132643378994276568,.0127517121970498651,.0122761545318762767,
 	    .0118338262398482403 };
-    static double ex1 = .333333333333333333;
-    static double ex2 = .666666666666666667;
-    static double hpi = 1.57079632679489662;
+    double ex1 = .333333333333333333;
+    double ex2 = .666666666666666667;
+    double hpi = 1.57079632679489662;
 
     /* System generated locals */
     int i__1, i__2;
     double d__1;
 
     /* Local variables */
-    static int j, k, l, m, l1, l2;
-    static double ac, ap[30], pi[30];
-    static int is, jr, ks, ju;
-    static double pp, wi, pr[30];
-    static int lr;
-    static double wr, aw2;
-    static int kp1;
-    static double t2i, w2i, t2r, w2r, ang, fn13, fn23;
-    static int ias;
-    static double cri[14], dri[14];
-    static int ibs;
-    static double zai, zbi, zci, crr[14], drr[14], raw, zar, upi[14], sti,
+    int j, k, l, m, l1, l2;
+    double ac, ap[30], pi[30];
+    int is, jr, ks, ju;
+    double pp, wi, pr[30];
+    int lr;
+    double wr, aw2;
+    int kp1;
+    double t2i, w2i, t2r, w2r, ang, fn13, fn23;
+    int ias;
+    double cri[14], dri[14];
+    int ibs;
+    double zai, zbi, zci, crr[14], drr[14], raw, zar, upi[14], sti,
 	     zbr, zcr, upr[14], str, raw2;
-    static int lrp1;
-    static double rfn13;
-    static int idum;
-    static double atol, btol, tfni;
-    static int kmax;
-    static double azth, tzai, tfnr, rfnu;
-    static double zthi, test, tzar, zthr, rfnu2, zetai, ptfni, sumai, 
+    int lrp1;
+    double rfn13;
+    int idum;
+    double atol, btol, tfni;
+    int kmax;
+    double azth, tzai, tfnr, rfnu;
+    double zthi, test, tzar, zthr, rfnu2, zetai, ptfni, sumai, 
 	    sumbi, zetar, ptfnr, razth, sumar, sumbr, rzthi;
-    static double rzthr, rtzti;
-    static double rtztr, przthi, przthr;
+    double rzthr, rtzti;
+    double rtztr, przthi, przthr;
 
 /* ***BEGIN PROLOGUE  ZUNHJ */
 /* ***SUBSIDIARY */
@@ -3133,7 +3185,7 @@ int zunhj(double *zr, double *zi, double *fnu,
 /* ----------------------------------------------------------------------- */
 /*     OVERFLOW TEST (Z/FNU TOO SMALL) */
 /* ----------------------------------------------------------------------- */
-    test = DBL_MIN * 1e3;
+    test = d1mach_(&c__1) * 1e3;
     ac = *fnu * test;
     if (abs(*zr) > ac || abs(*zi) > ac) {
 	goto L15;
@@ -3159,7 +3211,7 @@ L15:
     rfn13 = 1. / fn13;
     w2r = coner - zbr * zbr + zbi * zbi;
     w2i = conei - zbr * zbi - zbr * zbi;
-    aw2 = zabs(&w2r, &w2i);
+    aw2 = zabs_(&w2r, &w2i);
     if (aw2 > .25) {
 	goto L130;
     }
@@ -3193,8 +3245,8 @@ L20:
     zetai = w2r * sumai + w2i * sumar;
     *argr = zetar * fn23;
     *argi = zetai * fn23;
-    zsqrt(&sumar, &sumai, &zar, &zai);
-    zsqrt(&w2r, &w2i, &str, &sti);
+    zsqrt_(&sumar, &sumai, &zar, &zai);
+    zsqrt_(&w2r, &w2i, &str, &sti);
     *zeta2r = str * *fnu;
     *zeta2i = sti * *fnu;
     str = coner + ex2 * (zetar * zar - zetai * zai);
@@ -3203,7 +3255,7 @@ L20:
     *zeta1i = str * *zeta2i + sti * *zeta2r;
     zar += zar;
     zai += zai;
-    zsqrt(&zar, &zai, &str, &sti);
+    zsqrt_(&zar, &zai, &str, &sti);
     *phir = str * rfn13;
     *phii = sti * rfn13;
     if (*ipmtr == 1) {
@@ -3299,7 +3351,7 @@ L120:
 /*     ABS(W2).GT.0.25D0 */
 /* ----------------------------------------------------------------------- */
 L130:
-    zsqrt(&w2r, &w2i, &wr, &wi);
+    zsqrt_(&w2r, &w2i, &wr, &wi);
     if (wr < 0.) {
 	wr = 0.;
     }
@@ -3308,8 +3360,8 @@ L130:
     }
     str = coner + wr;
     sti = wi;
-    zdiv(&str, &sti, &zbr, &zbi, &zar, &zai);
-    zlog(&zar, &zai, &zcr, &zci, &idum);
+    zdiv_(&str, &sti, &zbr, &zbi, &zar, &zai);
+    zlog_(&zar, &zai, &zcr, &zci, &idum);
     if (zci < 0.) {
 	zci = 0.;
     }
@@ -3325,7 +3377,7 @@ L130:
     *zeta1i = zci * *fnu;
     *zeta2r = wr * *fnu;
     *zeta2i = wi * *fnu;
-    azth = zabs(&zthr, &zthi);
+    azth = zabs_(&zthr, &zthi);
     ang = thpi;
     if (zthr >= 0. && zthi < 0.) {
 	goto L140;
@@ -3348,11 +3400,11 @@ L140:
     }
     *argr = zetar * fn23;
     *argi = zetai * fn23;
-    zdiv(&zthr, &zthi, &zetar, &zetai, &rtztr, &rtzti);
-    zdiv(&rtztr, &rtzti, &wr, &wi, &zar, &zai);
+    zdiv_(&zthr, &zthi, &zetar, &zetai, &rtztr, &rtzti);
+    zdiv_(&rtztr, &rtzti, &wr, &wi, &zar, &zai);
     tzar = zar + zar;
     tzai = zai + zai;
-    zsqrt(&tzar, &tzai, &str, &sti);
+    zsqrt_(&tzar, &tzai, &str, &sti);
     *phir = str * rfn13;
     *phii = sti * rfn13;
     if (*ipmtr == 1) {
@@ -3488,16 +3540,16 @@ L220:
     *asumr += coner;
     str = -(*bsumr) * rfn13;
     sti = -(*bsumi) * rfn13;
-    zdiv(&str, &sti, &rtztr, &rtzti, bsumr, bsumi);
+    zdiv_(&str, &sti, &rtztr, &rtzti, bsumr, bsumi);
     goto L120;
-} /* zunhj */
+} /* zunhj_ */
 
 /* DECK ZUCHK */
 /* Subroutine */
-int zuchk(double *yr, double *yi, int *nz, 
+int zuchk_(double *yr, double *yi, int *nz, 
 	double *ascle, double *tol)
 {
-    static double wi, ss, st, wr;
+    double wi, ss, st, wr;
 
 /* ***BEGIN PROLOGUE  ZUCHK */
 /* ***SUBSIDIARY */
@@ -3538,38 +3590,37 @@ int zuchk(double *yr, double *yi, int *nz,
 	*nz = 1;
     }
     return 0;
-} /* zuchk */
+} /* zuchk_ */
 
 /* DECK ZUOIK */
 /* Subroutine */
-int zuoik(double *zr, double *zi, double *fnu, 
+int zuoik_(double *zr, double *zi, double *fnu, 
 	int *kode, int *ikflg, int *n, double *yr, double 
 	*yi, int *nuf, double *tol, double *elim, double *
 	alim)
 {
     /* Initialized data */
-
-    static double zeror = 0.;
-    static double zeroi = 0.;
-    static double aic = 1.265512123484645396;
+    double zeror = 0.;
+    double zeroi = 0.;
+    double aic = 1.265512123484645396;
 
     /* System generated locals */
     int i__1;
 
     /* Local variables */
-    static int i__;
-    static double ax, ay;
-    static int nn, nw;
-    static double fnn, gnn, zbi, czi, gnu, zbr, czr, rcz, sti, zni, zri, 
+    int i__;
+    double ax, ay;
+    int nn, nw;
+    double fnn, gnn, zbi, czi, gnu, zbr, czr, rcz, sti, zni, zri, 
 	    str, znr, zrr, aarg, aphi, argi, phii, argr;
-    static int idum;
-    static double phir;
-    static int init;
-    static double sumi, sumr, ascle;
-    static int iform;
-    static double asumi, bsumi, cwrki[16];
-    static double asumr, bsumr, cwrkr[16];
-    static double zeta1i, zeta2i, zeta1r, zeta2r;
+    int idum;
+    double phir;
+    int init;
+    double sumi, sumr, ascle;
+    int iform;
+    double asumi, bsumi, cwrki[16];
+    double asumr, bsumr, cwrkr[16];
+    double zeta1i, zeta2i, zeta1r, zeta2r;
 
 /* ***BEGIN PROLOGUE  ZUOIK */
 /* ***SUBSIDIARY */
@@ -3649,7 +3700,7 @@ L20:
 	goto L30;
     }
     init = 0;
-    zunik(&zrr, &zri, &gnu, ikflg, &c__1, tol, &init, &phir, &phii, &zeta1r, 
+    zunik_(&zrr, &zri, &gnu, ikflg, &c__1, tol, &init, &phir, &phii, &zeta1r, 
 	    &zeta1i, &zeta2r, &zeta2i, &sumr, &sumi, cwrkr, cwrki);
     czr = -zeta1r + zeta2r;
     czi = -zeta1i + zeta2i;
@@ -3662,11 +3713,11 @@ L30:
     }
     znr = -znr;
 L40:
-    zunhj(&znr, &zni, &gnu, &c__1, tol, &phir, &phii, &argr, &argi, &zeta1r, 
+    zunhj_(&znr, &zni, &gnu, &c__1, tol, &phir, &phii, &argr, &argi, &zeta1r, 
 	    &zeta1i, &zeta2r, &zeta2i, &asumr, &asumi, &bsumr, &bsumi);
     czr = -zeta1r + zeta2r;
     czi = -zeta1i + zeta2i;
-    aarg = zabs(&argr, &argi);
+    aarg = zabs_(&argr, &argi);
 L50:
     if (*kode == 1) {
 	goto L60;
@@ -3680,7 +3731,7 @@ L60:
     czr = -czr;
     czi = -czi;
 L70:
-    aphi = zabs(&phir, &phii);
+    aphi = zabs_(&phir, &phii);
     rcz = czr;
 /* ----------------------------------------------------------------------- */
 /*     OVERFLOW TEST */
@@ -3726,14 +3777,14 @@ L90:
     *nuf = nn;
     return 0;
 L110:
-    ascle = DBL_MIN * 1e3 / *tol;
-    zlog(&phir, &phii, &str, &sti, &idum);
+    ascle = d1mach_(&c__1) * 1e3 / *tol;
+    zlog_(&phir, &phii, &str, &sti, &idum);
     czr += str;
     czi += sti;
     if (iform == 1) {
 	goto L120;
     }
-    zlog(&argr, &argi, &str, &sti, &idum);
+    zlog_(&argr, &argi, &str, &sti, &idum);
     czr = czr - str * .25 - aic;
     czi -= sti * .25;
 L120:
@@ -3741,7 +3792,7 @@ L120:
     ay = czi;
     czr = ax * cos(ay);
     czi = ax * sin(ay);
-    zuchk(&czr, &czi, &nw, &ascle, tol);
+    zuchk_(&czr, &czi, &nw, &ascle, tol);
     if (nw != 0) {
 	goto L90;
     }
@@ -3761,17 +3812,17 @@ L140:
 	goto L150;
     }
     init = 0;
-    zunik(&zrr, &zri, &gnu, ikflg, &c__1, tol, &init, &phir, &phii, &zeta1r, 
+    zunik_(&zrr, &zri, &gnu, ikflg, &c__1, tol, &init, &phir, &phii, &zeta1r, 
 	    &zeta1i, &zeta2r, &zeta2i, &sumr, &sumi, cwrkr, cwrki);
     czr = -zeta1r + zeta2r;
     czi = -zeta1i + zeta2i;
     goto L160;
 L150:
-    zunhj(&znr, &zni, &gnu, &c__1, tol, &phir, &phii, &argr, &argi, &zeta1r, 
+    zunhj_(&znr, &zni, &gnu, &c__1, tol, &phir, &phii, &argr, &argi, &zeta1r, 
 	    &zeta1i, &zeta2r, &zeta2i, &asumr, &asumi, &bsumr, &bsumi);
     czr = -zeta1r + zeta2r;
     czi = -zeta1i + zeta2i;
-    aarg = zabs(&argr, &argi);
+    aarg = zabs_(&argr, &argi);
 L160:
     if (*kode == 1) {
 	goto L170;
@@ -3779,7 +3830,7 @@ L160:
     czr -= zbr;
     czi -= zbi;
 L170:
-    aphi = zabs(&phir, &phii);
+    aphi = zabs_(&phir, &phii);
     rcz = czr;
     if (rcz < -(*elim)) {
 	goto L180;
@@ -3804,14 +3855,14 @@ L180:
     }
     goto L140;
 L190:
-    ascle = DBL_MIN * 1e3 / *tol;
-    zlog(&phir, &phii, &str, &sti, &idum);
+    ascle = d1mach_(&c__1) * 1e3 / *tol;
+    zlog_(&phir, &phii, &str, &sti, &idum);
     czr += str;
     czi += sti;
     if (iform == 1) {
 	goto L200;
     }
-    zlog(&argr, &argi, &str, &sti, &idum);
+    zlog_(&argr, &argi, &str, &sti, &idum);
     czr = czr - str * .25 - aic;
     czi -= sti * .25;
 L200:
@@ -3819,7 +3870,7 @@ L200:
     ay = czi;
     czr = ax * cos(ay);
     czi = ax * sin(ay);
-    zuchk(&czr, &czi, &nw, &ascle, tol);
+    zuchk_(&czr, &czi, &nw, &ascle, tol);
     if (nw != 0) {
 	goto L180;
     }
@@ -3827,61 +3878,60 @@ L200:
 L210:
     *nuf = -1;
     return 0;
-} /* zuoik */
+} /* zuoik_ */
 
 /* DECK ZBKNU */
 /* Subroutine */
-int zbknu(double *zr, double *zi, double *fnu, 
+int zbknu_(double *zr, double *zi, double *fnu, 
 	int *kode, int *n, double *yr, double *yi, int *
 	nz, double *tol, double *elim, double *alim)
 {
     /* Initialized data */
-
-    static int kmax = 30;
-    static double spi = 1.90985931710274403;
-    static double hpi = 1.57079632679489662;
-    static double fpi = 1.89769999331517738;
-    static double tth = .666666666666666666;
-    static double cc[8] = { .577215664901532861,-.0420026350340952355,
+    int kmax = 30;
+    double spi = 1.90985931710274403;
+    double hpi = 1.57079632679489662;
+    double fpi = 1.89769999331517738;
+    double tth = .666666666666666666;
+    double cc[8] = { .577215664901532861,-.0420026350340952355,
 	    -.0421977345555443367,.00721894324666309954,
 	    -2.15241674114950973e-4,-2.01348547807882387e-5,
 	    1.13302723198169588e-6,6.11609510448141582e-9 };
-    static double czeror = 0.;
-    static double czeroi = 0.;
-    static double coner = 1.;
-    static double conei = 0.;
-    static double ctwor = 2.;
-    static double r1 = 2.;
-    static double dpi = 3.14159265358979324;
-    static double rthpi = 1.25331413731550025;
+    double czeror = 0.;
+    double czeroi = 0.;
+    double coner = 1.;
+    double conei = 0.;
+    double ctwor = 2.;
+    double r1 = 2.;
+    double dpi = 3.14159265358979324;
+    double rthpi = 1.25331413731550025;
 
     /* System generated locals */
     int i__1;
     double d__1;
 
     /* Local variables */
-    static int i__, j, k;
-    static double s, a1, a2, g1, g2, t1, t2, aa, bb, fc, ak, bk;
-    static int ic;
-    static double fi, fk, as;
-    static int kk;
-    static double fr, pi, qi, tm, pr, qr;
-    static int nw;
-    static double p1i, p2i, s1i, s2i, p2m, p1r, p2r, s1r, s2r, cbi, cbr, 
+    int i__, j, k;
+    double s, a1, a2, g1, g2, t1, t2, aa, bb, fc, ak, bk;
+    int ic;
+    double fi, fk, as;
+    int kk;
+    double fr, pi, qi, tm, pr, qr;
+    int nw;
+    double p1i, p2i, s1i, s2i, p2m, p1r, p2r, s1r, s2r, cbi, cbr, 
 	    cki, caz, csi, ckr, fhs, fks, rak, czi, dnu, csr, elm, zdi, bry[3]
 	    , pti, czr, sti, zdr, cyr[2], rzi, ptr, cyi[2];
-    static int inu;
-    static double str, rzr, dnu2, cchi, cchr, alas, cshi;
-    static int inub, idum;
-    static double cshr, fmui, rcaz;
-    static double csrr[3], cssr[3], fmur;
-    static double smui;
-    static double smur;
-    static int iflag, kflag;
-    static double coefi;
-    static int koded;
-    static double ascle, coefr, helim, celmr, csclr, crscr;
-    static double etest;
+    int inu;
+    double str, rzr, dnu2, cchi, cchr, alas, cshi;
+    int inub, idum;
+    double cshr, fmui, rcaz;
+    double csrr[3], cssr[3], fmur;
+    double smui;
+    double smur;
+    int iflag, kflag;
+    double coefi;
+    int koded;
+    double ascle, coefr, helim, celmr, csclr, crscr;
+    double etest;
 
 /* ***BEGIN PROLOGUE  ZBKNU */
 /* ***SUBSIDIARY */
@@ -3911,7 +3961,7 @@ int zbknu(double *zr, double *zi, double *fnu,
 
     /* Function Body */
 /* ***FIRST EXECUTABLE STATEMENT  ZBKNU */
-    caz = zabs(zr, zi);
+    caz = zabs_(zr, zi);
     csclr = 1. / *tol;
     crscr = *tol;
     cssr[0] = csclr;
@@ -3920,9 +3970,9 @@ int zbknu(double *zr, double *zi, double *fnu,
     csrr[0] = crscr;
     csrr[1] = 1.;
     csrr[2] = csclr;
-    bry[0] = DBL_MIN * 1e3 / *tol;
+    bry[0] = d1mach_(&c__1) * 1e3 / *tol;
     bry[1] = 1. / bry[0];
-    bry[2] = DBL_MAX;
+    bry[2] = d1mach_(&c__2);
     *nz = 0;
     iflag = 0;
     koded = *kode;
@@ -3947,10 +3997,10 @@ int zbknu(double *zr, double *zi, double *fnu,
 /*     SERIES FOR ABS(Z).LE.R1 */
 /* ----------------------------------------------------------------------- */
     fc = 1.;
-    zlog(&rzr, &rzi, &smur, &smui, &idum);
+    zlog_(&rzr, &rzi, &smur, &smui, &idum);
     fmur = smur * dnu;
     fmui = smui * dnu;
-    zshch(&fmur, &fmui, &cshr, &cshi, &cchr, &cchi);
+    zshch_(&fmur, &fmui, &cshr, &cshi, &cchr, &cchi);
     if (dnu == 0.) {
 	goto L10;
     }
@@ -3963,7 +4013,7 @@ L10:
 /* ----------------------------------------------------------------------- */
 /*     GAM(1-Z)*GAM(1+Z)=PI*Z/SIN(PI*Z), T1=1/GAM(1-DNU), T2=1/GAM(1+DNU) */
 /* ----------------------------------------------------------------------- */
-    t2 = exp(-dgamln(&a2, &idum));
+    t2 = exp(-dgamln_(&a2, &idum));
     t1 = 1. / (t2 * fc);
     if (abs(dnu) > .1) {
 	goto L40;
@@ -3991,10 +4041,10 @@ L50:
     g2 = (t1 + t2) * .5;
     fr = fc * (cchr * g1 + smur * g2);
     fi = fc * (cchi * g1 + smui * g2);
-    zexp(&fmur, &fmui, &str, &sti);
+    zexp_(&fmur, &fmui, &str, &sti);
     pr = str * .5 / t2;
     pi = sti * .5 / t2;
-    zdiv(&c_b10, &c_b11, &str, &sti, &ptr, &pti);
+    zdiv_(&c_b10, &c_b11, &str, &sti, &ptr, &pti);
     qr = ptr / t1;
     qi = pti / t1;
     s1r = fr;
@@ -4015,7 +4065,7 @@ L50:
     if (caz < *tol) {
 	goto L70;
     }
-    zmlt(zr, zi, zr, zi, &czr, &czi);
+    zmlt_(zr, zi, zr, zi, &czr, &czi);
     czr *= .25;
     czi *= .25;
     t1 = caz * .25 * caz;
@@ -4046,8 +4096,8 @@ L70:
     if (koded == 1) {
 	return 0;
     }
-    zexp(zr, zi, &str, &sti);
-    zmlt(&s1r, &s1i, &str, &sti, &yr[1], &yi[1]);
+    zexp_(zr, zi, &str, &sti);
+    zmlt_(&s1r, &s1i, &str, &sti, &yr[1], &yi[1]);
     return 0;
 /* ----------------------------------------------------------------------- */
 /*     GENERATE K(DNU,Z) AND K(DNU+1,Z) FOR FORWARD RECURRENCE */
@@ -4056,7 +4106,7 @@ L80:
     if (caz < *tol) {
 	goto L100;
     }
-    zmlt(zr, zi, zr, zi, &czr, &czi);
+    zmlt_(zr, zi, zr, zi, &czr, &czi);
     czr *= .25;
     czi *= .25;
     t1 = caz * .25 * caz;
@@ -4095,15 +4145,15 @@ L100:
     str = cssr[kflag - 1];
     p2r = s2r * str;
     p2i = s2i * str;
-    zmlt(&p2r, &p2i, &rzr, &rzi, &s2r, &s2i);
+    zmlt_(&p2r, &p2i, &rzr, &rzi, &s2r, &s2i);
     s1r *= str;
     s1i *= str;
     if (koded == 1) {
 	goto L210;
     }
-    zexp(zr, zi, &fr, &fi);
-    zmlt(&s1r, &s1i, &fr, &fi, &s1r, &s1i);
-    zmlt(&s2r, &s2i, &fr, &fi, &s2r, &s2i);
+    zexp_(zr, zi, &fr, &fi);
+    zmlt_(&s1r, &s1i, &fr, &fi, &s1r, &s1i);
+    zmlt_(&s2r, &s2i, &fr, &fi, &s2r, &s2i);
     goto L210;
 /* ----------------------------------------------------------------------- */
 /*     IFLAG=0 MEANS NO UNDERFLOW OCCURRED */
@@ -4112,8 +4162,8 @@ L100:
 /*     RECURSION */
 /* ----------------------------------------------------------------------- */
 L110:
-    zsqrt(zr, zi, &str, &sti);
-    zdiv(&rthpi, &czeroi, &str, &sti, &coefr, &coefi);
+    zsqrt_(zr, zi, &str, &sti);
+    zdiv_(&rthpi, &czeroi, &str, &sti, &coefr, &coefi);
     kflag = 2;
     if (koded == 2) {
 	goto L120;
@@ -4125,7 +4175,7 @@ L110:
     str = exp(-(*zr)) * cssr[kflag - 1];
     sti = -str * sin(*zi);
     str *= cos(*zi);
-    zmlt(&coefr, &coefi, &str, &sti, &coefr, &coefi);
+    zmlt_(&coefr, &coefi, &str, &sti, &coefr, &coefi);
 L120:
     if (abs(dnu) == .5) {
 	goto L300;
@@ -4148,8 +4198,8 @@ L120:
 /*     12.LE.E.LE.60. E IS COMPUTED FROM 2**(-E)=B**(1-I1MACH(14))= */
 /*     TOL WHERE B IS THE BASE OF THE ARITHMETIC. */
 /* ----------------------------------------------------------------------- */
-    t1 = (double) (DBL_MANT_DIG - 1);
-    t1 = t1 * M_LOG10_2 * 3.321928094;
+    t1 = (double) (i1mach_(&c__14) - 1);
+    t1 = t1 * d1mach_(&c__5) * 3.321928094;
     t1 = max(t1,12.);
     t1 = min(t1,60.);
     t2 = tth * t1 - 6.;
@@ -4245,14 +4295,14 @@ L180:
 /*     COMPUTE (P2/CS)=(P2/ABS(CS))*(CONJG(CS)/ABS(CS)) FOR BETTER */
 /*     SCALING */
 /* ----------------------------------------------------------------------- */
-    tm = zabs(&csr, &csi);
+    tm = zabs_(&csr, &csi);
     ptr = 1. / tm;
     s1r = p2r * ptr;
     s1i = p2i * ptr;
     csr *= ptr;
     csi = -csi * ptr;
-    zmlt(&coefr, &coefi, &s1r, &s1i, &str, &sti);
-    zmlt(&str, &sti, &csr, &csi, &s1r, &s1i);
+    zmlt_(&coefr, &coefi, &s1r, &s1i, &str, &sti);
+    zmlt_(&str, &sti, &csr, &csi, &s1r, &s1i);
     if (inu > 0 || *n > 1) {
 	goto L200;
     }
@@ -4266,18 +4316,18 @@ L200:
 /* ----------------------------------------------------------------------- */
 /*     COMPUTE P1/P2=(P1/ABS(P2)*CONJG(P2)/ABS(P2) FOR SCALING */
 /* ----------------------------------------------------------------------- */
-    tm = zabs(&p2r, &p2i);
+    tm = zabs_(&p2r, &p2i);
     ptr = 1. / tm;
     p1r *= ptr;
     p1i *= ptr;
     p2r *= ptr;
     p2i = -p2i * ptr;
-    zmlt(&p1r, &p1i, &p2r, &p2i, &ptr, &pti);
+    zmlt_(&p1r, &p1i, &p2r, &p2i, &ptr, &pti);
     str = dnu + .5 - ptr;
     sti = -pti;
-    zdiv(&str, &sti, zr, zi, &str, &sti);
+    zdiv_(&str, &sti, zr, zi, &str, &sti);
     str += 1.;
-    zmlt(&str, &sti, &s1r, &s1i, &s2r, &s2i);
+    zmlt_(&str, &sti, &s1r, &s1i, &s2r, &s2i);
 /* ----------------------------------------------------------------------- */
 /*     FORWARD RECURSION ON THE THREE TERM RECURSION WITH RELATION WITH */
 /*     SCALING NEAR EXPONENT EXTREMES ON KFLAG=1 OR KFLAG=3 */
@@ -4434,19 +4484,19 @@ L261:
 	s1i = sti;
 	ckr += rzr;
 	cki += rzi;
-	as = zabs(&s2r, &s2i);
+	as = zabs_(&s2r, &s2i);
 	alas = log(as);
 	p2r = -zdr + alas;
 	if (p2r < -(*elim)) {
 	    goto L263;
 	}
-	zlog(&s2r, &s2i, &str, &sti, &idum);
+	zlog_(&s2r, &s2i, &str, &sti, &idum);
 	p2r = -zdr + str;
 	p2i = -zdi + sti;
 	p2m = exp(p2r) / *tol;
 	p1r = p2m * cos(p2i);
 	p1i = p2m * sin(p2i);
-	zuchk(&p1r, &p1i, &nw, &ascle, tol);
+	zuchk_(&p1r, &p1i, &nw, &ascle, tol);
 	if (nw != 0) {
 	    goto L263;
 	}
@@ -4503,7 +4553,7 @@ L270:
     yi[2] = s2i;
 L280:
     ascle = bry[0];
-    zkscl(&zdr, &zdi, fnu, n, &yr[1], &yi[1], nz, &rzr, &rzi, &ascle, tol, 
+    zkscl_(&zdr, &zdi, fnu, n, &yr[1], &yi[1], nz, &rzr, &rzi, &ascle, tol, 
 	    elim);
     inu = *n - *nz;
     if (inu <= 0) {
@@ -4552,39 +4602,38 @@ L300:
 L310:
     *nz = -2;
     return 0;
-} /* zbknu */
+} /* zbknu_ */
 
 /* DECK ZRATI */
 /* Subroutine */
-int zrati(double *zr, double *zi, double *fnu, 
+int zrati_(double *zr, double *zi, double *fnu, 
 	int *n, double *cyr, double *cyi, double *tol)
 {
     /* Initialized data */
-
-    static double czeror = 0.;
-    static double czeroi = 0.;
-    static double coner = 1.;
-    static double conei = 0.;
-    static double rt2 = 1.41421356237309505;
+    double czeror = 0.;
+    double czeroi = 0.;
+    double coner = 1.;
+    double conei = 0.;
+    double rt2 = 1.41421356237309505;
 
     /* System generated locals */
     int i__1;
     double d__1;
 
     /* Local variables */
-    static int i__, k;
-    static double ak;
-    static int id, kk;
-    static double az, ap1, ap2, p1i, p2i, t1i, p1r, p2r, t1r, arg, rak, 
+    int i__, k;
+    double ak;
+    int id, kk;
+    double az, ap1, ap2, p1i, p2i, t1i, p1r, p2r, t1r, arg, rak, 
 	    rho;
-    static int inu;
-    static double pti, tti, rzi, ptr, ttr, rzr, rap1, flam, dfnu, fdnu;
-    static int magz;
-    static int idnu;
-    static double fnup;
-    static double test, test1, amagz;
-    static int itime;
-    static double cdfnui, cdfnur;
+    int inu;
+    double pti, tti, rzi, ptr, ttr, rzr, rap1, flam, dfnu, fdnu;
+    int magz;
+    int idnu;
+    double fnup;
+    double test, test1, amagz;
+    int itime;
+    double cdfnui, cdfnur;
 
 /* ***BEGIN PROLOGUE  ZRATI */
 /* ***SUBSIDIARY */
@@ -4613,7 +4662,7 @@ int zrati(double *zr, double *zi, double *fnu,
 
     /* Function Body */
 /* ***FIRST EXECUTABLE STATEMENT  ZRATI */
-    az = zabs(zr, zi);
+    az = zabs_(zr, zi);
     inu = (int) (*fnu);
     idnu = inu + *n - 1;
     magz = (int) az;
@@ -4637,8 +4686,8 @@ int zrati(double *zr, double *zi, double *fnu,
     if (id > 0) {
 	id = 0;
     }
-    ap2 = zabs(&p2r, &p2i);
-    ap1 = zabs(&p1r, &p1i);
+    ap2 = zabs_(&p2r, &p2i);
+    ap1 = zabs_(&p1r, &p1i);
 /* ----------------------------------------------------------------------- */
 /*     THE OVERFLOW TEST ON K(FNU+I-1,Z) BEFORE THE CALL TO CBKNU */
 /*     GUARANTEES THAT P2 IS ON SCALE. SCALE TEST1 AND ALL SUBSEQUENT */
@@ -4665,14 +4714,14 @@ L10:
     p1i = pti;
     t1r += rzr;
     t1i += rzi;
-    ap2 = zabs(&p2r, &p2i);
+    ap2 = zabs_(&p2r, &p2i);
     if (ap1 <= test) {
 	goto L10;
     }
     if (itime == 2) {
 	goto L20;
     }
-    ak = zabs(&t1r, &t1i) * .5;
+    ak = zabs_(&t1r, &t1i) * .5;
     flam = ak + sqrt(ak * ak - 1.);
 /* Computing MIN */
     d__1 = ap2 / ap1;
@@ -4710,7 +4759,7 @@ L20:
     p1r = *tol;
     p1i = *tol;
 L40:
-    zdiv(&p2r, &p2i, &p1r, &p1i, &cyr[*n], &cyi[*n]);
+    zdiv_(&p2r, &p2i, &p1r, &p1i, &cyr[*n], &cyi[*n]);
     if (*n == 1) {
 	return 0;
     }
@@ -4724,7 +4773,7 @@ L40:
     for (i__ = 2; i__ <= i__1; ++i__) {
 	ptr = cdfnur + (t1r * rzr - t1i * rzi) + cyr[k + 1];
 	pti = cdfnui + (t1r * rzi + t1i * rzr) + cyi[k + 1];
-	ak = zabs(&ptr, &pti);
+	ak = zabs_(&ptr, &pti);
 	if (ak != czeror) {
 	    goto L50;
 	}
@@ -4740,11 +4789,11 @@ L50:
 /* L60: */
     }
     return 0;
-} /* zrati */
+} /* zrati_ */
 
 /* DECK ZWRSK */
 /* Subroutine */
-int zwrsk(double *zrr, double *zri, double *fnu,
+int zwrsk_(double *zrr, double *zri, double *fnu,
 	 int *kode, int *n, double *yr, double *yi, int *
 	nz, double *cwr, double *cwi, double *tol, double *
 	elim, double *alim)
@@ -4753,10 +4802,10 @@ int zwrsk(double *zrr, double *zri, double *fnu,
     int i__1;
 
     /* Local variables */
-    static int i__, nw;
-    static double c1i, c2i, c1r, c2r, act, acw, cti, ctr, pti, sti, ptr, 
+    int i__, nw;
+    double c1i, c2i, c1r, c2r, act, acw, cti, ctr, pti, sti, ptr, 
 	    str, ract;
-    static double ascle, csclr, cinui, cinur;
+    double ascle, csclr, cinui, cinur;
 
 /* ***BEGIN PROLOGUE  ZWRSK */
 /* ***SUBSIDIARY */
@@ -4791,12 +4840,12 @@ int zwrsk(double *zrr, double *zri, double *fnu,
 
     /* Function Body */
     *nz = 0;
-    zbknu(zrr, zri, fnu, kode, &c__2, &cwr[1], &cwi[1], &nw, tol, elim, alim)
+    zbknu_(zrr, zri, fnu, kode, &c__2, &cwr[1], &cwi[1], &nw, tol, elim, alim)
 	    ;
     if (nw != 0) {
 	goto L50;
     }
-    zrati(zrr, zri, fnu, n, &yr[1], &yi[1], tol);
+    zrati_(zrr, zri, fnu, n, &yr[1], &yi[1], tol);
 /* ----------------------------------------------------------------------- */
 /*     RECUR FORWARD ON I(FNU+1,Z) = R(FNU,Z)*I(FNU,Z), */
 /*     R(FNU+J-1,Z)=Y(J),  J=1,...,N */
@@ -4815,8 +4864,8 @@ L10:
 /*     SCALED TO PREVENT OVER OR UNDERFLOW. CUOIK HAS DETERMINED THAT */
 /*     THE RESULT IS ON SCALE. */
 /* ----------------------------------------------------------------------- */
-    acw = zabs(&cwr[2], &cwi[2]);
-    ascle = DBL_MIN * 1e3 / *tol;
+    acw = zabs_(&cwr[2], &cwi[2]);
+    ascle = d1mach_(&c__1) * 1e3 / *tol;
     csclr = 1.;
     if (acw > ascle) {
 	goto L20;
@@ -4846,7 +4895,7 @@ L30:
     pti += c2i;
     ctr = *zrr * ptr - *zri * pti;
     cti = *zrr * pti + *zri * ptr;
-    act = zabs(&ctr, &cti);
+    act = zabs_(&ctr, &cti);
     ract = 1. / act;
     ctr *= ract;
     cti = -cti * ract;
@@ -4877,31 +4926,30 @@ L50:
 	*nz = -2;
     }
     return 0;
-} /* zwrsk */
+} /* zwrsk_ */
 
 /* DECK ZBINU */
 /* Subroutine */
-int zbinu(double *zr, double *zi, double *fnu, 
+int zbinu_(double *zr, double *zi, double *fnu, 
 	int *kode, int *n, double *cyr, double *cyi, int *
 	nz, double *rl, double *fnul, double *tol, double *
 	elim, double *alim)
 {
     /* Initialized data */
-
-    static double zeror = 0.;
-    static double zeroi = 0.;
+    double zeror = 0.;
+    double zeroi = 0.;
 
     /* System generated locals */
     int i__1;
 
     /* Local variables */
-    static int i__;
-    static double az;
-    static int nn, nw;
-    static double cwi[2], cwr[2];
-    static int nui, inw;
-    static double dfnu;
-    static int nlast;
+    int i__;
+    double az;
+    int nn, nw;
+    double cwi[2], cwr[2];
+    int nui, inw;
+    double dfnu;
+    int nlast;
 
 /* ***BEGIN PROLOGUE  ZBINU */
 /* ***SUBSIDIARY */
@@ -4926,7 +4974,7 @@ int zbinu(double *zr, double *zi, double *fnu,
     /* Function Body */
 /* ***FIRST EXECUTABLE STATEMENT  ZBINU */
     *nz = 0;
-    az = zabs(zr, zi);
+    az = zabs_(zr, zi);
     nn = *n;
     dfnu = *fnu + (*n - 1);
     if (az <= 2.) {
@@ -4939,7 +4987,7 @@ L10:
 /* ----------------------------------------------------------------------- */
 /*     POWER SERIES */
 /* ----------------------------------------------------------------------- */
-    zseri(zr, zi, fnu, kode, &nn, &cyr[1], &cyi[1], &nw, tol, elim, alim);
+    zseri_(zr, zi, fnu, kode, &nn, &cyr[1], &cyi[1], &nw, tol, elim, alim);
     inw = abs(nw);
     *nz += inw;
     nn -= inw;
@@ -4964,7 +5012,7 @@ L20:
 /*     ASYMPTOTIC EXPANSION FOR LARGE Z */
 /* ----------------------------------------------------------------------- */
 L30:
-    zasyi(zr, zi, fnu, kode, &nn, &cyr[1], &cyi[1], &nw, rl, tol, elim, alim)
+    zasyi_(zr, zi, fnu, kode, &nn, &cyr[1], &cyi[1], &nw, rl, tol, elim, alim)
 	    ;
     if (nw < 0) {
 	goto L130;
@@ -4978,7 +5026,7 @@ L50:
 /* ----------------------------------------------------------------------- */
 /*     OVERFLOW AND UNDERFLOW TEST ON I SEQUENCE FOR MILLER ALGORITHM */
 /* ----------------------------------------------------------------------- */
-    zuoik(zr, zi, fnu, kode, &c__1, &nn, &cyr[1], &cyi[1], &nw, tol, elim, 
+    zuoik_(zr, zi, fnu, kode, &c__1, &nn, &cyr[1], &cyi[1], &nw, tol, elim, 
 	    alim);
     if (nw < 0) {
 	goto L130;
@@ -5015,7 +5063,7 @@ L80:
 /* ----------------------------------------------------------------------- */
 /*     OVERFLOW TEST ON K FUNCTIONS USED IN WRONSKIAN */
 /* ----------------------------------------------------------------------- */
-    zuoik(zr, zi, fnu, kode, &c__2, &c__2, cwr, cwi, &nw, tol, elim, alim);
+    zuoik_(zr, zi, fnu, kode, &c__2, &c__2, cwr, cwi, &nw, tol, elim, alim);
     if (nw >= 0) {
 	goto L100;
     }
@@ -5031,7 +5079,7 @@ L100:
     if (nw > 0) {
 	goto L130;
     }
-    zwrsk(zr, zi, fnu, kode, &nn, &cyr[1], &cyi[1], &nw, cwr, cwi, tol, elim,
+    zwrsk_(zr, zi, fnu, kode, &nn, &cyr[1], &cyi[1], &nw, cwr, cwi, tol, elim,
 	     alim);
     if (nw < 0) {
 	goto L130;
@@ -5043,7 +5091,7 @@ L110:
 /* ----------------------------------------------------------------------- */
     nui = (int) (*fnul - dfnu + 1);
     nui = max(nui,0);
-    zbuni(zr, zi, fnu, kode, &nn, &cyr[1], &cyi[1], &nw, &nui, &nlast, fnul, 
+    zbuni_(zr, zi, fnu, kode, &nn, &cyr[1], &cyi[1], &nw, &nui, &nlast, fnul, 
 	    tol, elim, alim);
     if (nw < 0) {
 	goto L130;
@@ -5062,16 +5110,15 @@ L130:
 	*nz = -2;
     }
     return 0;
-} /* zbinu */
+} /* zbinu_ */
 
 /* DECK ZSHCH */
 /* Subroutine */
-int zshch(double *zr, double *zi, double *cshr, 
+int zshch_(double *zr, double *zi, double *cshr, 
 	double *cshi, double *cchr, double *cchi)
 {
-
     /* Local variables */
-    static double ch, cn, sh, sn;
+    double ch, cn, sh, sn;
 
 /* ***BEGIN PROLOGUE  ZSHCH */
 /* ***SUBSIDIARY */
@@ -5101,31 +5148,30 @@ int zshch(double *zr, double *zi, double *cshr,
     *cchr = ch * cn;
     *cchi = sh * sn;
     return 0;
-} /* zshch */
+} /* zshch_ */
 
 /* DECK ZKSCL */
 /* Subroutine */
-int zkscl(double *zrr, double *zri, double *fnu,
+int zkscl_(double *zrr, double *zri, double *fnu,
 	 int *n, double *yr, double *yi, int *nz, double *
 	rzr, double *rzi, double *ascle, double *tol, double *
 	elim)
 {
     /* Initialized data */
-
-    static double zeror = 0.;
-    static double zeroi = 0.;
+    double zeror = 0.;
+    double zeroi = 0.;
 
     /* System generated locals */
     int i__1;
 
     /* Local variables */
-    static int i__, ic;
-    static double as, fn;
-    static int kk, nn, nw;
-    static double s1i, s2i, s1r, s2r, acs, cki, elm, csi, ckr, cyi[2], 
+    int i__, ic;
+    double as, fn;
+    int kk, nn, nw;
+    double s1i, s2i, s1r, s2r, acs, cki, elm, csi, ckr, cyi[2], 
 	    zdi, csr, cyr[2], zdr, str, alas;
-    static int idum;
-    static double helim, celmr;
+    int idum;
+    double helim, celmr;
 
 /* ***BEGIN PROLOGUE  ZKSCL */
 /* ***SUBSIDIARY */
@@ -5162,7 +5208,7 @@ int zkscl(double *zrr, double *zri, double *fnu,
 	s1i = yi[i__];
 	cyr[i__ - 1] = s1r;
 	cyi[i__ - 1] = s1i;
-	as = zabs(&s1r, &s1i);
+	as = zabs_(&s1r, &s1i);
 	acs = -(*zrr) + log(as);
 	++(*nz);
 	yr[i__] = zeror;
@@ -5170,13 +5216,13 @@ int zkscl(double *zrr, double *zri, double *fnu,
 	if (acs < -(*elim)) {
 	    goto L10;
 	}
-	zlog(&s1r, &s1i, &csr, &csi, &idum);
+	zlog_(&s1r, &s1i, &csr, &csi, &idum);
 	csr -= *zrr;
 	csi -= *zri;
 	str = exp(csr) / *tol;
 	csr = str * cos(csi);
 	csi = str * sin(csi);
-	zuchk(&csr, &csi, &nw, ascle, tol);
+	zuchk_(&csr, &csi, &nw, ascle, tol);
 	if (nw != 0) {
 	    goto L10;
 	}
@@ -5230,7 +5276,7 @@ L20:
 	s1i = csi;
 	ckr += *rzr;
 	cki += *rzi;
-	as = zabs(&s2r, &s2i);
+	as = zabs_(&s2r, &s2i);
 	alas = log(as);
 	acs = -zdr + alas;
 	++(*nz);
@@ -5239,13 +5285,13 @@ L20:
 	if (acs < -(*elim)) {
 	    goto L25;
 	}
-	zlog(&s2r, &s2i, &csr, &csi, &idum);
+	zlog_(&s2r, &s2i, &csr, &csi, &idum);
 	csr -= zdr;
 	csi -= zdi;
 	str = exp(csr) / *tol;
 	csr = str * cos(csi);
 	csi = str * sin(csi);
-	zuchk(&csr, &csi, &nw, ascle, tol);
+	zuchk_(&csr, &csi, &nw, ascle, tol);
 	if (nw != 0) {
 	    goto L25;
 	}
@@ -5284,38 +5330,37 @@ L45:
 /* L50: */
     }
     return 0;
-} /* zkscl */
+} /* zkscl_ */
 
 /* DECK ZACON */
 /* Subroutine */
-int zacon(double *zr, double *zi, double *fnu, 
+int zacon_(double *zr, double *zi, double *fnu, 
 	int *kode, int *mr, int *n, double *yr, double *
 	yi, int *nz, double *rl, double *fnul, double *tol, 
 	double *elim, double *alim)
 {
     /* Initialized data */
-
-    static double pi = 3.14159265358979324;
-    static double zeror = 0.;
-    static double coner = 1.;
+    double pi = 3.14159265358979324;
+    double zeror = 0.;
+    double coner = 1.;
 
     /* System generated locals */
     int i__1;
 
     /* Local variables */
-    static int i__;
-    static double fn;
-    static int nn, nw;
-    static double yy, c1i, c2i, c1m, as2, c1r, c2r, s1i, s2i, s1r, s2r, 
+    int i__;
+    double fn;
+    int nn, nw;
+    double yy, c1i, c2i, c1m, as2, c1r, c2r, s1i, s2i, s1r, s2r, 
 	    cki, arg, ckr, cpn;
-    static int iuf;
-    static double cyi[2], fmr, csr, azn, sgn;
-    static int inu;
-    static double bry[3], cyr[2], pti, spn, sti, zni, rzi, ptr, str, znr, 
+    int iuf;
+    double cyi[2], fmr, csr, azn, sgn;
+    int inu;
+    double bry[3], cyr[2], pti, spn, sti, zni, rzi, ptr, str, znr, 
 	    rzr, sc1i, sc2i, sc1r, sc2r, cscl, cscr;
-    static double csrr[3], cssr[3], razn;
-    static int kflag;
-    static double ascle, bscle, csgni, csgnr, cspni, cspnr;
+    double csrr[3], cssr[3], razn;
+    int kflag;
+    double ascle, bscle, csgni, csgnr, cspni, cspnr;
 
 /* ***BEGIN PROLOGUE  ZACON */
 /* ***SUBSIDIARY */
@@ -5351,7 +5396,7 @@ int zacon(double *zr, double *zi, double *fnu,
     znr = -(*zr);
     zni = -(*zi);
     nn = *n;
-    zbinu(&znr, &zni, fnu, kode, &nn, &yr[1], &yi[1], &nw, rl, fnul, tol, 
+    zbinu_(&znr, &zni, fnu, kode, &nn, &yr[1], &yi[1], &nw, rl, fnul, tol, 
 	    elim, alim);
     if (nw < 0) {
 	goto L90;
@@ -5360,7 +5405,7 @@ int zacon(double *zr, double *zi, double *fnu,
 /*     ANALYTIC CONTINUATION TO THE LEFT HALF PLANE FOR THE K FUNCTION */
 /* ----------------------------------------------------------------------- */
     nn = min(2,*n);
-    zbknu(&znr, &zni, fnu, kode, &nn, cyr, cyi, &nw, tol, elim, alim);
+    zbknu_(&znr, &zni, fnu, kode, &nn, cyr, cyi, &nw, tol, elim, alim);
     if (nw != 0) {
 	goto L90;
     }
@@ -5376,7 +5421,7 @@ int zacon(double *zr, double *zi, double *fnu,
     yy = -zni;
     cpn = cos(yy);
     spn = sin(yy);
-    zmlt(&csgnr, &csgni, &cpn, &spn, &csgnr, &csgni);
+    zmlt_(&csgnr, &csgni, &cpn, &spn, &csgnr, &csgni);
 L10:
 /* ----------------------------------------------------------------------- */
 /*     CALCULATE CSPN=EXP(FNU*PI*I) TO MINIMIZE LOSSES OF SIGNIFICANCE */
@@ -5399,17 +5444,17 @@ L20:
     c1i = s1i;
     c2r = yr[1];
     c2i = yi[1];
-    ascle = DBL_MIN * 1e3 / *tol;
+    ascle = d1mach_(&c__1) * 1e3 / *tol;
     if (*kode == 1) {
 	goto L30;
     }
-    zs1s2(&znr, &zni, &c1r, &c1i, &c2r, &c2i, &nw, &ascle, alim, &iuf);
+    zs1s2_(&znr, &zni, &c1r, &c1i, &c2r, &c2i, &nw, &ascle, alim, &iuf);
     *nz += nw;
     sc1r = c1r;
     sc1i = c1i;
 L30:
-    zmlt(&cspnr, &cspni, &c1r, &c1i, &str, &sti);
-    zmlt(&csgnr, &csgni, &c2r, &c2i, &ptr, &pti);
+    zmlt_(&cspnr, &cspni, &c1r, &c1i, &str, &sti);
+    zmlt_(&csgnr, &csgni, &c2r, &c2i, &ptr, &pti);
     yr[1] = str + ptr;
     yi[1] = sti + pti;
     if (*n == 1) {
@@ -5426,13 +5471,13 @@ L30:
     if (*kode == 1) {
 	goto L40;
     }
-    zs1s2(&znr, &zni, &c1r, &c1i, &c2r, &c2i, &nw, &ascle, alim, &iuf);
+    zs1s2_(&znr, &zni, &c1r, &c1i, &c2r, &c2i, &nw, &ascle, alim, &iuf);
     *nz += nw;
     sc2r = c1r;
     sc2i = c1i;
 L40:
-    zmlt(&cspnr, &cspni, &c1r, &c1i, &str, &sti);
-    zmlt(&csgnr, &csgni, &c2r, &c2i, &ptr, &pti);
+    zmlt_(&cspnr, &cspni, &c1r, &c1i, &str, &sti);
+    zmlt_(&csgnr, &csgni, &c2r, &c2i, &ptr, &pti);
     yr[2] = str + ptr;
     yi[2] = sti + pti;
     if (*n == 2) {
@@ -5440,7 +5485,7 @@ L40:
     }
     cspnr = -cspnr;
     cspni = -cspni;
-    azn = zabs(&znr, &zni);
+    azn = zabs_(&znr, &zni);
     razn = 1. / azn;
     str = znr * razn;
     sti = -zni * razn;
@@ -5462,8 +5507,8 @@ L40:
     csrr[2] = cscl;
     bry[0] = ascle;
     bry[1] = 1. / ascle;
-    bry[2] = DBL_MAX;
-    as2 = zabs(&s2r, &s2i);
+    bry[2] = d1mach_(&c__2);
+    as2 = zabs_(&s2r, &s2i);
     kflag = 2;
     if (as2 > bry[0]) {
 	goto L50;
@@ -5502,7 +5547,7 @@ L60:
 	if (iuf < 0) {
 	    goto L70;
 	}
-	zs1s2(&znr, &zni, &c1r, &c1i, &c2r, &c2i, &nw, &ascle, alim, &iuf);
+	zs1s2_(&znr, &zni, &c1r, &c1i, &c2r, &c2i, &nw, &ascle, alim, &iuf);
 	*nz += nw;
 	sc1r = sc2r;
 	sc1i = sc2i;
@@ -5557,15 +5602,15 @@ L90:
 	*nz = -2;
     }
     return 0;
-} /* zacon */
+} /* zacon_ */
 
 /* DECK ZBUNK */
 /* Subroutine */
-int zbunk(double *zr, double *zi, double *fnu, 
+int zbunk_(double *zr, double *zi, double *fnu, 
 	int *kode, int *mr, int *n, double *yr, double *
 	yi, int *nz, double *tol, double *elim, double *alim)
 {
-    static double ax, ay;
+    double ax, ay;
 
 /* ***BEGIN PROLOGUE  ZBUNK */
 /* ***SUBSIDIARY */
@@ -5602,7 +5647,7 @@ int zbunk(double *zr, double *zi, double *fnu,
 /*     ASYMPTOTIC EXPANSION FOR K(FNU,Z) FOR LARGE FNU APPLIED IN */
 /*     -PI/3.LE.ARG(Z).LE.PI/3 */
 /* ----------------------------------------------------------------------- */
-    zunk1(zr, zi, fnu, kode, mr, n, &yr[1], &yi[1], nz, tol, elim, alim);
+    zunk1_(zr, zi, fnu, kode, mr, n, &yr[1], &yi[1], nz, tol, elim, alim);
     goto L20;
 L10:
 /* ----------------------------------------------------------------------- */
@@ -5610,54 +5655,53 @@ L10:
 /*     APPLIED IN PI/3.LT.ABS(ARG(Z)).LE.PI/2 WHERE M=+I OR -I */
 /*     AND HPI=PI/2 */
 /* ----------------------------------------------------------------------- */
-    zunk2(zr, zi, fnu, kode, mr, n, &yr[1], &yi[1], nz, tol, elim, alim);
+    zunk2_(zr, zi, fnu, kode, mr, n, &yr[1], &yi[1], nz, tol, elim, alim);
 L20:
     return 0;
-} /* zbunk */
+} /* zbunk_ */
 
 /* DECK ZUNK1 */
 /* Subroutine */
-int zunk1(double *zr, double *zi, double *fnu, 
+int zunk1_(double *zr, double *zi, double *fnu, 
 	int *kode, int *mr, int *n, double *yr, double *
 	yi, int *nz, double *tol, double *elim, double *alim)
 {
     /* Initialized data */
-
-    static double zeror = 0.;
-    static double zeroi = 0.;
-    static double coner = 1.;
-    static double pi = 3.14159265358979324;
+    double zeror = 0.;
+    double zeroi = 0.;
+    double coner = 1.;
+    double pi = 3.14159265358979324;
 
     /* System generated locals */
     int i__1;
 
     /* Local variables */
-    static int i__, j, k, m, ib, ic;
-    static double fn;
-    static int il, kk, nw;
-    static double c1i, c2i, c2m, c1r, c2r, s1i, s2i, rs1, s1r, s2r, ang, 
+    int i__, j, k, m, ib, ic;
+    double fn;
+    int il, kk, nw;
+    double c1i, c2i, c2m, c1r, c2r, s1i, s2i, rs1, s1r, s2r, ang, 
 	    asc, cki, fnf;
-    static int ifn;
-    static double ckr;
-    static int iuf;
-    static double cyi[2], fmr, csr, sgn;
-    static int inu;
-    static double bry[3], cyr[2], sti, rzi, zri, str, rzr, zrr, aphi, 
+    int ifn;
+    double ckr;
+    int iuf;
+    double cyi[2], fmr, csr, sgn;
+    int inu;
+    double bry[3], cyr[2], sti, rzi, zri, str, rzr, zrr, aphi, 
 	    cscl, phii[2], crsc;
-    static double phir[2];
-    static int init[2];
-    static double csrr[3], cssr[3], rast, sumi[2], razr;
-    static double sumr[2];
-    static int iflag, kflag;
-    static double ascle;
-    static int kdflg;
-    static double phidi;
-    static int ipard;
-    static double csgni, phidr;
-    static int initd;
-    static double cspni, cwrki[48]	/* was [16][3] */, sumdi;
-    static double cspnr, cwrkr[48]	/* was [16][3] */, sumdr;
-    static double zeta1i[2], zeta2i[2], zet1di, zet2di, zeta1r[2], zeta2r[
+    double phir[2];
+    int init[2];
+    double csrr[3], cssr[3], rast, sumi[2], razr;
+    double sumr[2];
+    int iflag, kflag;
+    double ascle;
+    int kdflg;
+    double phidi;
+    int ipard;
+    double csgni, phidr;
+    int initd;
+    double cspni, cwrki[48]	/* was [16][3] */, sumdi;
+    double cspnr, cwrkr[48]	/* was [16][3] */, sumdr;
+    double zeta1i[2], zeta2i[2], zet1di, zet2di, zeta1r[2], zeta2r[
 	    2], zet1dr, zet2dr;
 
 /* ***BEGIN PROLOGUE  ZUNK1 */
@@ -5702,9 +5746,9 @@ int zunk1(double *zr, double *zi, double *fnu,
     csrr[0] = crsc;
     csrr[1] = coner;
     csrr[2] = cscl;
-    bry[0] = DBL_MIN * 1e3 / *tol;
+    bry[0] = d1mach_(&c__1) * 1e3 / *tol;
     bry[1] = 1. / bry[0];
-    bry[2] = DBL_MAX;
+    bry[2] = d1mach_(&c__2);
     zrr = *zr;
     zri = *zi;
     if (*zr >= 0.) {
@@ -5722,7 +5766,7 @@ L10:
 	j = 3 - j;
 	fn = *fnu + (i__ - 1);
 	init[j - 1] = 0;
-	zunik(&zrr, &zri, &fn, &c__2, &c__0, tol, &init[j - 1], &phir[j - 1],
+	zunik_(&zrr, &zri, &fn, &c__2, &c__0, tol, &init[j - 1], &phir[j - 1],
 		 &phii[j - 1], &zeta1r[j - 1], &zeta1i[j - 1], &zeta2r[j - 1],
 		 &zeta2i[j - 1], &sumr[j - 1], &sumi[j - 1], &cwrkr[(j << 4) 
 		- 16], &cwrki[(j << 4) - 16]);
@@ -5731,7 +5775,7 @@ L10:
 	}
 	str = zrr + zeta2r[j - 1];
 	sti = zri + zeta2i[j - 1];
-	rast = fn / zabs(&str, &sti);
+	rast = fn / zabs_(&str, &sti);
 	str = str * rast * rast;
 	sti = -sti * rast * rast;
 	s1r = zeta1r[j - 1] - str;
@@ -5757,7 +5801,7 @@ L30:
 /* ----------------------------------------------------------------------- */
 /*     REFINE  TEST AND SCALE */
 /* ----------------------------------------------------------------------- */
-	aphi = zabs(&phir[j - 1], &phii[j - 1]);
+	aphi = zabs_(&phir[j - 1], &phii[j - 1]);
 	rs1 += log(aphi);
 	if (abs(rs1) > *elim) {
 	    goto L60;
@@ -5787,7 +5831,7 @@ L40:
 	if (kflag != 1) {
 	    goto L50;
 	}
-	zuchk(&s2r, &s2i, &nw, bry, tol);
+	zuchk_(&s2r, &s2i, &nw, bry, tol);
 	if (nw != 0) {
 	    goto L60;
 	}
@@ -5829,7 +5873,7 @@ L70:
     }
     i__ = *n;
 L75:
-    razr = 1. / zabs(&zrr, &zri);
+    razr = 1. / zabs_(&zrr, &zri);
     str = zrr * razr;
     sti = -zri * razr;
     rzr = (str + str) * razr;
@@ -5850,7 +5894,7 @@ L75:
 	ipard = 0;
     }
     initd = 0;
-    zunik(&zrr, &zri, &fn, &c__2, &ipard, tol, &initd, &phidr, &phidi, &
+    zunik_(&zrr, &zri, &fn, &c__2, &ipard, tol, &initd, &phidr, &phidi, &
 	    zet1dr, &zet1di, &zet2dr, &zet2di, &sumdr, &sumdi, &cwrkr[32], &
 	    cwrki[32]);
     if (*kode == 1) {
@@ -5858,7 +5902,7 @@ L75:
     }
     str = zrr + zet2dr;
     sti = zri + zet2di;
-    rast = fn / zabs(&str, &sti);
+    rast = fn / zabs_(&str, &sti);
     str = str * rast * rast;
     sti = -sti * rast * rast;
     s1r = zet1dr - str;
@@ -5878,7 +5922,7 @@ L90:
 /* ----------------------------------------------------------------------- */
 /*     REFINE ESTIMATE AND TEST */
 /* ----------------------------------------------------------------------- */
-    aphi = zabs(&phidr, &phidi);
+    aphi = zabs_(&phidr, &phidi);
     rs1 += log(aphi);
     if (abs(rs1) < *elim) {
 	goto L100;
@@ -6013,7 +6057,7 @@ L175:
 	}
 	initd = 0;
 L180:
-	zunik(&zrr, &zri, &fn, &c__1, &c__0, tol, &initd, &phidr, &phidi, &
+	zunik_(&zrr, &zri, &fn, &c__1, &c__0, tol, &initd, &phidr, &phidi, &
 		zet1dr, &zet1di, &zet2dr, &zet2di, &sumdr, &sumdi, &cwrkr[(m 
 		<< 4) - 16], &cwrki[(m << 4) - 16]);
 	if (*kode == 1) {
@@ -6021,7 +6065,7 @@ L180:
 	}
 	str = zrr + zet2dr;
 	sti = zri + zet2di;
-	rast = fn / zabs(&str, &sti);
+	rast = fn / zabs_(&str, &sti);
 	str = str * rast * rast;
 	sti = -sti * rast * rast;
 	s1r = -zet1dr + str;
@@ -6047,7 +6091,7 @@ L210:
 /* ----------------------------------------------------------------------- */
 /*     REFINE  TEST AND SCALE */
 /* ----------------------------------------------------------------------- */
-	aphi = zabs(&phidr, &phidi);
+	aphi = zabs_(&phidr, &phidi);
 	rs1 += log(aphi);
 	if (abs(rs1) > *elim) {
 	    goto L260;
@@ -6075,7 +6119,7 @@ L220:
 	if (iflag != 1) {
 	    goto L230;
 	}
-	zuchk(&s2r, &s2i, &nw, bry, tol);
+	zuchk_(&s2r, &s2i, &nw, bry, tol);
 	if (nw == 0) {
 	    goto L230;
 	}
@@ -6096,7 +6140,7 @@ L230:
 	if (*kode == 1) {
 	    goto L250;
 	}
-	zs1s2(&zrr, &zri, &s1r, &s1i, &s2r, &s2i, &nw, &asc, alim, &iuf);
+	zs1s2_(&zrr, &zri, &s1r, &s1i, &s2r, &s2i, &nw, &asc, alim, &iuf);
 	*nz += nw;
 L250:
 	yr[kk] = s1r * cspnr - s1i * cspni + s2r;
@@ -6161,7 +6205,7 @@ L275:
 	if (*kode == 1) {
 	    goto L280;
 	}
-	zs1s2(&zrr, &zri, &c1r, &c1i, &c2r, &c2i, &nw, &asc, alim, &iuf);
+	zs1s2_(&zrr, &zri, &c1r, &c1i, &c2r, &c2i, &nw, &asc, alim, &iuf);
 	*nz += nw;
 L280:
 	yr[kk] = c1r * cspnr - c1i * cspni + c2r;
@@ -6196,59 +6240,58 @@ L290:
 L300:
     *nz = -1;
     return 0;
-} /* zunk1 */
+} /* zunk1_ */
 
 /* DECK ZUNK2 */
 /* Subroutine */
-int zunk2(double *zr, double *zi, double *fnu, 
+int zunk2_(double *zr, double *zi, double *fnu, 
 	int *kode, int *mr, int *n, double *yr, double *
 	yi, int *nz, double *tol, double *elim, double *alim)
 {
     /* Initialized data */
-
-    static double zeror = 0.;
-    static double aic = 1.26551212348464539;
-    static double cipr[4] = { 1.,0.,-1.,0. };
-    static double cipi[4] = { 0.,-1.,0.,1. };
-    static double zeroi = 0.;
-    static double coner = 1.;
-    static double cr1r = 1.;
-    static double cr1i = 1.73205080756887729;
-    static double cr2r = -.5;
-    static double cr2i = -.866025403784438647;
-    static double hpi = 1.57079632679489662;
-    static double pi = 3.14159265358979324;
+    double zeror = 0.;
+    double aic = 1.26551212348464539;
+    double cipr[4] = { 1.,0.,-1.,0. };
+    double cipi[4] = { 0.,-1.,0.,1. };
+    double zeroi = 0.;
+    double coner = 1.;
+    double cr1r = 1.;
+    double cr1i = 1.73205080756887729;
+    double cr2r = -.5;
+    double cr2i = -.866025403784438647;
+    double hpi = 1.57079632679489662;
+    double pi = 3.14159265358979324;
 
     /* System generated locals */
     int i__1;
 
     /* Local variables */
-    static int i__, j, k, ib, ic;
-    static double fn;
-    static int il, kk, in, nw;
-    static double yy, c1i, c2i, c2m, c1r, c2r, s1i, s2i, rs1, s1r, s2r, 
+    int i__, j, k, ib, ic;
+    double fn;
+    int il, kk, in, nw;
+    double yy, c1i, c2i, c2m, c1r, c2r, s1i, s2i, rs1, s1r, s2r, 
 	    aii, ang, asc, car, cki, fnf;
-    static int nai;
-    static double air;
-    static int ifn;
-    static double csi, ckr;
-    static int iuf;
-    static double cyi[2], fmr, sar, csr, sgn, zbi;
-    static int inu;
-    static double bry[3], cyr[2], pti, sti, zbr, zni, rzi, ptr, zri, str, 
+    int nai;
+    double air;
+    int ifn;
+    double csi, ckr;
+    int iuf;
+    double cyi[2], fmr, sar, csr, sgn, zbi;
+    int inu;
+    double bry[3], cyr[2], pti, sti, zbr, zni, rzi, ptr, zri, str, 
 	    znr, rzr, zrr, daii, aarg;
-    static int ndai;
-    static double dair, aphi, argi[2], cscl, phii[2], crsc, argr[2];
-    static int idum;
-    static double phir[2], csrr[3], cssr[3], rast, razr;
-    static int iflag, kflag;
-    static double argdi, ascle;
-    static int kdflg;
-    static double phidi, argdr;
-    static int ipard;
-    static double csgni, phidr, cspni, asumi[2], bsumi[2];
-    static double cspnr, asumr[2], bsumr[2];
-    static double zeta1i[2], zeta2i[2], zet1di, zet2di, zeta1r[2], zeta2r[
+    int ndai;
+    double dair, aphi, argi[2], cscl, phii[2], crsc, argr[2];
+    int idum;
+    double phir[2], csrr[3], cssr[3], rast, razr;
+    int iflag, kflag;
+    double argdi, ascle;
+    int kdflg;
+    double phidi, argdr;
+    int ipard;
+    double csgni, phidr, cspni, asumi[2], bsumi[2];
+    double cspnr, asumr[2], bsumr[2];
+    double zeta1i[2], zeta2i[2], zet1di, zet2di, zeta1r[2], zeta2r[
 	    2], zet1dr, zet2dr, asumdi, bsumdi, asumdr, bsumdr;
 
 /* ***BEGIN PROLOGUE  ZUNK2 */
@@ -6297,9 +6340,9 @@ int zunk2(double *zr, double *zi, double *fnu,
     csrr[0] = crsc;
     csrr[1] = coner;
     csrr[2] = cscl;
-    bry[0] = DBL_MIN * 1e3 / *tol;
+    bry[0] = d1mach_(&c__1) * 1e3 / *tol;
     bry[1] = 1. / bry[0];
-    bry[2] = DBL_MAX;
+    bry[2] = d1mach_(&c__2);
     zrr = *zr;
     zri = *zi;
     if (*zr >= 0.) {
@@ -6344,7 +6387,7 @@ L20:
 /* ----------------------------------------------------------------------- */
 	j = 3 - j;
 	fn = *fnu + (i__ - 1);
-	zunhj(&znr, &zni, &fn, &c__0, tol, &phir[j - 1], &phii[j - 1], &argr[
+	zunhj_(&znr, &zni, &fn, &c__0, tol, &phir[j - 1], &phii[j - 1], &argr[
 		j - 1], &argi[j - 1], &zeta1r[j - 1], &zeta1i[j - 1], &zeta2r[
 		j - 1], &zeta2i[j - 1], &asumr[j - 1], &asumi[j - 1], &bsumr[
 		j - 1], &bsumi[j - 1]);
@@ -6353,7 +6396,7 @@ L20:
 	}
 	str = zbr + zeta2r[j - 1];
 	sti = zbi + zeta2i[j - 1];
-	rast = fn / zabs(&str, &sti);
+	rast = fn / zabs_(&str, &sti);
 	str = str * rast * rast;
 	sti = -sti * rast * rast;
 	s1r = zeta1r[j - 1] - str;
@@ -6379,8 +6422,8 @@ L40:
 /* ----------------------------------------------------------------------- */
 /*     REFINE  TEST AND SCALE */
 /* ----------------------------------------------------------------------- */
-	aphi = zabs(&phir[j - 1], &phii[j - 1]);
-	aarg = zabs(&argr[j - 1], &argi[j - 1]);
+	aphi = zabs_(&phir[j - 1], &phii[j - 1]);
+	aarg = zabs_(&argr[j - 1], &argi[j - 1]);
 	rs1 = rs1 + log(aphi) - log(aarg) * .25 - aic;
 	if (abs(rs1) > *elim) {
 	    goto L70;
@@ -6401,8 +6444,8 @@ L50:
 /* ----------------------------------------------------------------------- */
 	c2r = argr[j - 1] * cr2r - argi[j - 1] * cr2i;
 	c2i = argr[j - 1] * cr2i + argi[j - 1] * cr2r;
-	zairy(&c2r, &c2i, &c__0, &c__2, &air, &aii, &nai, &idum);
-	zairy(&c2r, &c2i, &c__1, &c__2, &dair, &daii, &ndai, &idum);
+	zairy_(&c2r, &c2i, &c__0, &c__2, &air, &aii, &nai, &idum);
+	zairy_(&c2r, &c2i, &c__1, &c__2, &dair, &daii, &ndai, &idum);
 	str = dair * bsumr[j - 1] - daii * bsumi[j - 1];
 	sti = dair * bsumi[j - 1] + daii * bsumr[j - 1];
 	ptr = str * cr2r - sti * cr2i;
@@ -6422,7 +6465,7 @@ L50:
 	if (kflag != 1) {
 	    goto L60;
 	}
-	zuchk(&s2r, &s2i, &nw, bry, tol);
+	zuchk_(&s2r, &s2i, &nw, bry, tol);
 	if (nw != 0) {
 	    goto L70;
 	}
@@ -6473,7 +6516,7 @@ L80:
     }
     i__ = *n;
 L85:
-    razr = 1. / zabs(&zrr, &zri);
+    razr = 1. / zabs_(&zrr, &zri);
     str = zrr * razr;
     sti = -zri * razr;
     rzr = (str + str) * razr;
@@ -6493,7 +6536,7 @@ L85:
     if (*mr != 0) {
 	ipard = 0;
     }
-    zunhj(&znr, &zni, &fn, &ipard, tol, &phidr, &phidi, &argdr, &argdi, &
+    zunhj_(&znr, &zni, &fn, &ipard, tol, &phidr, &phidi, &argdr, &argdi, &
 	    zet1dr, &zet1di, &zet2dr, &zet2di, &asumdr, &asumdi, &bsumdr, &
 	    bsumdi);
     if (*kode == 1) {
@@ -6501,7 +6544,7 @@ L85:
     }
     str = zbr + zet2dr;
     sti = zbi + zet2di;
-    rast = fn / zabs(&str, &sti);
+    rast = fn / zabs_(&str, &sti);
     str = str * rast * rast;
     sti = -sti * rast * rast;
     s1r = zet1dr - str;
@@ -6521,7 +6564,7 @@ L100:
 /* ----------------------------------------------------------------------- */
 /*     REFINE ESTIMATE AND TEST */
 /* ----------------------------------------------------------------------- */
-    aphi = zabs(&phidr, &phidi);
+    aphi = zabs_(&phidr, &phidi);
     rs1 += log(aphi);
     if (abs(rs1) < *elim) {
 	goto L120;
@@ -6667,7 +6710,7 @@ L175:
 	if (kk == ib || kk == ic) {
 	    goto L172;
 	}
-	zunhj(&znr, &zni, &fn, &c__0, tol, &phidr, &phidi, &argdr, &argdi, &
+	zunhj_(&znr, &zni, &fn, &c__0, tol, &phidr, &phidi, &argdr, &argdi, &
 		zet1dr, &zet1di, &zet2dr, &zet2di, &asumdr, &asumdi, &bsumdr, 
 		&bsumdi);
 L210:
@@ -6676,7 +6719,7 @@ L210:
 	}
 	str = zbr + zet2dr;
 	sti = zbi + zet2di;
-	rast = fn / zabs(&str, &sti);
+	rast = fn / zabs_(&str, &sti);
 	str = str * rast * rast;
 	sti = -sti * rast * rast;
 	s1r = -zet1dr + str;
@@ -6702,8 +6745,8 @@ L230:
 /* ----------------------------------------------------------------------- */
 /*     REFINE  TEST AND SCALE */
 /* ----------------------------------------------------------------------- */
-	aphi = zabs(&phidr, &phidi);
-	aarg = zabs(&argdr, &argdi);
+	aphi = zabs_(&phidr, &phidi);
+	aarg = zabs_(&argdr, &argdi);
 	rs1 = rs1 + log(aphi) - log(aarg) * .25 - aic;
 	if (abs(rs1) > *elim) {
 	    goto L280;
@@ -6718,8 +6761,8 @@ L230:
 	    iflag = 3;
 	}
 L240:
-	zairy(&argdr, &argdi, &c__0, &c__2, &air, &aii, &nai, &idum);
-	zairy(&argdr, &argdi, &c__1, &c__2, &dair, &daii, &ndai, &idum);
+	zairy_(&argdr, &argdi, &c__0, &c__2, &air, &aii, &nai, &idum);
+	zairy_(&argdr, &argdi, &c__1, &c__2, &dair, &daii, &ndai, &idum);
 	str = dair * bsumdr - daii * bsumdi;
 	sti = dair * bsumdi + daii * bsumdr;
 	str += air * asumdr - aii * asumdi;
@@ -6737,7 +6780,7 @@ L240:
 	if (iflag != 1) {
 	    goto L250;
 	}
-	zuchk(&s2r, &s2i, &nw, bry, tol);
+	zuchk_(&s2r, &s2i, &nw, bry, tol);
 	if (nw == 0) {
 	    goto L250;
 	}
@@ -6761,7 +6804,7 @@ L250:
 	if (*kode == 1) {
 	    goto L270;
 	}
-	zs1s2(&zrr, &zri, &s1r, &s1i, &s2r, &s2i, &nw, &asc, alim, &iuf);
+	zs1s2_(&zrr, &zri, &s1r, &s1i, &s2r, &s2i, &nw, &asc, alim, &iuf);
 	*nz += nw;
 L270:
 	yr[kk] = s1r * cspnr - s1i * cspni + s2r;
@@ -6829,7 +6872,7 @@ L295:
 	if (*kode == 1) {
 	    goto L300;
 	}
-	zs1s2(&zrr, &zri, &c1r, &c1i, &c2r, &c2i, &nw, &asc, alim, &iuf);
+	zs1s2_(&zrr, &zri, &c1r, &c1i, &c2r, &c2i, &nw, &asc, alim, &iuf);
 	*nz += nw;
 L300:
 	yr[kk] = c1r * cspnr - c1i * cspni + c2r;
@@ -6864,7 +6907,7 @@ L310:
 L320:
     *nz = -1;
     return 0;
-} /* zunk2 */
+} /* zunk2_ */
 
 // DEPENDENCY AMOS/SLATEC ROUTINES ORIGINALLY TRANSLATED WITH F2C
 //-^------------------------------------------------------------------------
@@ -6872,7 +6915,8 @@ L320:
 
 //-v------------------------------------------------------------------------
 // MAIN D. E. AMOS (SLATEC) ROUTINES ORIGINALLY TRANSLATED WITH F2C
-/* zairy.f, zbesh.f, zbesj.f, zbesy.f -- translated by f2c (version 20100827).
+/* zbesj.f, zbesy.f, zbesh.f, zbesi.f, zbesk.f,
+   zairy.f, zbiry.f -- translated by f2c (version 20100827).
    You must link the resulting object file with libf2c:
 	on Microsoft Windows system, link with libf2c.lib;
 	on Linux or Unix systems, link with .../path/to/libf2c.a -lm
@@ -6884,131 +6928,135 @@ L320:
 		http://www.netlib.org/f2c/libf2c.zip
 */
 
-/* DECK ZAIRY */
+/* DECK ZBESJ */
 /* Subroutine */
-int zairy(double *zr, double *zi, int *id, 
-	int *kode, double *air, double *aii, int *nz, int 
-	*ierr)
+int zbesj_(double *zr, double *zi, double *fnu, 
+	int *kode, int *n, double *cyr, double *cyi, int *
+	nz, int *ierr)
 {
     /* Initialized data */
-
-    static double tth = .666666666666666667;
-    static double c1 = .35502805388781724;
-    static double c2 = .258819403792806799;
-    static double coef = .183776298473930683;
-    static double zeror = 0.;
-    static double zeroi = 0.;
-    static double coner = 1.;
-    static double conei = 0.;
+    double hpi = 1.57079632679489662;
 
     /* System generated locals */
     int i__1, i__2;
-    double d__1;
+    double d__1, d__2;
 
     /* Local variables */
-    static int k;
-    static double d1, d2;
-    static int k1, k2;
-    static double aa, bb, ad, cc, ak, bk, ck, dk, az;
-    static int nn;
-    static double rl;
-    static int mr;
-    static double s1i, az3, s2i, s1r, s2r, z3i, z3r, dig, fid, cyi[1], 
-	    r1m5, fnu, cyr[1], tol, sti, ptr, str, sfac, alim, elim, alaz, 
-	    csqi;
-    static double atrm, ztai, csqr, ztar;
-    static double trm1i, trm2i, trm1r, trm2r;
-    static int iflag;
+    int i__, k, k1, k2;
+    double aa, bb, fn;
+    int nl;
+    double az;
+    int ir;
+    double rl, dig, cii, arg, r1m5;
+    int inu;
+    double tol, sti, zni, str, znr, alim, elim;
+    double atol;
+    int inuh;
+    double fnul, rtol, ascle, csgni, csgnr;
 
-/* ***BEGIN PROLOGUE  ZAIRY */
-/* ***PURPOSE  Compute the Airy function Ai(z) or its derivative dAi/dz */
-/*            for complex argument z.  A scaling option is available */
-/*            to help avoid underflow and overflow. */
+/* ***BEGIN PROLOGUE  ZBESJ */
+/* ***PURPOSE  Compute a sequence of the Bessel functions J(a,z) for */
+/*            complex argument z and real nonnegative orders a=b,b+1, */
+/*            b+2,... where b>0.  A scaling option is available to */
+/*            help avoid overflow. */
 /* ***LIBRARY   SLATEC */
-/* ***CATEGORY  C10D */
-/* ***TYPE      COMPLEX (CAIRY-C, ZAIRY-C) */
-/* ***KEYWORDS  AIRY FUNCTION, BESSEL FUNCTION OF ORDER ONE THIRD, */
-/*             BESSEL FUNCTION OF ORDER TWO THIRDS */
+/* ***CATEGORY  C10A4 */
+/* ***TYPE      COMPLEX (CBESJ-C, ZBESJ-C) */
+/* ***KEYWORDS  BESSEL FUNCTIONS OF COMPLEX ARGUMENT, */
+/*             BESSEL FUNCTIONS OF THE FIRST KIND, J BESSEL FUNCTIONS */
 /* ***AUTHOR  Amos, D. E., (SNL) */
 /* ***DESCRIPTION */
 
 /*                      ***A DOUBLE PRECISION ROUTINE*** */
-/*         On KODE=1, ZAIRY computes the complex Airy function Ai(z) */
-/*         or its derivative dAi/dz on ID=0 or ID=1 respectively. On */
-/*         KODE=2, a scaling option exp(zeta)*Ai(z) or exp(zeta)*dAi/dz */
-/*         is provided to remove the exponential decay in -pi/3<arg(z) */
-/*         <pi/3 and the exponential growth in pi/3<abs(arg(z))<pi where */
-/*         zeta=(2/3)*z**(3/2). */
+/*         On KODE=1, ZBESJ computes an N member sequence of complex */
+/*         Bessel functions CY(L)=J(FNU+L-1,Z) for real nonnegative */
+/*         orders FNU+L-1, L=1,...,N and complex Z in the cut plane */
+/*         -pi<arg(Z)<=pi where Z=ZR+i*ZI.  On KODE=2, CBESJ returns */
+/*         the scaled functions */
 
-/*         While the Airy functions Ai(z) and dAi/dz are analytic in */
-/*         the whole z-plane, the corresponding scaled functions defined */
-/*         for KODE=2 have a cut along the negative real axis. */
+/*            CY(L) = exp(-abs(Y))*J(FNU+L-1,Z),  L=1,...,N and Y=Im(Z) */
+
+/*         which remove the exponential growth in both the upper and */
+/*         lower half planes as Z goes to infinity.  Definitions and */
+/*         notation are found in the NBS Handbook of Mathematical */
+/*         Functions (Ref. 1). */
 
 /*         Input */
 /*           ZR     - DOUBLE PRECISION real part of argument Z */
 /*           ZI     - DOUBLE PRECISION imag part of argument Z */
-/*           ID     - Order of derivative, ID=0 or ID=1 */
+/*           FNU    - DOUBLE PRECISION initial order, FNU>=0 */
 /*           KODE   - A parameter to indicate the scaling option */
 /*                    KODE=1  returns */
-/*                            AI=Ai(z)  on ID=0 */
-/*                            AI=dAi/dz on ID=1 */
-/*                            at z=Z */
+/*                            CY(L)=J(FNU+L-1,Z), L=1,...,N */
 /*                        =2  returns */
-/*                            AI=exp(zeta)*Ai(z)  on ID=0 */
-/*                            AI=exp(zeta)*dAi/dz on ID=1 */
-/*                            at z=Z where zeta=(2/3)*z**(3/2) */
+/*                            CY(L)=J(FNU+L-1,Z)*exp(-abs(Y)), L=1,...,N */
+/*                            where Y=Im(Z) */
+/*           N      - Number of terms in the sequence, N>=1 */
 
 /*         Output */
-/*           AIR    - DOUBLE PRECISION real part of result */
-/*           AII    - DOUBLE PRECISION imag part of result */
-/*           NZ     - Underflow indicator */
+/*           CYR    - DOUBLE PRECISION real part of result vector */
+/*           CYI    - DOUBLE PRECISION imag part of result vector */
+/*           NZ     - Number of underflows set to zero */
 /*                    NZ=0    Normal return */
-/*                    NZ=1    AI=0 due to underflow in */
-/*                            -pi/3<arg(Z)<pi/3 on KODE=1 */
+/*                    NZ>0    CY(L)=0, L=N-NZ+1,...,N */
 /*           IERR   - Error flag */
 /*                    IERR=0  Normal return     - COMPUTATION COMPLETED */
 /*                    IERR=1  Input error       - NO COMPUTATION */
 /*                    IERR=2  Overflow          - NO COMPUTATION */
-/*                            (Re(Z) too large with KODE=1) */
+/*                            (Im(Z) too large on KODE=1) */
 /*                    IERR=3  Precision warning - COMPUTATION COMPLETED */
-/*                            (Result has less than half precision) */
+/*                            (Result has half precision or less */
+/*                            because abs(Z) or FNU+N-1 is large) */
 /*                    IERR=4  Precision error   - NO COMPUTATION */
-/*                            (Result has no precision) */
+/*                            (Result has no precision because */
+/*                            abs(Z) or FNU+N-1 is too large) */
 /*                    IERR=5  Algorithmic error - NO COMPUTATION */
 /*                            (Termination condition not met) */
 
 /* *Long Description: */
 
-/*         Ai(z) and dAi/dz are computed from K Bessel functions by */
+/*         The computation is carried out by the formulae */
 
-/*                Ai(z) =  c*sqrt(z)*K(1/3,zeta) */
-/*               dAi/dz = -c*   z   *K(2/3,zeta) */
-/*                    c =  1/(pi*sqrt(3)) */
-/*                 zeta =  (2/3)*z**(3/2) */
+/*            J(a,z) = exp( a*pi*i/2)*I(a,-i*z),  Im(z)>=0 */
 
-/*         when abs(z)>1 and from power series when abs(z)<=1. */
+/*            J(a,z) = exp(-a*pi*i/2)*I(a, i*z),  Im(z)<0 */
+
+/*         where the I Bessel function is computed as described in the */
+/*         prologue to CBESI. */
+
+/*         For negative orders, the formula */
+
+/*            J(-a,z) = J(a,z)*cos(a*pi) - Y(a,z)*sin(a*pi) */
+
+/*         can be used.  However, for large orders close to ints, the */
+/*         the function changes radically.  When a is a large positive */
+/*         int, the magnitude of J(-a,z)=J(a,z)*cos(a*pi) is a */
+/*         large negative power of ten.  But when a is not an int, */
+/*         Y(a,z) dominates in magnitude with a large positive power of */
+/*         ten and the most that the second term can be reduced is by */
+/*         unit roundoff from the coefficient.  Thus, wide changes can */
+/*         occur within unit roundoff of a large int for a.  Here, */
+/*         large means a>abs(z). */
 
 /*         In most complex variable computation, one must evaluate ele- */
-/*         mentary functions.  When the magnitude of Z is large, losses */
-/*         of significance by argument reduction occur.  Consequently, if */
-/*         the magnitude of ZETA=(2/3)*Z**(3/2) exceeds U1=SQRT(0.5/UR), */
-/*         then losses exceeding half precision are likely and an error */
-/*         flag IERR=3 is triggered where UR=MAX(D1MACH(4),1.0D-18) is */
-/*         double precision unit roundoff limited to 18 digits precision. */
-/*         Also, if the magnitude of ZETA is larger than U2=0.5/UR, then */
-/*         all significance is lost and IERR=4.  In order to use the INT */
-/*         function, ZETA must be further restricted not to exceed */
-/*         U3=I1MACH(9)=LARGEST int.  Thus, the magnitude of ZETA */
-/*         must be restricted by MIN(U2,U3).  In IEEE arithmetic, U1,U2, */
-/*         and U3 are approximately 2.0E+3, 4.2E+6, 2.1E+9 in single */
-/*         precision and 4.7E+7, 2.3E+15, 2.1E+9 in double precision. */
-/*         This makes U2 limiting is single precision and U3 limiting */
-/*         in double precision.  This means that the magnitude of Z */
-/*         cannot exceed approximately 3.4E+4 in single precision and */
-/*         2.1E+6 in double precision.  This also means that one can */
-/*         expect to retain, in the worst cases on 32-bit machines, */
-/*         no digits in single precision and only 6 digits in double */
-/*         precision. */
+/*         mentary functions.  When the magnitude of Z or FNU+N-1 is */
+/*         large, losses of significance by argument reduction occur. */
+/*         Consequently, if either one exceeds U1=SQRT(0.5/UR), then */
+/*         losses exceeding half precision are likely and an error flag */
+/*         IERR=3 is triggered where UR=MAX(D1MACH(4),1.0D-18) is double */
+/*         precision unit roundoff limited to 18 digits precision.  Also, */
+/*         if either is larger than U2=0.5/UR, then all significance is */
+/*         lost and IERR=4.  In order to use the INT function, arguments */
+/*         must be further restricted not to exceed the largest machine */
+/*         int, U3=I1MACH(9).  Thus, the magnitude of Z and FNU+N-1 */
+/*         is restricted by MIN(U2,U3).  In IEEE arithmetic, U1,U2, and */
+/*         U3 approximate 2.0E+3, 4.2E+6, 2.1E+9 in single precision */
+/*         and 4.7E+7, 2.3E+15 and 2.1E+9 in double precision.  This */
+/*         makes U2 limiting in single precision and U3 limiting in */
+/*         double precision.  This means that one can expect to retain, */
+/*         in the worst cases on IEEE machines, no digits in single pre- */
+/*         cision and only 6 digits in double precision.  Similar con- */
+/*         siderations hold for other machines. */
 
 /*         The approximate relative error in the magnitude of a complex */
 /*         Bessel function can be expressed as P*10**S where P=MAX(UNIT */
@@ -7026,7 +7074,7 @@ int zairy(double *zr, double *zi, int *id,
 /*         component.  However, the phase angle retains absolute accuracy */
 /*         because, in complex arithmetic with precision P, the smaller */
 /*         component will not (as a rule) decrease below P times the */
-/*         magnitude of the larger component. In these extreme cases, */
+/*         magnitude of the larger component.  In these extreme cases, */
 /*         the principal phase angle is on the order of +P, -P, PI/2-P, */
 /*         or -PI/2+P. */
 
@@ -7035,166 +7083,74 @@ int zairy(double *zr, double *zi, int *id,
 /*                 Applied Mathematics Series 55, U. S. Department */
 /*                 of Commerce, Tenth Printing (1972) or later. */
 /*               2. D. E. Amos, Computation of Bessel Functions of */
+/*                 Complex Argument, Report SAND83-0086, Sandia National */
+/*                 Laboratories, Albuquerque, NM, May 1983. */
+/*               3. D. E. Amos, Computation of Bessel Functions of */
 /*                 Complex Argument and Large Order, Report SAND83-0643, */
 /*                 Sandia National Laboratories, Albuquerque, NM, May */
 /*                 1983. */
-/*               3. D. E. Amos, A Subroutine Package for Bessel Functions */
+/*               4. D. E. Amos, A Subroutine Package for Bessel Functions */
 /*                 of a Complex Argument and Nonnegative Order, Report */
 /*                 SAND85-1018, Sandia National Laboratory, Albuquerque, */
 /*                 NM, May 1985. */
-/*               4. D. E. Amos, A portable package for Bessel functions */
+/*               5. D. E. Amos, A portable package for Bessel functions */
 /*                 of a complex argument and nonnegative order, ACM */
 /*                 Transactions on Mathematical Software, 12 (September */
 /*                 1986), pp. 265-273. */
 
-/* ***ROUTINES CALLED  D1MACH, I1MACH, ZABS, ZACAI, ZBKNU, ZEXP, ZSQRT */
+/* ***ROUTINES CALLED  D1MACH, I1MACH, ZABS, ZBINU */
 /* ***REVISION HISTORY  (YYMMDD) */
 /*   830501  DATE WRITTEN */
 /*   890801  REVISION DATE from Version 3.2 */
 /*   910415  Prologue converted to Version 4.0 format.  (BAB) */
 /*   920128  Category corrected.  (WRB) */
 /*   920811  Prologue revised.  (DWL) */
-/*   930122  Added ZEXP and ZSQRT to EXTERNAL statement.  (RWC) */
-/* ***END PROLOGUE  ZAIRY */
-/*     COMPLEX AI,CONE,CSQ,CY,S1,S2,TRM1,TRM2,Z,ZTA,Z3 */
-/* ***FIRST EXECUTABLE STATEMENT  ZAIRY */
+/* ***END PROLOGUE  ZBESJ */
+
+/*     COMPLEX CI,CSGN,CY,Z,ZN */
+    /* Parameter adjustments */
+    --cyi;
+    --cyr;
+
+    /* Function Body */
+
+/* ***FIRST EXECUTABLE STATEMENT  ZBESJ */
     *ierr = 0;
     *nz = 0;
-    if (*id < 0 || *id > 1) {
+    if (*fnu < 0.) {
 	*ierr = 1;
     }
     if (*kode < 1 || *kode > 2) {
 	*ierr = 1;
     }
+    if (*n < 1) {
+	*ierr = 1;
+    }
     if (*ierr != 0) {
 	return 0;
     }
-    az = zabs(zr, zi);
-/* Computing MAX */
-    d__1 = DBL_EPSILON;
-    tol = max(d__1,1e-18);
-    fid = (double) (*id);
-    if (az > 1.) {
-	goto L70;
-    }
-/* ----------------------------------------------------------------------- */
-/*     POWER SERIES FOR ABS(Z).LE.1. */
-/* ----------------------------------------------------------------------- */
-    s1r = coner;
-    s1i = conei;
-    s2r = coner;
-    s2i = conei;
-    if (az < tol) {
-	goto L170;
-    }
-    aa = az * az;
-    if (aa < tol / az) {
-	goto L40;
-    }
-    trm1r = coner;
-    trm1i = conei;
-    trm2r = coner;
-    trm2i = conei;
-    atrm = 1.;
-    str = *zr * *zr - *zi * *zi;
-    sti = *zr * *zi + *zi * *zr;
-    z3r = str * *zr - sti * *zi;
-    z3i = str * *zi + sti * *zr;
-    az3 = az * aa;
-    ak = fid + 2.;
-    bk = 3. - fid - fid;
-    ck = 4. - fid;
-    dk = fid + 3. + fid;
-    d1 = ak * dk;
-    d2 = bk * ck;
-    ad = min(d1,d2);
-    ak = fid * 9. + 24.;
-    bk = 30. - fid * 9.;
-    for (k = 1; k <= 25; ++k) {
-	str = (trm1r * z3r - trm1i * z3i) / d1;
-	trm1i = (trm1r * z3i + trm1i * z3r) / d1;
-	trm1r = str;
-	s1r += trm1r;
-	s1i += trm1i;
-	str = (trm2r * z3r - trm2i * z3i) / d2;
-	trm2i = (trm2r * z3i + trm2i * z3r) / d2;
-	trm2r = str;
-	s2r += trm2r;
-	s2i += trm2i;
-	atrm = atrm * az3 / ad;
-	d1 += ak;
-	d2 += bk;
-	ad = min(d1,d2);
-	if (atrm < tol * ad) {
-	    goto L40;
-	}
-	ak += 18.;
-	bk += 18.;
-/* L30: */
-    }
-L40:
-    if (*id == 1) {
-	goto L50;
-    }
-    *air = s1r * c1 - c2 * (*zr * s2r - *zi * s2i);
-    *aii = s1i * c1 - c2 * (*zr * s2i + *zi * s2r);
-    if (*kode == 1) {
-	return 0;
-    }
-    zsqrt(zr, zi, &str, &sti);
-    ztar = tth * (*zr * str - *zi * sti);
-    ztai = tth * (*zr * sti + *zi * str);
-    zexp(&ztar, &ztai, &str, &sti);
-    ptr = *air * str - *aii * sti;
-    *aii = *air * sti + *aii * str;
-    *air = ptr;
-    return 0;
-L50:
-    *air = -s2r * c2;
-    *aii = -s2i * c2;
-    if (az <= tol) {
-	goto L60;
-    }
-    str = *zr * s1r - *zi * s1i;
-    sti = *zr * s1i + *zi * s1r;
-    cc = c1 / (fid + 1.);
-    *air += cc * (str * *zr - sti * *zi);
-    *aii += cc * (str * *zi + sti * *zr);
-L60:
-    if (*kode == 1) {
-	return 0;
-    }
-    zsqrt(zr, zi, &str, &sti);
-    ztar = tth * (*zr * str - *zi * sti);
-    ztai = tth * (*zr * sti + *zi * str);
-    zexp(&ztar, &ztai, &str, &sti);
-    ptr = str * *air - sti * *aii;
-    *aii = str * *aii + sti * *air;
-    *air = ptr;
-    return 0;
-/* ----------------------------------------------------------------------- */
-/*     CASE FOR ABS(Z).GT.1.0 */
-/* ----------------------------------------------------------------------- */
-L70:
-    fnu = (fid + 1.) / 3.;
 /* ----------------------------------------------------------------------- */
 /*     SET PARAMETERS RELATED TO MACHINE CONSTANTS. */
-/*     TOL IS THE APPROXIMATE UNIT ROUNDOFF LIMITED TO 1.0D-18. */
+/*     TOL IS THE APPROXIMATE UNIT ROUNDOFF LIMITED TO 1.0E-18. */
 /*     ELIM IS THE APPROXIMATE EXPONENTIAL OVER- AND UNDERFLOW LIMIT. */
 /*     EXP(-ELIM).LT.EXP(-ALIM)=EXP(-ELIM)/TOL    AND */
 /*     EXP(ELIM).GT.EXP(ALIM)=EXP(ELIM)*TOL       ARE INTERVALS NEAR */
 /*     UNDERFLOW AND OVERFLOW LIMITS WHERE SCALED ARITHMETIC IS DONE. */
 /*     RL IS THE LOWER BOUNDARY OF THE ASYMPTOTIC EXPANSION FOR LARGE Z. */
 /*     DIG = NUMBER OF BASE 10 DIGITS IN TOL = 10**(-DIG). */
+/*     FNUL IS THE LOWER BOUNDARY OF THE ASYMPTOTIC SERIES FOR LARGE FNU. */
 /* ----------------------------------------------------------------------- */
-    k1 = -DBL_MIN_EXP;
-    k2 = DBL_MAX_EXP;
-    r1m5 = M_LOG10_2;
+/* Computing MAX */
+    d__1 = d1mach_(&c__4);
+    tol = max(d__1,1e-18);
+    k1 = i1mach_(&c__15);
+    k2 = i1mach_(&c__16);
+    r1m5 = d1mach_(&c__5);
 /* Computing MIN */
     i__1 = abs(k1), i__2 = abs(k2);
     k = min(i__1,i__2);
     elim = (k * r1m5 - 3.) * 2.303;
-    k1 = DBL_MANT_DIG - 1;
+    k1 = i1mach_(&c__14) - 1;
     aa = r1m5 * k1;
     dig = min(aa,18.);
     aa *= 2.303;
@@ -7202,214 +7158,449 @@ L70:
     d__1 = -aa;
     alim = elim + max(d__1,-41.45);
     rl = dig * 1.2 + 3.;
-    alaz = log(az);
+    fnul = (dig - 3.) * 6. + 10.;
 /* ----------------------------------------------------------------------- */
 /*     TEST FOR PROPER RANGE */
 /* ----------------------------------------------------------------------- */
+    az = zabs_(zr, zi);
+    fn = *fnu + (*n - 1);
     aa = .5 / tol;
-    bb = INT_MAX * .5;
+    bb = i1mach_(&c__9) * .5;
     aa = min(aa,bb);
-    aa = pow_dd(&aa, &tth);
     if (az > aa) {
+	goto L260;
+    }
+    if (fn > aa) {
 	goto L260;
     }
     aa = sqrt(aa);
     if (az > aa) {
 	*ierr = 3;
     }
-    zsqrt(zr, zi, &csqr, &csqi);
-    ztar = tth * (*zr * csqr - *zi * csqi);
-    ztai = tth * (*zr * csqi + *zi * csqr);
-/* ----------------------------------------------------------------------- */
-/*     RE(ZTA).LE.0 WHEN RE(Z).LT.0, ESPECIALLY WHEN IM(Z) IS SMALL */
-/* ----------------------------------------------------------------------- */
-    iflag = 0;
-    sfac = 1.;
-    ak = ztai;
-    if (*zr >= 0.) {
-	goto L80;
-    }
-    bk = ztar;
-    ck = -abs(bk);
-    ztar = ck;
-    ztai = ak;
-L80:
-    if (*zi != 0.) {
-	goto L90;
-    }
-    if (*zr > 0.) {
-	goto L90;
-    }
-    ztar = 0.;
-    ztai = ak;
-L90:
-    aa = ztar;
-    if (aa >= 0. && *zr > 0.) {
-	goto L110;
-    }
-    if (*kode == 2) {
-	goto L100;
+    if (fn > aa) {
+	*ierr = 3;
     }
 /* ----------------------------------------------------------------------- */
-/*     OVERFLOW TEST */
+/*     CALCULATE CSGN=EXP(FNU*HPI*I) TO MINIMIZE LOSSES OF SIGNIFICANCE */
+/*     WHEN FNU IS LARGE */
 /* ----------------------------------------------------------------------- */
-    if (aa > -alim) {
-	goto L100;
+    cii = 1.;
+    inu = (int) (*fnu);
+    inuh = inu / 2;
+    ir = inu - (inuh << 1);
+    arg = (*fnu - (inu - ir)) * hpi;
+    csgnr = cos(arg);
+    csgni = sin(arg);
+    if (inuh % 2 == 0) {
+	goto L40;
     }
-    aa = -aa + alaz * .25;
-    iflag = 1;
-    sfac = tol;
-    if (aa > elim) {
-	goto L270;
-    }
-L100:
+    csgnr = -csgnr;
+    csgni = -csgni;
+L40:
 /* ----------------------------------------------------------------------- */
-/*     CBKNU AND CACON RETURN EXP(ZTA)*K(FNU,ZTA) ON KODE=2 */
+/*     ZN IS IN THE RIGHT HALF PLANE */
 /* ----------------------------------------------------------------------- */
-    mr = 1;
-    if (*zi < 0.) {
-	mr = -1;
+    znr = *zi;
+    zni = -(*zr);
+    if (*zi >= 0.) {
+	goto L50;
     }
-    zacai(&ztar, &ztai, &fnu, kode, &mr, &c__1, cyr, cyi, &nn, &rl, &tol, &
+    znr = -znr;
+    zni = -zni;
+    csgni = -csgni;
+    cii = -cii;
+L50:
+    zbinu_(&znr, &zni, fnu, kode, n, &cyr[1], &cyi[1], nz, &rl, &fnul, &tol, &
 	    elim, &alim);
-    if (nn < 0) {
-	goto L280;
+    if (*nz < 0) {
+	goto L130;
     }
-    *nz += nn;
-    goto L130;
-L110:
-    if (*kode == 2) {
-	goto L120;
+    nl = *n - *nz;
+    if (nl == 0) {
+	return 0;
     }
-/* ----------------------------------------------------------------------- */
-/*     UNDERFLOW TEST */
-/* ----------------------------------------------------------------------- */
-    if (aa < alim) {
-	goto L120;
+    rtol = 1. / tol;
+    ascle = d1mach_(&c__1) * rtol * 1e3;
+    i__1 = nl;
+    for (i__ = 1; i__ <= i__1; ++i__) {
+/*       STR = CYR(I)*CSGNR - CYI(I)*CSGNI */
+/*       CYI(I) = CYR(I)*CSGNI + CYI(I)*CSGNR */
+/*       CYR(I) = STR */
+	aa = cyr[i__];
+	bb = cyi[i__];
+	atol = 1.;
+/* Computing MAX */
+	d__1 = abs(aa), d__2 = abs(bb);
+	if (max(d__1,d__2) > ascle) {
+	    goto L55;
+	}
+	aa *= rtol;
+	bb *= rtol;
+	atol = tol;
+L55:
+	str = aa * csgnr - bb * csgni;
+	sti = aa * csgni + bb * csgnr;
+	cyr[i__] = str * atol;
+	cyi[i__] = sti * atol;
+	str = -csgni * cii;
+	csgni = csgnr * cii;
+	csgnr = str;
+/* L60: */
     }
-    aa = -aa - alaz * .25;
-    iflag = 2;
-    sfac = 1. / tol;
-    if (aa < -elim) {
-	goto L210;
-    }
-L120:
-    zbknu(&ztar, &ztai, &fnu, kode, &c__1, cyr, cyi, nz, &tol, &elim, &alim);
+    return 0;
 L130:
-    s1r = cyr[0] * coef;
-    s1i = cyi[0] * coef;
-    if (iflag != 0) {
-	goto L150;
-    }
-    if (*id == 1) {
+    if (*nz == -2) {
 	goto L140;
     }
-    *air = csqr * s1r - csqi * s1i;
-    *aii = csqr * s1i + csqi * s1r;
-    return 0;
-L140:
-    *air = -(*zr * s1r - *zi * s1i);
-    *aii = -(*zr * s1i + *zi * s1r);
-    return 0;
-L150:
-    s1r *= sfac;
-    s1i *= sfac;
-    if (*id == 1) {
-	goto L160;
-    }
-    str = s1r * csqr - s1i * csqi;
-    s1i = s1r * csqi + s1i * csqr;
-    s1r = str;
-    *air = s1r / sfac;
-    *aii = s1i / sfac;
-    return 0;
-L160:
-    str = -(s1r * *zr - s1i * *zi);
-    s1i = -(s1r * *zi + s1i * *zr);
-    s1r = str;
-    *air = s1r / sfac;
-    *aii = s1i / sfac;
-    return 0;
-L170:
-    aa = DBL_MIN * 1e3;
-    s1r = zeror;
-    s1i = zeroi;
-    if (*id == 1) {
-	goto L190;
-    }
-    if (az <= aa) {
-	goto L180;
-    }
-    s1r = c2 * *zr;
-    s1i = c2 * *zi;
-L180:
-    *air = c1 - s1r;
-    *aii = -s1i;
-    return 0;
-L190:
-    *air = -c2;
-    *aii = 0.;
-    aa = sqrt(aa);
-    if (az <= aa) {
-	goto L200;
-    }
-    s1r = (*zr * *zr - *zi * *zi) * .5;
-    s1i = *zr * *zi;
-L200:
-    *air += c1 * s1r;
-    *aii += c1 * s1i;
-    return 0;
-L210:
-    *nz = 1;
-    *air = zeror;
-    *aii = zeroi;
-    return 0;
-L270:
     *nz = 0;
     *ierr = 2;
     return 0;
-L280:
-    if (nn == -1) {
-	goto L270;
-    }
+L140:
     *nz = 0;
     *ierr = 5;
     return 0;
 L260:
+    *nz = 0;
     *ierr = 4;
+    return 0;
+} /* zbesj_ */
+
+/* DECK ZBESY */
+/* Subroutine */
+int zbesy_(double *zr, double *zi, double *fnu, 
+	int *kode, int *n, double *cyr, double *cyi, int *
+	nz, double *cwrkr, double *cwrki, int *ierr)
+{
+    /* System generated locals */
+    int i__1, i__2;
+    double d__1, d__2;
+
+    /* Local variables */
+    int i__, k, k1, k2;
+    double aa, bb, ey, c1i, c2i, c1r, c2r;
+    int nz1, nz2;
+    double exi, r1m5, exr, sti, tay, tol, str, hcii, elim, atol, 
+	    rtol, ascle;
+
+/* ***BEGIN PROLOGUE  ZBESY */
+/* ***PURPOSE  Compute a sequence of the Bessel functions Y(a,z) for */
+/*            complex argument z and real nonnegative orders a=b,b+1, */
+/*            b+2,... where b>0.  A scaling option is available to */
+/*            help avoid overflow. */
+/* ***LIBRARY   SLATEC */
+/* ***CATEGORY  C10A4 */
+/* ***TYPE      COMPLEX (CBESY-C, ZBESY-C) */
+/* ***KEYWORDS  BESSEL FUNCTIONS OF COMPLEX ARGUMENT, */
+/*             BESSEL FUNCTIONS OF SECOND KIND, WEBER'S FUNCTION, */
+/*             Y BESSEL FUNCTIONS */
+/* ***AUTHOR  Amos, D. E., (SNL) */
+/* ***DESCRIPTION */
+
+/*                      ***A DOUBLE PRECISION ROUTINE*** */
+/*         On KODE=1, ZBESY computes an N member sequence of complex */
+/*         Bessel functions CY(L)=Y(FNU+L-1,Z) for real nonnegative */
+/*         orders FNU+L-1, L=1,...,N and complex Z in the cut plane */
+/*         -pi<arg(Z)<=pi where Z=ZR+i*ZI.  On KODE=2, CBESY returns */
+/*         the scaled functions */
+
+/*            CY(L) = exp(-abs(Y))*Y(FNU+L-1,Z),  L=1,...,N, Y=Im(Z) */
+
+/*         which remove the exponential growth in both the upper and */
+/*         lower half planes as Z goes to infinity.  Definitions and */
+/*         notation are found in the NBS Handbook of Mathematical */
+/*         Functions (Ref. 1). */
+
+/*         Input */
+/*           ZR     - DOUBLE PRECISION real part of nonzero argument Z */
+/*           ZI     - DOUBLE PRECISION imag part of nonzero argument Z */
+/*           FNU    - DOUBLE PRECISION initial order, FNU>=0 */
+/*           KODE   - A parameter to indicate the scaling option */
+/*                    KODE=1  returns */
+/*                            CY(L)=Y(FNU+L-1,Z), L=1,...,N */
+/*                        =2  returns */
+/*                            CY(L)=Y(FNU+L-1,Z)*exp(-abs(Y)), L=1,...,N */
+/*                            where Y=Im(Z) */
+/*           N      - Number of terms in the sequence, N>=1 */
+/*           CWRKR  - DOUBLE PRECISION work vector of dimension N */
+/*           CWRKI  - DOUBLE PRECISION work vector of dimension N */
+
+/*         Output */
+/*           CYR    - DOUBLE PRECISION real part of result vector */
+/*           CYI    - DOUBLE PRECISION imag part of result vector */
+/*           NZ     - Number of underflows set to zero */
+/*                    NZ=0    Normal return */
+/*                    NZ>0    CY(L)=0 for NZ values of L, usually on */
+/*                            KODE=2 (the underflows may not be in an */
+/*                            uninterrupted sequence) */
+/*           IERR   - Error flag */
+/*                    IERR=0  Normal return     - COMPUTATION COMPLETED */
+/*                    IERR=1  Input error       - NO COMPUTATION */
+/*                    IERR=2  Overflow          - NO COMPUTATION */
+/*                            (abs(Z) too small and/or FNU+N-1 */
+/*                            too large) */
+/*                    IERR=3  Precision warning - COMPUTATION COMPLETED */
+/*                            (Result has half precision or less */
+/*                            because abs(Z) or FNU+N-1 is large) */
+/*                    IERR=4  Precision error   - NO COMPUTATION */
+/*                            (Result has no precision because */
+/*                            abs(Z) or FNU+N-1 is too large) */
+/*                    IERR=5  Algorithmic error - NO COMPUTATION */
+/*                            (Termination condition not met) */
+
+/* *Long Description: */
+
+/*         The computation is carried out by the formula */
+
+/*            Y(a,z) = (H(1,a,z) - H(2,a,z))/(2*i) */
+
+/*         where the Hankel functions are computed as described in CBESH. */
+
+/*         For negative orders, the formula */
+
+/*            Y(-a,z) = Y(a,z)*cos(a*pi) + J(a,z)*sin(a*pi) */
+
+/*         can be used.  However, for large orders close to half odd */
+/*         ints the function changes radically.  When a is a large */
+/*         positive half odd int, the magnitude of Y(-a,z)=J(a,z)* */
+/*         sin(a*pi) is a large negative power of ten.  But when a is */
+/*         not a half odd int, Y(a,z) dominates in magnitude with a */
+/*         large positive power of ten and the most that the second term */
+/*         can be reduced is by unit roundoff from the coefficient. */
+/*         Thus,  wide changes can occur within unit roundoff of a large */
+/*         half odd int.  Here, large means a>abs(z). */
+
+/*         In most complex variable computation, one must evaluate ele- */
+/*         mentary functions.  When the magnitude of Z or FNU+N-1 is */
+/*         large, losses of significance by argument reduction occur. */
+/*         Consequently, if either one exceeds U1=SQRT(0.5/UR), then */
+/*         losses exceeding half precision are likely and an error flag */
+/*         IERR=3 is triggered where UR=MAX(D1MACH(4),1.0D-18) is double */
+/*         precision unit roundoff limited to 18 digits precision.  Also, */
+/*         if either is larger than U2=0.5/UR, then all significance is */
+/*         lost and IERR=4.  In order to use the INT function, arguments */
+/*         must be further restricted not to exceed the largest machine */
+/*         int, U3=I1MACH(9).  Thus, the magnitude of Z and FNU+N-1 */
+/*         is restricted by MIN(U2,U3).  In IEEE arithmetic, U1,U2, and */
+/*         U3 approximate 2.0E+3, 4.2E+6, 2.1E+9 in single precision */
+/*         and 4.7E+7, 2.3E+15 and 2.1E+9 in double precision.  This */
+/*         makes U2 limiting in single precision and U3 limiting in */
+/*         double precision.  This means that one can expect to retain, */
+/*         in the worst cases on IEEE machines, no digits in single pre- */
+/*         cision and only 6 digits in double precision.  Similar con- */
+/*         siderations hold for other machines. */
+
+/*         The approximate relative error in the magnitude of a complex */
+/*         Bessel function can be expressed as P*10**S where P=MAX(UNIT */
+/*         ROUNDOFF,1.0E-18) is the nominal precision and 10**S repre- */
+/*         sents the increase in error due to argument reduction in the */
+/*         elementary functions.  Here, S=MAX(1,ABS(LOG10(ABS(Z))), */
+/*         ABS(LOG10(FNU))) approximately (i.e., S=MAX(1,ABS(EXPONENT OF */
+/*         ABS(Z),ABS(EXPONENT OF FNU)) ).  However, the phase angle may */
+/*         have only absolute accuracy.  This is most likely to occur */
+/*         when one component (in magnitude) is larger than the other by */
+/*         several orders of magnitude.  If one component is 10**K larger */
+/*         than the other, then one can expect only MAX(ABS(LOG10(P))-K, */
+/*         0) significant digits; or, stated another way, when K exceeds */
+/*         the exponent of P, no significant digits remain in the smaller */
+/*         component.  However, the phase angle retains absolute accuracy */
+/*         because, in complex arithmetic with precision P, the smaller */
+/*         component will not (as a rule) decrease below P times the */
+/*         magnitude of the larger component.  In these extreme cases, */
+/*         the principal phase angle is on the order of +P, -P, PI/2-P, */
+/*         or -PI/2+P. */
+
+/* ***REFERENCES  1. M. Abramowitz and I. A. Stegun, Handbook of Mathe- */
+/*                 matical Functions, National Bureau of Standards */
+/*                 Applied Mathematics Series 55, U. S. Department */
+/*                 of Commerce, Tenth Printing (1972) or later. */
+/*               2. D. E. Amos, Computation of Bessel Functions of */
+/*                 Complex Argument, Report SAND83-0086, Sandia National */
+/*                 Laboratories, Albuquerque, NM, May 1983. */
+/*               3. D. E. Amos, Computation of Bessel Functions of */
+/*                 Complex Argument and Large Order, Report SAND83-0643, */
+/*                 Sandia National Laboratories, Albuquerque, NM, May */
+/*                 1983. */
+/*               4. D. E. Amos, A Subroutine Package for Bessel Functions */
+/*                 of a Complex Argument and Nonnegative Order, Report */
+/*                 SAND85-1018, Sandia National Laboratory, Albuquerque, */
+/*                 NM, May 1985. */
+/*               5. D. E. Amos, A portable package for Bessel functions */
+/*                 of a complex argument and nonnegative order, ACM */
+/*                 Transactions on Mathematical Software, 12 (September */
+/*                 1986), pp. 265-273. */
+
+/* ***ROUTINES CALLED  D1MACH, I1MACH, ZBESH */
+/* ***REVISION HISTORY  (YYMMDD) */
+/*   830501  DATE WRITTEN */
+/*   890801  REVISION DATE from Version 3.2 */
+/*   910415  Prologue converted to Version 4.0 format.  (BAB) */
+/*   920128  Category corrected.  (WRB) */
+/*   920811  Prologue revised.  (DWL) */
+/* ***END PROLOGUE  ZBESY */
+
+/*     COMPLEX CWRK,CY,C1,C2,EX,HCI,Z,ZU,ZV */
+/* ***FIRST EXECUTABLE STATEMENT  ZBESY */
+    /* Parameter adjustments */
+    --cwrki;
+    --cwrkr;
+    --cyi;
+    --cyr;
+
+    /* Function Body */
+    *ierr = 0;
+    *nz = 0;
+    if (*zr == 0. && *zi == 0.) {
+	*ierr = 1;
+    }
+    if (*fnu < 0.) {
+	*ierr = 1;
+    }
+    if (*kode < 1 || *kode > 2) {
+	*ierr = 1;
+    }
+    if (*n < 1) {
+	*ierr = 1;
+    }
+    if (*ierr != 0) {
+	return 0;
+    }
+    hcii = .5;
+    zbesh_(zr, zi, fnu, kode, &c__1, n, &cyr[1], &cyi[1], &nz1, ierr);
+    if (*ierr != 0 && *ierr != 3) {
+	goto L170;
+    }
+    zbesh_(zr, zi, fnu, kode, &c__2, n, &cwrkr[1], &cwrki[1], &nz2, ierr);
+    if (*ierr != 0 && *ierr != 3) {
+	goto L170;
+    }
+    *nz = min(nz1,nz2);
+    if (*kode == 2) {
+	goto L60;
+    }
+    i__1 = *n;
+    for (i__ = 1; i__ <= i__1; ++i__) {
+	str = cwrkr[i__] - cyr[i__];
+	sti = cwrki[i__] - cyi[i__];
+	cyr[i__] = -sti * hcii;
+	cyi[i__] = str * hcii;
+/* L50: */
+    }
+    return 0;
+L60:
+/* Computing MAX */
+    d__1 = d1mach_(&c__4);
+    tol = max(d__1,1e-18);
+    k1 = i1mach_(&c__15);
+    k2 = i1mach_(&c__16);
+/* Computing MIN */
+    i__1 = abs(k1), i__2 = abs(k2);
+    k = min(i__1,i__2);
+    r1m5 = d1mach_(&c__5);
+/* ----------------------------------------------------------------------- */
+/*     ELIM IS THE APPROXIMATE EXPONENTIAL UNDER- AND OVERFLOW LIMIT */
+/* ----------------------------------------------------------------------- */
+    elim = (k * r1m5 - 3.) * 2.303;
+    exr = cos(*zr);
+    exi = sin(*zr);
+    ey = 0.;
+    tay = (d__1 = *zi + *zi, abs(d__1));
+    if (tay < elim) {
+	ey = exp(-tay);
+    }
+    if (*zi < 0.) {
+	goto L90;
+    }
+    c1r = exr * ey;
+    c1i = exi * ey;
+    c2r = exr;
+    c2i = -exi;
+L70:
+    *nz = 0;
+    rtol = 1. / tol;
+    ascle = d1mach_(&c__1) * rtol * 1e3;
+    i__1 = *n;
+    for (i__ = 1; i__ <= i__1; ++i__) {
+/*       STR = C1R*CYR(I) - C1I*CYI(I) */
+/*       STI = C1R*CYI(I) + C1I*CYR(I) */
+/*       STR = -STR + C2R*CWRKR(I) - C2I*CWRKI(I) */
+/*       STI = -STI + C2R*CWRKI(I) + C2I*CWRKR(I) */
+/*       CYR(I) = -STI*HCII */
+/*       CYI(I) = STR*HCII */
+	aa = cwrkr[i__];
+	bb = cwrki[i__];
+	atol = 1.;
+/* Computing MAX */
+	d__1 = abs(aa), d__2 = abs(bb);
+	if (max(d__1,d__2) > ascle) {
+	    goto L75;
+	}
+	aa *= rtol;
+	bb *= rtol;
+	atol = tol;
+L75:
+	str = (aa * c2r - bb * c2i) * atol;
+	sti = (aa * c2i + bb * c2r) * atol;
+	aa = cyr[i__];
+	bb = cyi[i__];
+	atol = 1.;
+/* Computing MAX */
+	d__1 = abs(aa), d__2 = abs(bb);
+	if (max(d__1,d__2) > ascle) {
+	    goto L85;
+	}
+	aa *= rtol;
+	bb *= rtol;
+	atol = tol;
+L85:
+	str -= (aa * c1r - bb * c1i) * atol;
+	sti -= (aa * c1i + bb * c1r) * atol;
+	cyr[i__] = -sti * hcii;
+	cyi[i__] = str * hcii;
+	if (str == 0. && sti == 0. && ey == 0.) {
+	    ++(*nz);
+	}
+/* L80: */
+    }
+    return 0;
+L90:
+    c1r = exr;
+    c1i = exi;
+    c2r = exr * ey;
+    c2i = -exi * ey;
+    goto L70;
+L170:
     *nz = 0;
     return 0;
-} /* zairy */
+} /* zbesy_ */
 
 /* DECK ZBESH */
 /* Subroutine */
-int zbesh(double *zr, double *zi, double *fnu, 
+int zbesh_(double *zr, double *zi, double *fnu, 
 	int *kode, int *m, int *n, double *cyr, double *
 	cyi, int *nz, int *ierr)
 {
     /* Initialized data */
-
-    static double hpi = 1.57079632679489662;
+    double hpi = 1.57079632679489662;
 
     /* System generated locals */
     int i__1, i__2;
     double d__1, d__2;
 
     /* Local variables */
-    static int i__, k, k1, k2;
-    static double aa, bb, fn;
-    static int mm;
-    static double az;
-    static int ir, nn;
-    static double rl;
-    static int mr, nw;
-    static double dig, arg, aln, fmm, r1m5, ufl, sgn;
-    static int nuf, inu;
-    static double tol, sti, zni, zti, str, znr, alim, elim;
-    static double atol, rhpi;
-    static int inuh;
-    static double fnul, rtol, ascle, csgni;
-    static double csgnr;
+    int i__, k, k1, k2;
+    double aa, bb, fn;
+    int mm;
+    double az;
+    int ir, nn;
+    double rl;
+    int mr, nw;
+    double dig, arg, aln, fmm, r1m5, ufl, sgn;
+    int nuf, inu;
+    double tol, sti, zni, zti, str, znr, alim, elim;
+    double atol, rhpi;
+    int inuh;
+    double fnul, rtol, ascle, csgni;
+    double csgnr;
 
 /* ***BEGIN PROLOGUE  ZBESH */
 /* ***PURPOSE  Compute a sequence of the Hankel functions H(m,a,z) */
@@ -7610,16 +7801,16 @@ int zbesh(double *zr, double *zi, double *fnu,
 /*     FNUL IS THE LOWER BOUNDARY OF THE ASYMPTOTIC SERIES FOR LARGE FNU */
 /* ----------------------------------------------------------------------- */
 /* Computing MAX */
-    d__1 = DBL_EPSILON;
+    d__1 = d1mach_(&c__4);
     tol = max(d__1,1e-18);
-    k1 = -DBL_MIN_EXP;
-    k2 = DBL_MAX_EXP;
-    r1m5 = M_LOG10_2;
+    k1 = i1mach_(&c__15);
+    k2 = i1mach_(&c__16);
+    r1m5 = d1mach_(&c__5);
 /* Computing MIN */
     i__1 = abs(k1), i__2 = abs(k2);
     k = min(i__1,i__2);
     elim = (k * r1m5 - 3.) * 2.303;
-    k1 = DBL_MANT_DIG - 1;
+    k1 = i1mach_(&c__14) - 1;
     aa = r1m5 * k1;
     dig = min(aa,18.);
     aa *= 2.303;
@@ -7636,9 +7827,9 @@ int zbesh(double *zr, double *zi, double *fnu,
 /* ----------------------------------------------------------------------- */
 /*     TEST FOR PROPER RANGE */
 /* ----------------------------------------------------------------------- */
-    az = zabs(zr, zi);
+    az = zabs_(zr, zi);
     aa = .5 / tol;
-    bb = INT_MAX * .5;
+    bb = i1mach_(&c__9) * .5;
     aa = min(aa,bb);
     if (az > aa) {
 	goto L260;
@@ -7656,7 +7847,7 @@ int zbesh(double *zr, double *zi, double *fnu,
 /* ----------------------------------------------------------------------- */
 /*     OVERFLOW TEST ON THE LAST MEMBER OF THE SEQUENCE */
 /* ----------------------------------------------------------------------- */
-    ufl = DBL_MIN * 1e3;
+    ufl = d1mach_(&c__1) * 1e3;
     if (az < ufl) {
 	goto L230;
     }
@@ -7679,7 +7870,7 @@ int zbesh(double *zr, double *zi, double *fnu,
     }
     goto L70;
 L60:
-    zuoik(&znr, &zni, fnu, kode, &c__2, &nn, &cyr[1], &cyi[1], &nuf, &tol, &
+    zuoik_(&znr, &zni, fnu, kode, &c__2, &nn, &cyr[1], &cyi[1], &nuf, &tol, &
 	    elim, &alim);
     if (nuf < 0) {
 	goto L230;
@@ -7701,7 +7892,7 @@ L70:
 /*     RIGHT HALF PLANE COMPUTATION, XN.GE.0. .AND. (XN.NE.0. .OR. */
 /*     YN.GE.0. .OR. M=1) */
 /* ----------------------------------------------------------------------- */
-    zbknu(&znr, &zni, fnu, kode, &nn, &cyr[1], &cyi[1], nz, &tol, &elim, &
+    zbknu_(&znr, &zni, fnu, kode, &nn, &cyr[1], &cyi[1], nz, &tol, &elim, &
 	    alim);
     goto L110;
 /* ----------------------------------------------------------------------- */
@@ -7709,7 +7900,7 @@ L70:
 /* ----------------------------------------------------------------------- */
 L80:
     mr = -mm;
-    zacon(&znr, &zni, fnu, kode, &mr, &nn, &cyr[1], &cyi[1], &nw, &rl, &fnul,
+    zacon_(&znr, &zni, fnu, kode, &mr, &nn, &cyr[1], &cyi[1], &nw, &rl, &fnul,
 	     &tol, &elim, &alim);
     if (nw < 0) {
 	goto L240;
@@ -7731,7 +7922,7 @@ L90:
     znr = -znr;
     zni = -zni;
 L100:
-    zbunk(&znr, &zni, fnu, kode, &mr, &nn, &cyr[1], &cyi[1], &nw, &tol, &
+    zbunk_(&znr, &zni, fnu, kode, &mr, &nn, &cyr[1], &cyi[1], &nw, &tol, &
 	    elim, &alim);
     if (nw < 0) {
 	goto L240;
@@ -7819,61 +8010,56 @@ L260:
     *nz = 0;
     *ierr = 4;
     return 0;
-} /* zbesh */
+} /* zbesh_ */
 
-/* DECK ZBESJ */
+/* DECK ZBESI */
 /* Subroutine */
-int zbesj(double *zr, double *zi, double *fnu, 
+int zbesi_(double *zr, double *zi, double *fnu, 
 	int *kode, int *n, double *cyr, double *cyi, int *
 	nz, int *ierr)
 {
     /* Initialized data */
-
-    static double hpi = 1.57079632679489662;
+    double pi = 3.14159265358979324;
+    double coner = 1.;
+    double conei = 0.;
 
     /* System generated locals */
     int i__1, i__2;
     double d__1, d__2;
 
     /* Local variables */
-    static int i__, k, k1, k2;
-    static double aa, bb, fn;
-    static int nl;
-    static double az;
-    static int ir;
-    static double rl, dig, cii, arg, r1m5;
-    static int inu;
-    static double tol, sti, zni, str, znr, alim, elim;
-    static double atol;
-    static int inuh;
-    static double fnul, rtol, ascle, csgni, csgnr;
+    int i__, k, k1, k2;
+    double aa, bb, fn, az;
+    int nn;
+    double rl, dig, arg, r1m5;
+    int inu;
+    double tol, sti, zni, str, znr, alim, elim;
+    double atol, fnul, rtol, ascle, csgni, csgnr;
 
-/* ***BEGIN PROLOGUE  ZBESJ */
-/* ***PURPOSE  Compute a sequence of the Bessel functions J(a,z) for */
+/* ***BEGIN PROLOGUE  ZBESI */
+/* ***PURPOSE  Compute a sequence of the Bessel functions I(a,z) for */
 /*            complex argument z and real nonnegative orders a=b,b+1, */
 /*            b+2,... where b>0.  A scaling option is available to */
 /*            help avoid overflow. */
 /* ***LIBRARY   SLATEC */
-/* ***CATEGORY  C10A4 */
-/* ***TYPE      COMPLEX (CBESJ-C, ZBESJ-C) */
-/* ***KEYWORDS  BESSEL FUNCTIONS OF COMPLEX ARGUMENT, */
-/*             BESSEL FUNCTIONS OF THE FIRST KIND, J BESSEL FUNCTIONS */
+/* ***CATEGORY  C10B4 */
+/* ***TYPE      COMPLEX (CBESI-C, ZBESI-C) */
+/* ***KEYWORDS  BESSEL FUNCTIONS OF COMPLEX ARGUMENT, I BESSEL FUNCTIONS, */
+/*             MODIFIED BESSEL FUNCTIONS */
 /* ***AUTHOR  Amos, D. E., (SNL) */
 /* ***DESCRIPTION */
 
-/*                      ***A DOUBLE PRECISION ROUTINE*** */
-/*         On KODE=1, ZBESJ computes an N member sequence of complex */
-/*         Bessel functions CY(L)=J(FNU+L-1,Z) for real nonnegative */
+/*                    ***A DOUBLE PRECISION ROUTINE*** */
+/*         On KODE=1, ZBESI computes an N-member sequence of complex */
+/*         Bessel functions CY(L)=I(FNU+L-1,Z) for real nonnegative */
 /*         orders FNU+L-1, L=1,...,N and complex Z in the cut plane */
-/*         -pi<arg(Z)<=pi where Z=ZR+i*ZI.  On KODE=2, CBESJ returns */
+/*         -pi<arg(Z)<=pi where Z=ZR+i*ZI.  On KODE=2, CBESI returns */
 /*         the scaled functions */
 
-/*            CY(L) = exp(-abs(Y))*J(FNU+L-1,Z),  L=1,...,N and Y=Im(Z) */
+/*            CY(L) = exp(-abs(X))*I(FNU+L-1,Z), L=1,...,N and X=Re(Z) */
 
-/*         which remove the exponential growth in both the upper and */
-/*         lower half planes as Z goes to infinity.  Definitions and */
-/*         notation are found in the NBS Handbook of Mathematical */
-/*         Functions (Ref. 1). */
+/*         which removes the exponential growth in both the left and */
+/*         right half-planes as Z goes to infinity. */
 
 /*         Input */
 /*           ZR     - DOUBLE PRECISION real part of argument Z */
@@ -7881,10 +8067,10 @@ int zbesj(double *zr, double *zi, double *fnu,
 /*           FNU    - DOUBLE PRECISION initial order, FNU>=0 */
 /*           KODE   - A parameter to indicate the scaling option */
 /*                    KODE=1  returns */
-/*                            CY(L)=J(FNU+L-1,Z), L=1,...,N */
+/*                            CY(L)=I(FNU+L-1,Z), L=1,...,N */
 /*                        =2  returns */
-/*                            CY(L)=J(FNU+L-1,Z)*exp(-abs(Y)), L=1,...,N */
-/*                            where Y=Im(Z) */
+/*                            CY(L)=exp(-abs(X))*I(FNU+L-1,Z), L=1,...,N */
+/*                            where X=Re(Z) */
 /*           N      - Number of terms in the sequence, N>=1 */
 
 /*         Output */
@@ -7897,7 +8083,7 @@ int zbesj(double *zr, double *zi, double *fnu,
 /*                    IERR=0  Normal return     - COMPUTATION COMPLETED */
 /*                    IERR=1  Input error       - NO COMPUTATION */
 /*                    IERR=2  Overflow          - NO COMPUTATION */
-/*                            (Im(Z) too large on KODE=1) */
+/*                            (Re(Z) too large on KODE=1) */
 /*                    IERR=3  Precision warning - COMPUTATION COMPLETED */
 /*                            (Result has half precision or less */
 /*                            because abs(Z) or FNU+N-1 is large) */
@@ -7909,27 +8095,32 @@ int zbesj(double *zr, double *zi, double *fnu,
 
 /* *Long Description: */
 
-/*         The computation is carried out by the formulae */
+/*         The computation of I(a,z) is carried out by the power series */
+/*         for small abs(z), the asymptotic expansion for large abs(z), */
+/*         the Miller algorithm normalized by the Wronskian and a */
+/*         Neumann series for intermediate magnitudes of z, and the */
+/*         uniform asymptotic expansions for I(a,z) and J(a,z) for */
+/*         large orders a.  Backward recurrence is used to generate */
+/*         sequences or reduce orders when necessary. */
 
-/*            J(a,z) = exp( a*pi*i/2)*I(a,-i*z),  Im(z)>=0 */
+/*         The calculations above are done in the right half plane and */
+/*         continued into the left half plane by the formula */
 
-/*            J(a,z) = exp(-a*pi*i/2)*I(a, i*z),  Im(z)<0 */
-
-/*         where the I Bessel function is computed as described in the */
-/*         prologue to CBESI. */
+/*            I(a,z*exp(t)) = exp(t*a)*I(a,z), Re(z)>0 */
+/*                        t = i*pi or -i*pi */
 
 /*         For negative orders, the formula */
 
-/*            J(-a,z) = J(a,z)*cos(a*pi) - Y(a,z)*sin(a*pi) */
+/*            I(-a,z) = I(a,z) + (2/pi)*sin(pi*a)*K(a,z) */
 
-/*         can be used.  However, for large orders close to ints, the */
+/*         can be used.  However, for large orders close to ints the */
 /*         the function changes radically.  When a is a large positive */
-/*         int, the magnitude of J(-a,z)=J(a,z)*cos(a*pi) is a */
-/*         large negative power of ten.  But when a is not an int, */
-/*         Y(a,z) dominates in magnitude with a large positive power of */
+/*         int, the magnitude of I(-a,z)=I(a,z) is a large */
+/*         negative power of ten. But when a is not an int, */
+/*         K(a,z) dominates in magnitude with a large positive power of */
 /*         ten and the most that the second term can be reduced is by */
-/*         unit roundoff from the coefficient.  Thus, wide changes can */
-/*         occur within unit roundoff of a large int for a.  Here, */
+/*         unit roundoff from the coefficient. Thus, wide changes can */
+/*         occur within unit roundoff of a large int for a. Here, */
 /*         large means a>abs(z). */
 
 /*         In most complex variable computation, one must evaluate ele- */
@@ -7999,16 +8190,15 @@ int zbesj(double *zr, double *zi, double *fnu,
 /*   910415  Prologue converted to Version 4.0 format.  (BAB) */
 /*   920128  Category corrected.  (WRB) */
 /*   920811  Prologue revised.  (DWL) */
-/* ***END PROLOGUE  ZBESJ */
-
-/*     COMPLEX CI,CSGN,CY,Z,ZN */
+/* ***END PROLOGUE  ZBESI */
+/*     COMPLEX CONE,CSGN,CW,CY,CZERO,Z,ZN */
     /* Parameter adjustments */
     --cyi;
     --cyr;
 
     /* Function Body */
 
-/* ***FIRST EXECUTABLE STATEMENT  ZBESJ */
+/* ***FIRST EXECUTABLE STATEMENT  ZBESI */
     *ierr = 0;
     *nz = 0;
     if (*fnu < 0.) {
@@ -8035,16 +8225,16 @@ int zbesj(double *zr, double *zi, double *fnu,
 /*     FNUL IS THE LOWER BOUNDARY OF THE ASYMPTOTIC SERIES FOR LARGE FNU. */
 /* ----------------------------------------------------------------------- */
 /* Computing MAX */
-    d__1 = DBL_EPSILON;
+    d__1 = d1mach_(&c__4);
     tol = max(d__1,1e-18);
-    k1 = -DBL_MIN_EXP;
-    k2 = DBL_MAX_EXP;
-    r1m5 = M_LOG10_2;
+    k1 = i1mach_(&c__15);
+    k2 = i1mach_(&c__16);
+    r1m5 = d1mach_(&c__5);
 /* Computing MIN */
     i__1 = abs(k1), i__2 = abs(k2);
     k = min(i__1,i__2);
     elim = (k * r1m5 - 3.) * 2.303;
-    k1 = DBL_MANT_DIG - 1;
+    k1 = i1mach_(&c__14) - 1;
     aa = r1m5 * k1;
     dig = min(aa,18.);
     aa *= 2.303;
@@ -8056,10 +8246,10 @@ int zbesj(double *zr, double *zi, double *fnu,
 /* ----------------------------------------------------------------------- */
 /*     TEST FOR PROPER RANGE */
 /* ----------------------------------------------------------------------- */
-    az = zabs(zr, zi);
+    az = zabs_(zr, zi);
     fn = *fnu + (*n - 1);
     aa = .5 / tol;
-    bb = INT_MAX * .5;
+    bb = i1mach_(&c__9) * .5;
     aa = min(aa,bb);
     if (az > aa) {
 	goto L260;
@@ -8074,48 +8264,50 @@ int zbesj(double *zr, double *zi, double *fnu,
     if (fn > aa) {
 	*ierr = 3;
     }
+    znr = *zr;
+    zni = *zi;
+    csgnr = coner;
+    csgni = conei;
+    if (*zr >= 0.) {
+	goto L40;
+    }
+    znr = -(*zr);
+    zni = -(*zi);
 /* ----------------------------------------------------------------------- */
-/*     CALCULATE CSGN=EXP(FNU*HPI*I) TO MINIMIZE LOSSES OF SIGNIFICANCE */
+/*     CALCULATE CSGN=EXP(FNU*PI*I) TO MINIMIZE LOSSES OF SIGNIFICANCE */
 /*     WHEN FNU IS LARGE */
 /* ----------------------------------------------------------------------- */
-    cii = 1.;
     inu = (int) (*fnu);
-    inuh = inu / 2;
-    ir = inu - (inuh << 1);
-    arg = (*fnu - (inu - ir)) * hpi;
+    arg = (*fnu - inu) * pi;
+    if (*zi < 0.) {
+	arg = -arg;
+    }
     csgnr = cos(arg);
     csgni = sin(arg);
-    if (inuh % 2 == 0) {
+    if (inu % 2 == 0) {
 	goto L40;
     }
     csgnr = -csgnr;
     csgni = -csgni;
 L40:
-/* ----------------------------------------------------------------------- */
-/*     ZN IS IN THE RIGHT HALF PLANE */
-/* ----------------------------------------------------------------------- */
-    znr = *zi;
-    zni = -(*zr);
-    if (*zi >= 0.) {
-	goto L50;
-    }
-    znr = -znr;
-    zni = -zni;
-    csgni = -csgni;
-    cii = -cii;
-L50:
-    zbinu(&znr, &zni, fnu, kode, n, &cyr[1], &cyi[1], nz, &rl, &fnul, &tol, &
+    zbinu_(&znr, &zni, fnu, kode, n, &cyr[1], &cyi[1], nz, &rl, &fnul, &tol, &
 	    elim, &alim);
     if (*nz < 0) {
-	goto L130;
+	goto L120;
     }
-    nl = *n - *nz;
-    if (nl == 0) {
+    if (*zr >= 0.) {
+	return 0;
+    }
+/* ----------------------------------------------------------------------- */
+/*     ANALYTIC CONTINUATION TO THE LEFT HALF PLANE */
+/* ----------------------------------------------------------------------- */
+    nn = *n - *nz;
+    if (nn == 0) {
 	return 0;
     }
     rtol = 1. / tol;
-    ascle = DBL_MIN * rtol * 1e3;
-    i__1 = nl;
+    ascle = d1mach_(&c__1) * rtol * 1e3;
+    i__1 = nn;
     for (i__ = 1; i__ <= i__1; ++i__) {
 /*       STR = CYR(I)*CSGNR - CYI(I)*CSGNI */
 /*       CYI(I) = CYR(I)*CSGNI + CYI(I)*CSGNR */
@@ -8136,20 +8328,19 @@ L55:
 	sti = aa * csgni + bb * csgnr;
 	cyr[i__] = str * atol;
 	cyi[i__] = sti * atol;
-	str = -csgni * cii;
-	csgni = csgnr * cii;
-	csgnr = str;
-/* L60: */
+	csgnr = -csgnr;
+	csgni = -csgni;
+/* L50: */
     }
     return 0;
-L130:
+L120:
     if (*nz == -2) {
-	goto L140;
+	goto L130;
     }
     *nz = 0;
     *ierr = 2;
     return 0;
-L140:
+L130:
     *nz = 0;
     *ierr = 5;
     return 0;
@@ -8157,50 +8348,53 @@ L260:
     *nz = 0;
     *ierr = 4;
     return 0;
-} /* zbesj */
+} /* zbesi_ */
 
-/* DECK ZBESY */
+/* DECK ZBESK */
 /* Subroutine */
-int zbesy(double *zr, double *zi, double *fnu, 
+int zbesk_(double *zr, double *zi, double *fnu, 
 	int *kode, int *n, double *cyr, double *cyi, int *
-	nz, double *cwrkr, double *cwrki, int *ierr)
+	nz, int *ierr)
 {
     /* System generated locals */
     int i__1, i__2;
-    double d__1, d__2;
+    double d__1;
 
     /* Local variables */
-    static int i__, k, k1, k2;
-    static double aa, bb, ey, c1i, c2i, c1r, c2r;
-    static int nz1, nz2;
-    static double exi, r1m5, exr, sti, tay, tol, str, hcii, elim, atol, 
-	    rtol, ascle;
+    int k, k1, k2;
+    double aa, bb, fn, az;
+    int nn;
+    double rl;
+    int mr, nw;
+    double dig, arg, aln, r1m5, ufl;
+    int nuf;
+    double tol, alim, elim;
+    double fnul;
 
-/* ***BEGIN PROLOGUE  ZBESY */
-/* ***PURPOSE  Compute a sequence of the Bessel functions Y(a,z) for */
+/* ***BEGIN PROLOGUE  ZBESK */
+/* ***PURPOSE  Compute a sequence of the Bessel functions K(a,z) for */
 /*            complex argument z and real nonnegative orders a=b,b+1, */
 /*            b+2,... where b>0.  A scaling option is available to */
 /*            help avoid overflow. */
 /* ***LIBRARY   SLATEC */
-/* ***CATEGORY  C10A4 */
-/* ***TYPE      COMPLEX (CBESY-C, ZBESY-C) */
-/* ***KEYWORDS  BESSEL FUNCTIONS OF COMPLEX ARGUMENT, */
-/*             BESSEL FUNCTIONS OF SECOND KIND, WEBER'S FUNCTION, */
-/*             Y BESSEL FUNCTIONS */
+/* ***CATEGORY  C10B4 */
+/* ***TYPE      COMPLEX (CBESK-C, ZBESK-C) */
+/* ***KEYWORDS  BESSEL FUNCTIONS OF COMPLEX ARGUMENT, K BESSEL FUNCTIONS, */
+/*             MODIFIED BESSEL FUNCTIONS */
 /* ***AUTHOR  Amos, D. E., (SNL) */
 /* ***DESCRIPTION */
 
 /*                      ***A DOUBLE PRECISION ROUTINE*** */
-/*         On KODE=1, ZBESY computes an N member sequence of complex */
-/*         Bessel functions CY(L)=Y(FNU+L-1,Z) for real nonnegative */
-/*         orders FNU+L-1, L=1,...,N and complex Z in the cut plane */
-/*         -pi<arg(Z)<=pi where Z=ZR+i*ZI.  On KODE=2, CBESY returns */
-/*         the scaled functions */
+/*         On KODE=1, ZBESK computes an N member sequence of complex */
+/*         Bessel functions CY(L)=K(FNU+L-1,Z) for real nonnegative */
+/*         orders FNU+L-1, L=1,...,N and complex Z.NE.0 in the cut */
+/*         plane -pi<arg(Z)<=pi where Z=ZR+i*ZI.  On KODE=2, CBESJ */
+/*         returns the scaled functions */
 
-/*            CY(L) = exp(-abs(Y))*Y(FNU+L-1,Z),  L=1,...,N, Y=Im(Z) */
+/*            CY(L) = exp(Z)*K(FNU+L-1,Z),  L=1,...,N */
 
-/*         which remove the exponential growth in both the upper and */
-/*         lower half planes as Z goes to infinity.  Definitions and */
+/*         which remove the exponential growth in both the left and */
+/*         right half planes as Z goes to infinity.  Definitions and */
 /*         notation are found in the NBS Handbook of Mathematical */
 /*         Functions (Ref. 1). */
 
@@ -8210,22 +8404,20 @@ int zbesy(double *zr, double *zi, double *fnu,
 /*           FNU    - DOUBLE PRECISION initial order, FNU>=0 */
 /*           KODE   - A parameter to indicate the scaling option */
 /*                    KODE=1  returns */
-/*                            CY(L)=Y(FNU+L-1,Z), L=1,...,N */
+/*                            CY(L)=K(FNU+L-1,Z), L=1,...,N */
 /*                        =2  returns */
-/*                            CY(L)=Y(FNU+L-1,Z)*exp(-abs(Y)), L=1,...,N */
-/*                            where Y=Im(Z) */
+/*                            CY(L)=K(FNU+L-1,Z)*EXP(Z), L=1,...,N */
 /*           N      - Number of terms in the sequence, N>=1 */
-/*           CWRKR  - DOUBLE PRECISION work vector of dimension N */
-/*           CWRKI  - DOUBLE PRECISION work vector of dimension N */
 
 /*         Output */
 /*           CYR    - DOUBLE PRECISION real part of result vector */
 /*           CYI    - DOUBLE PRECISION imag part of result vector */
 /*           NZ     - Number of underflows set to zero */
 /*                    NZ=0    Normal return */
-/*                    NZ>0    CY(L)=0 for NZ values of L, usually on */
-/*                            KODE=2 (the underflows may not be in an */
-/*                            uninterrupted sequence) */
+/*                    NZ>0    CY(L)=0 for NZ values of L (if Re(Z)>0 */
+/*                            then CY(L)=0 for L=1,...,NZ; in the */
+/*                            complementary half plane the underflows */
+/*                            may not be in an uninterrupted sequence) */
 /*           IERR   - Error flag */
 /*                    IERR=0  Normal return     - COMPUTATION COMPLETED */
 /*                    IERR=1  Input error       - NO COMPUTATION */
@@ -8243,25 +8435,26 @@ int zbesy(double *zr, double *zi, double *fnu,
 
 /* *Long Description: */
 
-/*         The computation is carried out by the formula */
+/*         Equations of the reference are implemented to compute K(a,z) */
+/*         for small orders a and a+1 in the right half plane Re(z)>=0. */
+/*         Forward recurrence generates higher orders.  The formula */
 
-/*            Y(a,z) = (H(1,a,z) - H(2,a,z))/(2*i) */
+/*            K(a,z*exp((t)) = exp(-t)*K(a,z) - t*I(a,z),  Re(z)>0 */
+/*                         t = i*pi or -i*pi */
 
-/*         where the Hankel functions are computed as described in CBESH. */
+/*         continues K to the left half plane. */
+
+/*         For large orders, K(a,z) is computed by means of its uniform */
+/*         asymptotic expansion. */
 
 /*         For negative orders, the formula */
 
-/*            Y(-a,z) = Y(a,z)*cos(a*pi) + J(a,z)*sin(a*pi) */
+/*            K(-a,z) = K(a,z) */
 
-/*         can be used.  However, for large orders close to half odd */
-/*         ints the function changes radically.  When a is a large */
-/*         positive half odd int, the magnitude of Y(-a,z)=J(a,z)* */
-/*         sin(a*pi) is a large negative power of ten.  But when a is */
-/*         not a half odd int, Y(a,z) dominates in magnitude with a */
-/*         large positive power of ten and the most that the second term */
-/*         can be reduced is by unit roundoff from the coefficient. */
-/*         Thus,  wide changes can occur within unit roundoff of a large */
-/*         half odd int.  Here, large means a>abs(z). */
+/*         can be used. */
+
+/*         CBESK assumes that a significant digit sinh function is */
+/*         available. */
 
 /*         In most complex variable computation, one must evaluate ele- */
 /*         mentary functions.  When the magnitude of Z or FNU+N-1 is */
@@ -8323,27 +8516,25 @@ int zbesy(double *zr, double *zi, double *fnu,
 /*                 Transactions on Mathematical Software, 12 (September */
 /*                 1986), pp. 265-273. */
 
-/* ***ROUTINES CALLED  D1MACH, I1MACH, ZBESH */
+/* ***ROUTINES CALLED  D1MACH, I1MACH, ZABS, ZACON, ZBKNU, ZBUNK, ZUOIK */
 /* ***REVISION HISTORY  (YYMMDD) */
 /*   830501  DATE WRITTEN */
 /*   890801  REVISION DATE from Version 3.2 */
 /*   910415  Prologue converted to Version 4.0 format.  (BAB) */
 /*   920128  Category corrected.  (WRB) */
 /*   920811  Prologue revised.  (DWL) */
-/* ***END PROLOGUE  ZBESY */
+/* ***END PROLOGUE  ZBESK */
 
-/*     COMPLEX CWRK,CY,C1,C2,EX,HCI,Z,ZU,ZV */
-/* ***FIRST EXECUTABLE STATEMENT  ZBESY */
+/*     COMPLEX CY,Z */
+/* ***FIRST EXECUTABLE STATEMENT  ZBESK */
     /* Parameter adjustments */
-    --cwrki;
-    --cwrkr;
     --cyi;
     --cyr;
 
     /* Function Body */
     *ierr = 0;
     *nz = 0;
-    if (*zr == 0. && *zi == 0.) {
+    if (*zi == 0.f && *zr == 0.f) {
 	*ierr = 1;
     }
     if (*fnu < 0.) {
@@ -8358,114 +8549,1114 @@ int zbesy(double *zr, double *zi, double *fnu,
     if (*ierr != 0) {
 	return 0;
     }
-    hcii = .5;
-    zbesh(zr, zi, fnu, kode, &c__1, n, &cyr[1], &cyi[1], &nz1, ierr);
-    if (*ierr != 0 && *ierr != 3) {
-	goto L170;
-    }
-    zbesh(zr, zi, fnu, kode, &c__2, n, &cwrkr[1], &cwrki[1], &nz2, ierr);
-    if (*ierr != 0 && *ierr != 3) {
-	goto L170;
-    }
-    *nz = min(nz1,nz2);
-    if (*kode == 2) {
-	goto L60;
-    }
-    i__1 = *n;
-    for (i__ = 1; i__ <= i__1; ++i__) {
-	str = cwrkr[i__] - cyr[i__];
-	sti = cwrki[i__] - cyi[i__];
-	cyr[i__] = -sti * hcii;
-	cyi[i__] = str * hcii;
-/* L50: */
-    }
-    return 0;
-L60:
+    nn = *n;
+/* ----------------------------------------------------------------------- */
+/*     SET PARAMETERS RELATED TO MACHINE CONSTANTS. */
+/*     TOL IS THE APPROXIMATE UNIT ROUNDOFF LIMITED TO 1.0E-18. */
+/*     ELIM IS THE APPROXIMATE EXPONENTIAL OVER- AND UNDERFLOW LIMIT. */
+/*     EXP(-ELIM).LT.EXP(-ALIM)=EXP(-ELIM)/TOL    AND */
+/*     EXP(ELIM).GT.EXP(ALIM)=EXP(ELIM)*TOL       ARE INTERVALS NEAR */
+/*     UNDERFLOW AND OVERFLOW LIMITS WHERE SCALED ARITHMETIC IS DONE. */
+/*     RL IS THE LOWER BOUNDARY OF THE ASYMPTOTIC EXPANSION FOR LARGE Z. */
+/*     DIG = NUMBER OF BASE 10 DIGITS IN TOL = 10**(-DIG). */
+/*     FNUL IS THE LOWER BOUNDARY OF THE ASYMPTOTIC SERIES FOR LARGE FNU */
+/* ----------------------------------------------------------------------- */
 /* Computing MAX */
-    d__1 = DBL_EPSILON;
+    d__1 = d1mach_(&c__4);
     tol = max(d__1,1e-18);
-    k1 = -DBL_MIN_EXP;
-    k2 = DBL_MAX_EXP;
+    k1 = i1mach_(&c__15);
+    k2 = i1mach_(&c__16);
+    r1m5 = d1mach_(&c__5);
 /* Computing MIN */
     i__1 = abs(k1), i__2 = abs(k2);
     k = min(i__1,i__2);
-    r1m5 = M_LOG10_2;
-/* ----------------------------------------------------------------------- */
-/*     ELIM IS THE APPROXIMATE EXPONENTIAL UNDER- AND OVERFLOW LIMIT */
-/* ----------------------------------------------------------------------- */
     elim = (k * r1m5 - 3.) * 2.303;
-    exr = cos(*zr);
-    exi = sin(*zr);
-    ey = 0.;
-    tay = (d__1 = *zi + *zi, abs(d__1));
-    if (tay < elim) {
-	ey = exp(-tay);
+    k1 = i1mach_(&c__14) - 1;
+    aa = r1m5 * k1;
+    dig = min(aa,18.);
+    aa *= 2.303;
+/* Computing MAX */
+    d__1 = -aa;
+    alim = elim + max(d__1,-41.45);
+    fnul = (dig - 3.) * 6. + 10.;
+    rl = dig * 1.2 + 3.;
+/* ----------------------------------------------------------------------- */
+/*     TEST FOR PROPER RANGE */
+/* ----------------------------------------------------------------------- */
+    az = zabs_(zr, zi);
+    fn = *fnu + (nn - 1);
+    aa = .5 / tol;
+    bb = i1mach_(&c__9) * .5;
+    aa = min(aa,bb);
+    if (az > aa) {
+	goto L260;
     }
+    if (fn > aa) {
+	goto L260;
+    }
+    aa = sqrt(aa);
+    if (az > aa) {
+	*ierr = 3;
+    }
+    if (fn > aa) {
+	*ierr = 3;
+    }
+/* ----------------------------------------------------------------------- */
+/*     OVERFLOW TEST ON THE LAST MEMBER OF THE SEQUENCE */
+/* ----------------------------------------------------------------------- */
+/*     UFL = EXP(-ELIM) */
+    ufl = d1mach_(&c__1) * 1e3;
+    if (az < ufl) {
+	goto L180;
+    }
+    if (*fnu > fnul) {
+	goto L80;
+    }
+    if (fn <= 1.) {
+	goto L60;
+    }
+    if (fn > 2.) {
+	goto L50;
+    }
+    if (az > tol) {
+	goto L60;
+    }
+    arg = az * .5;
+    aln = -fn * log(arg);
+    if (aln > elim) {
+	goto L180;
+    }
+    goto L60;
+L50:
+    zuoik_(zr, zi, fnu, kode, &c__2, &nn, &cyr[1], &cyi[1], &nuf, &tol, &elim,
+	     &alim);
+    if (nuf < 0) {
+	goto L180;
+    }
+    *nz += nuf;
+    nn -= nuf;
+/* ----------------------------------------------------------------------- */
+/*     HERE NN=N OR NN=0 SINCE NUF=0,NN, OR -1 ON RETURN FROM CUOIK */
+/*     IF NUF=NN, THEN CY(I)=CZERO FOR ALL I */
+/* ----------------------------------------------------------------------- */
+    if (nn == 0) {
+	goto L100;
+    }
+L60:
+    if (*zr < 0.) {
+	goto L70;
+    }
+/* ----------------------------------------------------------------------- */
+/*     RIGHT HALF PLANE COMPUTATION, REAL(Z).GE.0. */
+/* ----------------------------------------------------------------------- */
+    zbknu_(zr, zi, fnu, kode, &nn, &cyr[1], &cyi[1], &nw, &tol, &elim, &alim);
+    if (nw < 0) {
+	goto L200;
+    }
+    *nz = nw;
+    return 0;
+/* ----------------------------------------------------------------------- */
+/*     LEFT HALF PLANE COMPUTATION */
+/*     PI/2.LT.ARG(Z).LE.PI AND -PI.LT.ARG(Z).LT.-PI/2. */
+/* ----------------------------------------------------------------------- */
+L70:
+    if (*nz != 0) {
+	goto L180;
+    }
+    mr = 1;
     if (*zi < 0.) {
+	mr = -1;
+    }
+    zacon_(zr, zi, fnu, kode, &mr, &nn, &cyr[1], &cyi[1], &nw, &rl, &fnul, &
+	    tol, &elim, &alim);
+    if (nw < 0) {
+	goto L200;
+    }
+    *nz = nw;
+    return 0;
+/* ----------------------------------------------------------------------- */
+/*     UNIFORM ASYMPTOTIC EXPANSIONS FOR FNU.GT.FNUL */
+/* ----------------------------------------------------------------------- */
+L80:
+    mr = 0;
+    if (*zr >= 0.) {
 	goto L90;
     }
-    c1r = exr * ey;
-    c1i = exi * ey;
-    c2r = exr;
-    c2i = -exi;
-L70:
-    *nz = 0;
-    rtol = 1. / tol;
-    ascle = DBL_MIN * rtol * 1e3;
-    i__1 = *n;
-    for (i__ = 1; i__ <= i__1; ++i__) {
-/*       STR = C1R*CYR(I) - C1I*CYI(I) */
-/*       STI = C1R*CYI(I) + C1I*CYR(I) */
-/*       STR = -STR + C2R*CWRKR(I) - C2I*CWRKI(I) */
-/*       STI = -STI + C2R*CWRKI(I) + C2I*CWRKR(I) */
-/*       CYR(I) = -STI*HCII */
-/*       CYI(I) = STR*HCII */
-	aa = cwrkr[i__];
-	bb = cwrki[i__];
-	atol = 1.;
-/* Computing MAX */
-	d__1 = abs(aa), d__2 = abs(bb);
-	if (max(d__1,d__2) > ascle) {
-	    goto L75;
-	}
-	aa *= rtol;
-	bb *= rtol;
-	atol = tol;
-L75:
-	str = (aa * c2r - bb * c2i) * atol;
-	sti = (aa * c2i + bb * c2r) * atol;
-	aa = cyr[i__];
-	bb = cyi[i__];
-	atol = 1.;
-/* Computing MAX */
-	d__1 = abs(aa), d__2 = abs(bb);
-	if (max(d__1,d__2) > ascle) {
-	    goto L85;
-	}
-	aa *= rtol;
-	bb *= rtol;
-	atol = tol;
-L85:
-	str -= (aa * c1r - bb * c1i) * atol;
-	sti -= (aa * c1i + bb * c1r) * atol;
-	cyr[i__] = -sti * hcii;
-	cyi[i__] = str * hcii;
-	if (str == 0. && sti == 0. && ey == 0.) {
-	    ++(*nz);
-	}
-/* L80: */
+    mr = 1;
+    if (*zi < 0.) {
+	mr = -1;
+    }
+L90:
+    zbunk_(zr, zi, fnu, kode, &mr, &nn, &cyr[1], &cyi[1], &nw, &tol, &elim, &
+	    alim);
+    if (nw < 0) {
+	goto L200;
+    }
+    *nz += nw;
+    return 0;
+L100:
+    if (*zr < 0.) {
+	goto L180;
     }
     return 0;
+L180:
+    *nz = 0;
+    *ierr = 2;
+    return 0;
+L200:
+    if (nw == -1) {
+	goto L180;
+    }
+    *nz = 0;
+    *ierr = 5;
+    return 0;
+L260:
+    *nz = 0;
+    *ierr = 4;
+    return 0;
+} /* zbesk_ */
+
+/* DECK ZAIRY */
+/* Subroutine */
+int zairy_(double *zr, double *zi, int *id, 
+	int *kode, double *air, double *aii, int *nz, int 
+	*ierr)
+{
+    /* Initialized data */
+    double tth = .666666666666666667;
+    double c1 = .35502805388781724;
+    double c2 = .258819403792806799;
+    double coef = .183776298473930683;
+    double zeror = 0.;
+    double zeroi = 0.;
+    double coner = 1.;
+    double conei = 0.;
+
+    /* System generated locals */
+    int i__1, i__2;
+    double d__1;
+
+    /* Local variables */
+    int k;
+    double d1, d2;
+    int k1, k2;
+    double aa, bb, ad, cc, ak, bk, ck, dk, az;
+    int nn;
+    double rl;
+    int mr;
+    double s1i, az3, s2i, s1r, s2r, z3i, z3r, dig, fid, cyi[1], 
+	    r1m5, fnu, cyr[1], tol, sti, ptr, str, sfac, alim, elim, alaz, 
+	    csqi;
+    double atrm, ztai, csqr, ztar;
+    double trm1i, trm2i, trm1r, trm2r;
+    int iflag;
+
+/* ***BEGIN PROLOGUE  ZAIRY */
+/* ***PURPOSE  Compute the Airy function Ai(z) or its derivative dAi/dz */
+/*            for complex argument z.  A scaling option is available */
+/*            to help avoid underflow and overflow. */
+/* ***LIBRARY   SLATEC */
+/* ***CATEGORY  C10D */
+/* ***TYPE      COMPLEX (CAIRY-C, ZAIRY-C) */
+/* ***KEYWORDS  AIRY FUNCTION, BESSEL FUNCTION OF ORDER ONE THIRD, */
+/*             BESSEL FUNCTION OF ORDER TWO THIRDS */
+/* ***AUTHOR  Amos, D. E., (SNL) */
+/* ***DESCRIPTION */
+
+/*                      ***A DOUBLE PRECISION ROUTINE*** */
+/*         On KODE=1, ZAIRY computes the complex Airy function Ai(z) */
+/*         or its derivative dAi/dz on ID=0 or ID=1 respectively. On */
+/*         KODE=2, a scaling option exp(zeta)*Ai(z) or exp(zeta)*dAi/dz */
+/*         is provided to remove the exponential decay in -pi/3<arg(z) */
+/*         <pi/3 and the exponential growth in pi/3<abs(arg(z))<pi where */
+/*         zeta=(2/3)*z**(3/2). */
+
+/*         While the Airy functions Ai(z) and dAi/dz are analytic in */
+/*         the whole z-plane, the corresponding scaled functions defined */
+/*         for KODE=2 have a cut along the negative real axis. */
+
+/*         Input */
+/*           ZR     - DOUBLE PRECISION real part of argument Z */
+/*           ZI     - DOUBLE PRECISION imag part of argument Z */
+/*           ID     - Order of derivative, ID=0 or ID=1 */
+/*           KODE   - A parameter to indicate the scaling option */
+/*                    KODE=1  returns */
+/*                            AI=Ai(z)  on ID=0 */
+/*                            AI=dAi/dz on ID=1 */
+/*                            at z=Z */
+/*                        =2  returns */
+/*                            AI=exp(zeta)*Ai(z)  on ID=0 */
+/*                            AI=exp(zeta)*dAi/dz on ID=1 */
+/*                            at z=Z where zeta=(2/3)*z**(3/2) */
+
+/*         Output */
+/*           AIR    - DOUBLE PRECISION real part of result */
+/*           AII    - DOUBLE PRECISION imag part of result */
+/*           NZ     - Underflow indicator */
+/*                    NZ=0    Normal return */
+/*                    NZ=1    AI=0 due to underflow in */
+/*                            -pi/3<arg(Z)<pi/3 on KODE=1 */
+/*           IERR   - Error flag */
+/*                    IERR=0  Normal return     - COMPUTATION COMPLETED */
+/*                    IERR=1  Input error       - NO COMPUTATION */
+/*                    IERR=2  Overflow          - NO COMPUTATION */
+/*                            (Re(Z) too large with KODE=1) */
+/*                    IERR=3  Precision warning - COMPUTATION COMPLETED */
+/*                            (Result has less than half precision) */
+/*                    IERR=4  Precision error   - NO COMPUTATION */
+/*                            (Result has no precision) */
+/*                    IERR=5  Algorithmic error - NO COMPUTATION */
+/*                            (Termination condition not met) */
+
+/* *Long Description: */
+
+/*         Ai(z) and dAi/dz are computed from K Bessel functions by */
+
+/*                Ai(z) =  c*sqrt(z)*K(1/3,zeta) */
+/*               dAi/dz = -c*   z   *K(2/3,zeta) */
+/*                    c =  1/(pi*sqrt(3)) */
+/*                 zeta =  (2/3)*z**(3/2) */
+
+/*         when abs(z)>1 and from power series when abs(z)<=1. */
+
+/*         In most complex variable computation, one must evaluate ele- */
+/*         mentary functions.  When the magnitude of Z is large, losses */
+/*         of significance by argument reduction occur.  Consequently, if */
+/*         the magnitude of ZETA=(2/3)*Z**(3/2) exceeds U1=SQRT(0.5/UR), */
+/*         then losses exceeding half precision are likely and an error */
+/*         flag IERR=3 is triggered where UR=MAX(D1MACH(4),1.0D-18) is */
+/*         double precision unit roundoff limited to 18 digits precision. */
+/*         Also, if the magnitude of ZETA is larger than U2=0.5/UR, then */
+/*         all significance is lost and IERR=4.  In order to use the INT */
+/*         function, ZETA must be further restricted not to exceed */
+/*         U3=I1MACH(9)=LARGEST int.  Thus, the magnitude of ZETA */
+/*         must be restricted by MIN(U2,U3).  In IEEE arithmetic, U1,U2, */
+/*         and U3 are approximately 2.0E+3, 4.2E+6, 2.1E+9 in single */
+/*         precision and 4.7E+7, 2.3E+15, 2.1E+9 in double precision. */
+/*         This makes U2 limiting is single precision and U3 limiting */
+/*         in double precision.  This means that the magnitude of Z */
+/*         cannot exceed approximately 3.4E+4 in single precision and */
+/*         2.1E+6 in double precision.  This also means that one can */
+/*         expect to retain, in the worst cases on 32-bit machines, */
+/*         no digits in single precision and only 6 digits in double */
+/*         precision. */
+
+/*         The approximate relative error in the magnitude of a complex */
+/*         Bessel function can be expressed as P*10**S where P=MAX(UNIT */
+/*         ROUNDOFF,1.0E-18) is the nominal precision and 10**S repre- */
+/*         sents the increase in error due to argument reduction in the */
+/*         elementary functions.  Here, S=MAX(1,ABS(LOG10(ABS(Z))), */
+/*         ABS(LOG10(FNU))) approximately (i.e., S=MAX(1,ABS(EXPONENT OF */
+/*         ABS(Z),ABS(EXPONENT OF FNU)) ).  However, the phase angle may */
+/*         have only absolute accuracy.  This is most likely to occur */
+/*         when one component (in magnitude) is larger than the other by */
+/*         several orders of magnitude.  If one component is 10**K larger */
+/*         than the other, then one can expect only MAX(ABS(LOG10(P))-K, */
+/*         0) significant digits; or, stated another way, when K exceeds */
+/*         the exponent of P, no significant digits remain in the smaller */
+/*         component.  However, the phase angle retains absolute accuracy */
+/*         because, in complex arithmetic with precision P, the smaller */
+/*         component will not (as a rule) decrease below P times the */
+/*         magnitude of the larger component. In these extreme cases, */
+/*         the principal phase angle is on the order of +P, -P, PI/2-P, */
+/*         or -PI/2+P. */
+
+/* ***REFERENCES  1. M. Abramowitz and I. A. Stegun, Handbook of Mathe- */
+/*                 matical Functions, National Bureau of Standards */
+/*                 Applied Mathematics Series 55, U. S. Department */
+/*                 of Commerce, Tenth Printing (1972) or later. */
+/*               2. D. E. Amos, Computation of Bessel Functions of */
+/*                 Complex Argument and Large Order, Report SAND83-0643, */
+/*                 Sandia National Laboratories, Albuquerque, NM, May */
+/*                 1983. */
+/*               3. D. E. Amos, A Subroutine Package for Bessel Functions */
+/*                 of a Complex Argument and Nonnegative Order, Report */
+/*                 SAND85-1018, Sandia National Laboratory, Albuquerque, */
+/*                 NM, May 1985. */
+/*               4. D. E. Amos, A portable package for Bessel functions */
+/*                 of a complex argument and nonnegative order, ACM */
+/*                 Transactions on Mathematical Software, 12 (September */
+/*                 1986), pp. 265-273. */
+
+/* ***ROUTINES CALLED  D1MACH, I1MACH, ZABS, ZACAI, ZBKNU, ZEXP, ZSQRT */
+/* ***REVISION HISTORY  (YYMMDD) */
+/*   830501  DATE WRITTEN */
+/*   890801  REVISION DATE from Version 3.2 */
+/*   910415  Prologue converted to Version 4.0 format.  (BAB) */
+/*   920128  Category corrected.  (WRB) */
+/*   920811  Prologue revised.  (DWL) */
+/*   930122  Added ZEXP and ZSQRT to EXTERNAL statement.  (RWC) */
+/* ***END PROLOGUE  ZAIRY */
+/*     COMPLEX AI,CONE,CSQ,CY,S1,S2,TRM1,TRM2,Z,ZTA,Z3 */
+/* ***FIRST EXECUTABLE STATEMENT  ZAIRY */
+    *ierr = 0;
+    *nz = 0;
+    if (*id < 0 || *id > 1) {
+	*ierr = 1;
+    }
+    if (*kode < 1 || *kode > 2) {
+	*ierr = 1;
+    }
+    if (*ierr != 0) {
+	return 0;
+    }
+    az = zabs_(zr, zi);
+/* Computing MAX */
+    d__1 = d1mach_(&c__4);
+    tol = max(d__1,1e-18);
+    fid = (double) (*id);
+    if (az > 1.) {
+	goto L70;
+    }
+/* ----------------------------------------------------------------------- */
+/*     POWER SERIES FOR ABS(Z).LE.1. */
+/* ----------------------------------------------------------------------- */
+    s1r = coner;
+    s1i = conei;
+    s2r = coner;
+    s2i = conei;
+    if (az < tol) {
+	goto L170;
+    }
+    aa = az * az;
+    if (aa < tol / az) {
+	goto L40;
+    }
+    trm1r = coner;
+    trm1i = conei;
+    trm2r = coner;
+    trm2i = conei;
+    atrm = 1.;
+    str = *zr * *zr - *zi * *zi;
+    sti = *zr * *zi + *zi * *zr;
+    z3r = str * *zr - sti * *zi;
+    z3i = str * *zi + sti * *zr;
+    az3 = az * aa;
+    ak = fid + 2.;
+    bk = 3. - fid - fid;
+    ck = 4. - fid;
+    dk = fid + 3. + fid;
+    d1 = ak * dk;
+    d2 = bk * ck;
+    ad = min(d1,d2);
+    ak = fid * 9. + 24.;
+    bk = 30. - fid * 9.;
+    for (k = 1; k <= 25; ++k) {
+	str = (trm1r * z3r - trm1i * z3i) / d1;
+	trm1i = (trm1r * z3i + trm1i * z3r) / d1;
+	trm1r = str;
+	s1r += trm1r;
+	s1i += trm1i;
+	str = (trm2r * z3r - trm2i * z3i) / d2;
+	trm2i = (trm2r * z3i + trm2i * z3r) / d2;
+	trm2r = str;
+	s2r += trm2r;
+	s2i += trm2i;
+	atrm = atrm * az3 / ad;
+	d1 += ak;
+	d2 += bk;
+	ad = min(d1,d2);
+	if (atrm < tol * ad) {
+	    goto L40;
+	}
+	ak += 18.;
+	bk += 18.;
+/* L30: */
+    }
+L40:
+    if (*id == 1) {
+	goto L50;
+    }
+    *air = s1r * c1 - c2 * (*zr * s2r - *zi * s2i);
+    *aii = s1i * c1 - c2 * (*zr * s2i + *zi * s2r);
+    if (*kode == 1) {
+	return 0;
+    }
+    zsqrt_(zr, zi, &str, &sti);
+    ztar = tth * (*zr * str - *zi * sti);
+    ztai = tth * (*zr * sti + *zi * str);
+    zexp_(&ztar, &ztai, &str, &sti);
+    ptr = *air * str - *aii * sti;
+    *aii = *air * sti + *aii * str;
+    *air = ptr;
+    return 0;
+L50:
+    *air = -s2r * c2;
+    *aii = -s2i * c2;
+    if (az <= tol) {
+	goto L60;
+    }
+    str = *zr * s1r - *zi * s1i;
+    sti = *zr * s1i + *zi * s1r;
+    cc = c1 / (fid + 1.);
+    *air += cc * (str * *zr - sti * *zi);
+    *aii += cc * (str * *zi + sti * *zr);
+L60:
+    if (*kode == 1) {
+	return 0;
+    }
+    zsqrt_(zr, zi, &str, &sti);
+    ztar = tth * (*zr * str - *zi * sti);
+    ztai = tth * (*zr * sti + *zi * str);
+    zexp_(&ztar, &ztai, &str, &sti);
+    ptr = str * *air - sti * *aii;
+    *aii = str * *aii + sti * *air;
+    *air = ptr;
+    return 0;
+/* ----------------------------------------------------------------------- */
+/*     CASE FOR ABS(Z).GT.1.0 */
+/* ----------------------------------------------------------------------- */
+L70:
+    fnu = (fid + 1.) / 3.;
+/* ----------------------------------------------------------------------- */
+/*     SET PARAMETERS RELATED TO MACHINE CONSTANTS. */
+/*     TOL IS THE APPROXIMATE UNIT ROUNDOFF LIMITED TO 1.0D-18. */
+/*     ELIM IS THE APPROXIMATE EXPONENTIAL OVER- AND UNDERFLOW LIMIT. */
+/*     EXP(-ELIM).LT.EXP(-ALIM)=EXP(-ELIM)/TOL    AND */
+/*     EXP(ELIM).GT.EXP(ALIM)=EXP(ELIM)*TOL       ARE INTERVALS NEAR */
+/*     UNDERFLOW AND OVERFLOW LIMITS WHERE SCALED ARITHMETIC IS DONE. */
+/*     RL IS THE LOWER BOUNDARY OF THE ASYMPTOTIC EXPANSION FOR LARGE Z. */
+/*     DIG = NUMBER OF BASE 10 DIGITS IN TOL = 10**(-DIG). */
+/* ----------------------------------------------------------------------- */
+    k1 = i1mach_(&c__15);
+    k2 = i1mach_(&c__16);
+    r1m5 = d1mach_(&c__5);
+/* Computing MIN */
+    i__1 = abs(k1), i__2 = abs(k2);
+    k = min(i__1,i__2);
+    elim = (k * r1m5 - 3.) * 2.303;
+    k1 = i1mach_(&c__14) - 1;
+    aa = r1m5 * k1;
+    dig = min(aa,18.);
+    aa *= 2.303;
+/* Computing MAX */
+    d__1 = -aa;
+    alim = elim + max(d__1,-41.45);
+    rl = dig * 1.2 + 3.;
+    alaz = log(az);
+/* ----------------------------------------------------------------------- */
+/*     TEST FOR PROPER RANGE */
+/* ----------------------------------------------------------------------- */
+    aa = .5 / tol;
+    bb = i1mach_(&c__9) * .5;
+    aa = min(aa,bb);
+    aa = pow_dd(&aa, &tth);
+    if (az > aa) {
+	goto L260;
+    }
+    aa = sqrt(aa);
+    if (az > aa) {
+	*ierr = 3;
+    }
+    zsqrt_(zr, zi, &csqr, &csqi);
+    ztar = tth * (*zr * csqr - *zi * csqi);
+    ztai = tth * (*zr * csqi + *zi * csqr);
+/* ----------------------------------------------------------------------- */
+/*     RE(ZTA).LE.0 WHEN RE(Z).LT.0, ESPECIALLY WHEN IM(Z) IS SMALL */
+/* ----------------------------------------------------------------------- */
+    iflag = 0;
+    sfac = 1.;
+    ak = ztai;
+    if (*zr >= 0.) {
+	goto L80;
+    }
+    bk = ztar;
+    ck = -abs(bk);
+    ztar = ck;
+    ztai = ak;
+L80:
+    if (*zi != 0.) {
+	goto L90;
+    }
+    if (*zr > 0.) {
+	goto L90;
+    }
+    ztar = 0.;
+    ztai = ak;
 L90:
-    c1r = exr;
-    c1i = exi;
-    c2r = exr * ey;
-    c2i = -exi * ey;
-    goto L70;
+    aa = ztar;
+    if (aa >= 0. && *zr > 0.) {
+	goto L110;
+    }
+    if (*kode == 2) {
+	goto L100;
+    }
+/* ----------------------------------------------------------------------- */
+/*     OVERFLOW TEST */
+/* ----------------------------------------------------------------------- */
+    if (aa > -alim) {
+	goto L100;
+    }
+    aa = -aa + alaz * .25;
+    iflag = 1;
+    sfac = tol;
+    if (aa > elim) {
+	goto L270;
+    }
+L100:
+/* ----------------------------------------------------------------------- */
+/*     CBKNU AND CACON RETURN EXP(ZTA)*K(FNU,ZTA) ON KODE=2 */
+/* ----------------------------------------------------------------------- */
+    mr = 1;
+    if (*zi < 0.) {
+	mr = -1;
+    }
+    zacai_(&ztar, &ztai, &fnu, kode, &mr, &c__1, cyr, cyi, &nn, &rl, &tol, &
+	    elim, &alim);
+    if (nn < 0) {
+	goto L280;
+    }
+    *nz += nn;
+    goto L130;
+L110:
+    if (*kode == 2) {
+	goto L120;
+    }
+/* ----------------------------------------------------------------------- */
+/*     UNDERFLOW TEST */
+/* ----------------------------------------------------------------------- */
+    if (aa < alim) {
+	goto L120;
+    }
+    aa = -aa - alaz * .25;
+    iflag = 2;
+    sfac = 1. / tol;
+    if (aa < -elim) {
+	goto L210;
+    }
+L120:
+    zbknu_(&ztar, &ztai, &fnu, kode, &c__1, cyr, cyi, nz, &tol, &elim, &alim);
+L130:
+    s1r = cyr[0] * coef;
+    s1i = cyi[0] * coef;
+    if (iflag != 0) {
+	goto L150;
+    }
+    if (*id == 1) {
+	goto L140;
+    }
+    *air = csqr * s1r - csqi * s1i;
+    *aii = csqr * s1i + csqi * s1r;
+    return 0;
+L140:
+    *air = -(*zr * s1r - *zi * s1i);
+    *aii = -(*zr * s1i + *zi * s1r);
+    return 0;
+L150:
+    s1r *= sfac;
+    s1i *= sfac;
+    if (*id == 1) {
+	goto L160;
+    }
+    str = s1r * csqr - s1i * csqi;
+    s1i = s1r * csqi + s1i * csqr;
+    s1r = str;
+    *air = s1r / sfac;
+    *aii = s1i / sfac;
+    return 0;
+L160:
+    str = -(s1r * *zr - s1i * *zi);
+    s1i = -(s1r * *zi + s1i * *zr);
+    s1r = str;
+    *air = s1r / sfac;
+    *aii = s1i / sfac;
+    return 0;
 L170:
+    aa = d1mach_(&c__1) * 1e3;
+    s1r = zeror;
+    s1i = zeroi;
+    if (*id == 1) {
+	goto L190;
+    }
+    if (az <= aa) {
+	goto L180;
+    }
+    s1r = c2 * *zr;
+    s1i = c2 * *zi;
+L180:
+    *air = c1 - s1r;
+    *aii = -s1i;
+    return 0;
+L190:
+    *air = -c2;
+    *aii = 0.;
+    aa = sqrt(aa);
+    if (az <= aa) {
+	goto L200;
+    }
+    s1r = (*zr * *zr - *zi * *zi) * .5;
+    s1i = *zr * *zi;
+L200:
+    *air += c1 * s1r;
+    *aii += c1 * s1i;
+    return 0;
+L210:
+    *nz = 1;
+    *air = zeror;
+    *aii = zeroi;
+    return 0;
+L270:
+    *nz = 0;
+    *ierr = 2;
+    return 0;
+L280:
+    if (nn == -1) {
+	goto L270;
+    }
+    *nz = 0;
+    *ierr = 5;
+    return 0;
+L260:
+    *ierr = 4;
     *nz = 0;
     return 0;
-} /* zbesy */
+} /* zairy_ */
+
+/* DECK ZBIRY */
+/* Subroutine */
+int zbiry_(double *zr, double *zi, int *id, 
+	int *kode, double *bir, double *bii, int *ierr)
+{
+    /* Initialized data */
+    double tth = .666666666666666667;
+    double c1 = .614926627446000736;
+    double c2 = .448288357353826359;
+    double coef = .577350269189625765;
+    double pi = 3.14159265358979324;
+    double coner = 1.;
+    double conei = 0.;
+
+    /* System generated locals */
+    int i__1, i__2;
+    double d__1;
+
+    /* Local variables */
+    int k;
+    double d1, d2;
+    int k1, k2;
+    double aa, bb, ad, cc, ak, bk, ck, dk, az, rl;
+    int nz;
+    double s1i, az3, s2i, s1r, s2r, z3i, z3r, eaa, fid, dig, cyi[2]
+	    , fmr, r1m5, fnu, cyr[2], tol, sti, str, sfac, alim, elim, csqi;
+    double atrm, fnul, ztai, csqr;
+    double ztar, trm1i, trm2i, trm1r, trm2r;
+
+/* ***BEGIN PROLOGUE  ZBIRY */
+/* ***PURPOSE  Compute the Airy function Bi(z) or its derivative dBi/dz */
+/*            for complex argument z.  A scaling option is available */
+/*            to help avoid overflow. */
+/* ***LIBRARY   SLATEC */
+/* ***CATEGORY  C10D */
+/* ***TYPE      COMPLEX (CBIRY-C, ZBIRY-C) */
+/* ***KEYWORDS  AIRY FUNCTION, BESSEL FUNCTION OF ORDER ONE THIRD, */
+/*             BESSEL FUNCTION OF ORDER TWO THIRDS */
+/* ***AUTHOR  Amos, D. E., (SNL) */
+/* ***DESCRIPTION */
+
+/*                      ***A DOUBLE PRECISION ROUTINE*** */
+/*         On KODE=1, ZBIRY computes the complex Airy function Bi(z) */
+/*         or its derivative dBi/dz on ID=0 or ID=1 respectively. */
+/*         On KODE=2, a scaling option exp(abs(Re(zeta)))*Bi(z) or */
+/*         exp(abs(Re(zeta)))*dBi/dz is provided to remove the */
+/*         exponential behavior in both the left and right half planes */
+/*         where zeta=(2/3)*z**(3/2). */
+
+/*         The Airy functions Bi(z) and dBi/dz are analytic in the */
+/*         whole z-plane, and the scaling option does not destroy this */
+/*         property. */
+
+/*         Input */
+/*           ZR     - DOUBLE PRECISION real part of argument Z */
+/*           ZI     - DOUBLE PRECISION imag part of argument Z */
+/*           ID     - Order of derivative, ID=0 or ID=1 */
+/*           KODE   - A parameter to indicate the scaling option */
+/*                    KODE=1  returns */
+/*                            BI=Bi(z)  on ID=0 */
+/*                            BI=dBi/dz on ID=1 */
+/*                            at z=Z */
+/*                        =2  returns */
+/*                            BI=exp(abs(Re(zeta)))*Bi(z)  on ID=0 */
+/*                            BI=exp(abs(Re(zeta)))*dBi/dz on ID=1 */
+/*                            at z=Z where zeta=(2/3)*z**(3/2) */
+
+/*         Output */
+/*           BIR    - DOUBLE PRECISION real part of result */
+/*           BII    - DOUBLE PRECISION imag part of result */
+/*           IERR   - Error flag */
+/*                    IERR=0  Normal return     - COMPUTATION COMPLETED */
+/*                    IERR=1  Input error       - NO COMPUTATION */
+/*                    IERR=2  Overflow          - NO COMPUTATION */
+/*                            (Re(Z) too large with KODE=1) */
+/*                    IERR=3  Precision warning - COMPUTATION COMPLETED */
+/*                            (Result has less than half precision) */
+/*                    IERR=4  Precision error   - NO COMPUTATION */
+/*                            (Result has no precision) */
+/*                    IERR=5  Algorithmic error - NO COMPUTATION */
+/*                            (Termination condition not met) */
+
+/* *Long Description: */
+
+/*         Bi(z) and dBi/dz are computed from I Bessel functions by */
+
+/*                Bi(z) =  c*sqrt(z)*( I(-1/3,zeta) + I(1/3,zeta) ) */
+/*               dBi/dz =  c*   z   *( I(-2/3,zeta) + I(2/3,zeta) ) */
+/*                    c =  1/sqrt(3) */
+/*                 zeta =  (2/3)*z**(3/2) */
+
+/*         when abs(z)>1 and from power series when abs(z)<=1. */
+
+/*         In most complex variable computation, one must evaluate ele- */
+/*         mentary functions.  When the magnitude of Z is large, losses */
+/*         of significance by argument reduction occur.  Consequently, if */
+/*         the magnitude of ZETA=(2/3)*Z**(3/2) exceeds U1=SQRT(0.5/UR), */
+/*         then losses exceeding half precision are likely and an error */
+/*         flag IERR=3 is triggered where UR=MAX(D1MACH(4),1.0D-18) is */
+/*         double precision unit roundoff limited to 18 digits precision. */
+/*         Also, if the magnitude of ZETA is larger than U2=0.5/UR, then */
+/*         all significance is lost and IERR=4.  In order to use the INT */
+/*         function, ZETA must be further restricted not to exceed */
+/*         U3=I1MACH(9)=LARGEST int.  Thus, the magnitude of ZETA */
+/*         must be restricted by MIN(U2,U3).  In IEEE arithmetic, U1,U2, */
+/*         and U3 are approximately 2.0E+3, 4.2E+6, 2.1E+9 in single */
+/*         precision and 4.7E+7, 2.3E+15, 2.1E+9 in double precision. */
+/*         This makes U2 limiting is single precision and U3 limiting */
+/*         in double precision.  This means that the magnitude of Z */
+/*         cannot exceed approximately 3.4E+4 in single precision and */
+/*         2.1E+6 in double precision.  This also means that one can */
+/*         expect to retain, in the worst cases on 32-bit machines, */
+/*         no digits in single precision and only 6 digits in double */
+/*         precision. */
+
+/*         The approximate relative error in the magnitude of a complex */
+/*         Bessel function can be expressed as P*10**S where P=MAX(UNIT */
+/*         ROUNDOFF,1.0E-18) is the nominal precision and 10**S repre- */
+/*         sents the increase in error due to argument reduction in the */
+/*         elementary functions.  Here, S=MAX(1,ABS(LOG10(ABS(Z))), */
+/*         ABS(LOG10(FNU))) approximately (i.e., S=MAX(1,ABS(EXPONENT OF */
+/*         ABS(Z),ABS(EXPONENT OF FNU)) ).  However, the phase angle may */
+/*         have only absolute accuracy.  This is most likely to occur */
+/*         when one component (in magnitude) is larger than the other by */
+/*         several orders of magnitude.  If one component is 10**K larger */
+/*         than the other, then one can expect only MAX(ABS(LOG10(P))-K, */
+/*         0) significant digits; or, stated another way, when K exceeds */
+/*         the exponent of P, no significant digits remain in the smaller */
+/*         component.  However, the phase angle retains absolute accuracy */
+/*         because, in complex arithmetic with precision P, the smaller */
+/*         component will not (as a rule) decrease below P times the */
+/*         magnitude of the larger component. In these extreme cases, */
+/*         the principal phase angle is on the order of +P, -P, PI/2-P, */
+/*         or -PI/2+P. */
+
+/* ***REFERENCES  1. M. Abramowitz and I. A. Stegun, Handbook of Mathe- */
+/*                 matical Functions, National Bureau of Standards */
+/*                 Applied Mathematics Series 55, U. S. Department */
+/*                 of Commerce, Tenth Printing (1972) or later. */
+/*               2. D. E. Amos, Computation of Bessel Functions of */
+/*                 Complex Argument and Large Order, Report SAND83-0643, */
+/*                 Sandia National Laboratories, Albuquerque, NM, May */
+/*                 1983. */
+/*               3. D. E. Amos, A Subroutine Package for Bessel Functions */
+/*                 of a Complex Argument and Nonnegative Order, Report */
+/*                 SAND85-1018, Sandia National Laboratory, Albuquerque, */
+/*                 NM, May 1985. */
+/*               4. D. E. Amos, A portable package for Bessel functions */
+/*                 of a complex argument and nonnegative order, ACM */
+/*                 Transactions on Mathematical Software, 12 (September */
+/*                 1986), pp. 265-273. */
+
+/* ***ROUTINES CALLED  D1MACH, I1MACH, ZABS, ZBINU, ZDIV, ZSQRT */
+/* ***REVISION HISTORY  (YYMMDD) */
+/*   830501  DATE WRITTEN */
+/*   890801  REVISION DATE from Version 3.2 */
+/*   910415  Prologue converted to Version 4.0 format.  (BAB) */
+/*   920128  Category corrected.  (WRB) */
+/*   920811  Prologue revised.  (DWL) */
+/*   930122  Added ZSQRT to EXTERNAL statement.  (RWC) */
+/* ***END PROLOGUE  ZBIRY */
+/*     COMPLEX BI,CONE,CSQ,CY,S1,S2,TRM1,TRM2,Z,ZTA,Z3 */
+/* ***FIRST EXECUTABLE STATEMENT  ZBIRY */
+    *ierr = 0;
+    nz = 0;
+    if (*id < 0 || *id > 1) {
+	*ierr = 1;
+    }
+    if (*kode < 1 || *kode > 2) {
+	*ierr = 1;
+    }
+    if (*ierr != 0) {
+	return 0;
+    }
+    az = zabs_(zr, zi);
+/* Computing MAX */
+    d__1 = d1mach_(&c__4);
+    tol = max(d__1,1e-18);
+    fid = (double) (*id);
+    if (az > 1.f) {
+	goto L70;
+    }
+/* ----------------------------------------------------------------------- */
+/*     POWER SERIES FOR ABS(Z).LE.1. */
+/* ----------------------------------------------------------------------- */
+    s1r = coner;
+    s1i = conei;
+    s2r = coner;
+    s2i = conei;
+    if (az < tol) {
+	goto L130;
+    }
+    aa = az * az;
+    if (aa < tol / az) {
+	goto L40;
+    }
+    trm1r = coner;
+    trm1i = conei;
+    trm2r = coner;
+    trm2i = conei;
+    atrm = 1.;
+    str = *zr * *zr - *zi * *zi;
+    sti = *zr * *zi + *zi * *zr;
+    z3r = str * *zr - sti * *zi;
+    z3i = str * *zi + sti * *zr;
+    az3 = az * aa;
+    ak = fid + 2.;
+    bk = 3. - fid - fid;
+    ck = 4. - fid;
+    dk = fid + 3. + fid;
+    d1 = ak * dk;
+    d2 = bk * ck;
+    ad = min(d1,d2);
+    ak = fid * 9. + 24.;
+    bk = 30. - fid * 9.;
+    for (k = 1; k <= 25; ++k) {
+	str = (trm1r * z3r - trm1i * z3i) / d1;
+	trm1i = (trm1r * z3i + trm1i * z3r) / d1;
+	trm1r = str;
+	s1r += trm1r;
+	s1i += trm1i;
+	str = (trm2r * z3r - trm2i * z3i) / d2;
+	trm2i = (trm2r * z3i + trm2i * z3r) / d2;
+	trm2r = str;
+	s2r += trm2r;
+	s2i += trm2i;
+	atrm = atrm * az3 / ad;
+	d1 += ak;
+	d2 += bk;
+	ad = min(d1,d2);
+	if (atrm < tol * ad) {
+	    goto L40;
+	}
+	ak += 18.;
+	bk += 18.;
+/* L30: */
+    }
+L40:
+    if (*id == 1) {
+	goto L50;
+    }
+    *bir = c1 * s1r + c2 * (*zr * s2r - *zi * s2i);
+    *bii = c1 * s1i + c2 * (*zr * s2i + *zi * s2r);
+    if (*kode == 1) {
+	return 0;
+    }
+    zsqrt_(zr, zi, &str, &sti);
+    ztar = tth * (*zr * str - *zi * sti);
+    ztai = tth * (*zr * sti + *zi * str);
+    aa = ztar;
+    aa = -abs(aa);
+    eaa = exp(aa);
+    *bir *= eaa;
+    *bii *= eaa;
+    return 0;
+L50:
+    *bir = s2r * c2;
+    *bii = s2i * c2;
+    if (az <= tol) {
+	goto L60;
+    }
+    cc = c1 / (fid + 1.);
+    str = s1r * *zr - s1i * *zi;
+    sti = s1r * *zi + s1i * *zr;
+    *bir += cc * (str * *zr - sti * *zi);
+    *bii += cc * (str * *zi + sti * *zr);
+L60:
+    if (*kode == 1) {
+	return 0;
+    }
+    zsqrt_(zr, zi, &str, &sti);
+    ztar = tth * (*zr * str - *zi * sti);
+    ztai = tth * (*zr * sti + *zi * str);
+    aa = ztar;
+    aa = -abs(aa);
+    eaa = exp(aa);
+    *bir *= eaa;
+    *bii *= eaa;
+    return 0;
+/* ----------------------------------------------------------------------- */
+/*     CASE FOR ABS(Z).GT.1.0 */
+/* ----------------------------------------------------------------------- */
+L70:
+    fnu = (fid + 1.) / 3.;
+/* ----------------------------------------------------------------------- */
+/*     SET PARAMETERS RELATED TO MACHINE CONSTANTS. */
+/*     TOL IS THE APPROXIMATE UNIT ROUNDOFF LIMITED TO 1.0E-18. */
+/*     ELIM IS THE APPROXIMATE EXPONENTIAL OVER- AND UNDERFLOW LIMIT. */
+/*     EXP(-ELIM).LT.EXP(-ALIM)=EXP(-ELIM)/TOL    AND */
+/*     EXP(ELIM).GT.EXP(ALIM)=EXP(ELIM)*TOL       ARE INTERVALS NEAR */
+/*     UNDERFLOW AND OVERFLOW LIMITS WHERE SCALED ARITHMETIC IS DONE. */
+/*     RL IS THE LOWER BOUNDARY OF THE ASYMPTOTIC EXPANSION FOR LARGE Z. */
+/*     DIG = NUMBER OF BASE 10 DIGITS IN TOL = 10**(-DIG). */
+/*     FNUL IS THE LOWER BOUNDARY OF THE ASYMPTOTIC SERIES FOR LARGE FNU. */
+/* ----------------------------------------------------------------------- */
+    k1 = i1mach_(&c__15);
+    k2 = i1mach_(&c__16);
+    r1m5 = d1mach_(&c__5);
+/* Computing MIN */
+    i__1 = abs(k1), i__2 = abs(k2);
+    k = min(i__1,i__2);
+    elim = (k * r1m5 - 3.) * 2.303;
+    k1 = i1mach_(&c__14) - 1;
+    aa = r1m5 * k1;
+    dig = min(aa,18.);
+    aa *= 2.303;
+/* Computing MAX */
+    d__1 = -aa;
+    alim = elim + max(d__1,-41.45);
+    rl = dig * 1.2 + 3.;
+    fnul = (dig - 3.) * 6. + 10.;
+/* ----------------------------------------------------------------------- */
+/*     TEST FOR RANGE */
+/* ----------------------------------------------------------------------- */
+    aa = .5 / tol;
+    bb = i1mach_(&c__9) * .5;
+    aa = min(aa,bb);
+    aa = pow_dd(&aa, &tth);
+    if (az > aa) {
+	goto L260;
+    }
+    aa = sqrt(aa);
+    if (az > aa) {
+	*ierr = 3;
+    }
+    zsqrt_(zr, zi, &csqr, &csqi);
+    ztar = tth * (*zr * csqr - *zi * csqi);
+    ztai = tth * (*zr * csqi + *zi * csqr);
+/* ----------------------------------------------------------------------- */
+/*     RE(ZTA).LE.0 WHEN RE(Z).LT.0, ESPECIALLY WHEN IM(Z) IS SMALL */
+/* ----------------------------------------------------------------------- */
+    sfac = 1.;
+    ak = ztai;
+    if (*zr >= 0.) {
+	goto L80;
+    }
+    bk = ztar;
+    ck = -abs(bk);
+    ztar = ck;
+    ztai = ak;
+L80:
+    if (*zi != 0. || *zr > 0.) {
+	goto L90;
+    }
+    ztar = 0.;
+    ztai = ak;
+L90:
+    aa = ztar;
+    if (*kode == 2) {
+	goto L100;
+    }
+/* ----------------------------------------------------------------------- */
+/*     OVERFLOW TEST */
+/* ----------------------------------------------------------------------- */
+    bb = abs(aa);
+    if (bb < alim) {
+	goto L100;
+    }
+    bb += log(az) * .25;
+    sfac = tol;
+    if (bb > elim) {
+	goto L190;
+    }
+L100:
+    fmr = 0.;
+    if (aa >= 0. && *zr > 0.) {
+	goto L110;
+    }
+    fmr = pi;
+    if (*zi < 0.) {
+	fmr = -pi;
+    }
+    ztar = -ztar;
+    ztai = -ztai;
+L110:
+/* ----------------------------------------------------------------------- */
+/*     AA=FACTOR FOR ANALYTIC CONTINUATION OF I(FNU,ZTA) */
+/*     KODE=2 RETURNS EXP(-ABS(XZTA))*I(FNU,ZTA) FROM CBESI */
+/* ----------------------------------------------------------------------- */
+    zbinu_(&ztar, &ztai, &fnu, kode, &c__1, cyr, cyi, &nz, &rl, &fnul, &tol, &
+	    elim, &alim);
+    if (nz < 0) {
+	goto L200;
+    }
+    aa = fmr * fnu;
+    z3r = sfac;
+    str = cos(aa);
+    sti = sin(aa);
+    s1r = (str * cyr[0] - sti * cyi[0]) * z3r;
+    s1i = (str * cyi[0] + sti * cyr[0]) * z3r;
+    fnu = (2. - fid) / 3.;
+    zbinu_(&ztar, &ztai, &fnu, kode, &c__2, cyr, cyi, &nz, &rl, &fnul, &tol, &
+	    elim, &alim);
+    cyr[0] *= z3r;
+    cyi[0] *= z3r;
+    cyr[1] *= z3r;
+    cyi[1] *= z3r;
+/* ----------------------------------------------------------------------- */
+/*     BACKWARD RECUR ONE STEP FOR ORDERS -1/3 OR -2/3 */
+/* ----------------------------------------------------------------------- */
+    zdiv_(cyr, cyi, &ztar, &ztai, &str, &sti);
+    s2r = (fnu + fnu) * str + cyr[1];
+    s2i = (fnu + fnu) * sti + cyi[1];
+    aa = fmr * (fnu - 1.);
+    str = cos(aa);
+    sti = sin(aa);
+    s1r = coef * (s1r + s2r * str - s2i * sti);
+    s1i = coef * (s1i + s2r * sti + s2i * str);
+    if (*id == 1) {
+	goto L120;
+    }
+    str = csqr * s1r - csqi * s1i;
+    s1i = csqr * s1i + csqi * s1r;
+    s1r = str;
+    *bir = s1r / sfac;
+    *bii = s1i / sfac;
+    return 0;
+L120:
+    str = *zr * s1r - *zi * s1i;
+    s1i = *zr * s1i + *zi * s1r;
+    s1r = str;
+    *bir = s1r / sfac;
+    *bii = s1i / sfac;
+    return 0;
+L130:
+    aa = c1 * (1. - fid) + fid * c2;
+    *bir = aa;
+    *bii = 0.;
+    return 0;
+L190:
+    *ierr = 2;
+    nz = 0;
+    return 0;
+L200:
+    if (nz == -1) {
+	goto L190;
+    }
+    nz = 0;
+    *ierr = 5;
+    return 0;
+L260:
+    *ierr = 4;
+    nz = 0;
+    return 0;
+} /* zbiry_ */
 
 // MAIN D. E. AMOS (SLATEC) ROUTINES ORIGINALLY TRANSLATED WITH F2C
 //-^------------------------------------------------------------------------
@@ -8493,77 +9684,177 @@ namespace bessel
 
 //-v------------------------------------------------------------------------
 // C++ AMOS/SLATEC FLAGS
-void _flag_zbesj(const int _ierr)
+void _flag_zbesj_(const int _ierr, const int _nz)
 {
-    // Errors of zbesj amos/slatec function
+    // Errors of zbesj_ amos/slatec function
     switch(_ierr)
     {
         case 0:
-            // ierr=0, normal return - computation completed
             break;
         case 1:
-            // ierr=1, input error - no computation
-            std::cerr << "[bessel::slatec::zbesj] Flag -> Input error: No computation." << std::endl;
+            std::cerr << "[bessel::slatec::zbesj_] Flag -> Input error: No computation." << std::endl;
             break;
         case 2:
-            // ierr=2, overflow - no computation, aimag(z)
-            //  too large on kode=1
-            std::cerr << "[bessel::slatec::zbesj] Flag -> [zbesj] Overflow: No computation, imag(_z) too large on nonscaled calculation." << std::endl;
+            std::cerr << "[bessel::slatec::zbesj_] Flag -> Overflow: No computation, imag(_z) too large on nonscaled calculation." << std::endl;
             break;
         case 3:
-            // ierr=3, cabs(z) or fnu+n-1 large - computation done
-            //  but losses of signifcance by argument
-            //  reduction produce less than half of machine
-            //  accuracy
-            std::cerr << "[bessel::slatec::zbesj] Flag -> The abs(_z) or _nu+_n-1 large: Computation done but losses of signifcance by argument reduction produce less than half of machine accuracy." << std::endl;
+            std::cerr << "[bessel::slatec::zbesj_] Flag -> The abs(_z) or abs(_nu)+_n-1 large: Computation done but losses of signifcance by argument reduction produce less than half of machine accuracy." << std::endl;
             break;
         case 4:
-            // ierr=4, cabs(z) or fnu+n-1 too large - no computa-
-            //  tion because of complete losses of signifi-
-            //  cance by argument reduction
-            std::cerr << "[bessel::slatec::zbesj] Flag -> The abs(z) or _nu+_n-1 too large: No computation because of complete losses of significance by argument reduction." << std::endl;
+            std::cerr << "[bessel::slatec::zbesj_] Flag -> The abs(_z) or abs(_nu)+_n-1 too large: No computation because of complete losses of significance by argument reduction." << std::endl;
             break;
         case 5:
-            // ierr=5, error - no computation,
-            //  algorithm termination condition not met
-            std::cerr << "[bessel::slatec::zbesj] Flag -> Error: No computation, algorithm termination condition not met." << std::endl;
+            std::cerr << "[bessel::slatec::zbesj_] Flag -> Error: No computation, algorithm termination condition not met." << std::endl;
             break;
     }
+    if (_nz != 0) std::cerr << "[bessel::slatec::zbesj_] Flag -> Number of components set to zero due to underflow: " << _nz << "." << std::endl;
 }
-void _flag_zbesy(const int _ierr)
+void _flag_zbesy_(const int _ierr, const int _nz)
 {
-    // Errors of zbesy amos/slatec function
+    // Errors of zbesy_ amos/slatec function
     switch(_ierr)
     {
         case 0:
-            // ierr=0, normal return - computation completed
             break;
         case 1:
-            // ierr=1, input error - no computation
-            std::cerr << "[bessel::slatec::zbesy] Flag -> Input error: No computation." << std::endl;
+            std::cerr << "[bessel::slatec::zbesy_] Flag -> Input error: No computation." << std::endl;
             break;
         case 2:
-            // ierr=2, overflow - no computation, fnu is
-            //  too large or cabs(z) is too small or both
-            std::cerr << "[bessel::slatec::zbesy] Flag -> Overflow: No computation, _nu too large or abs(_z) is too small or both." << std::endl;
+            std::cerr << "[bessel::slatec::zbesy_] Flag -> Overflow: No computation, abs(_nu) too large or abs(_z) is too small or both." << std::endl;
             break;
         case 3:
-            // ierr=3, cabs(z) or fnu+n-1 large - computation done
-            //  but losses of signifcance by argument
-            //  reduction produce less than half of machine
-            //  accuracy
-            std::cerr << "[bessel::slatec::zbesy] Flag -> The abs(_z) or _nu+_n-1 large: Computation done but losses of signifcance by argument reduction produce less than half of machine accuracy." << std::endl;
+            std::cerr << "[bessel::slatec::zbesy_] Flag -> The abs(_z) or abs(_nu)+_n-1 large: Computation done but losses of signifcance by argument reduction produce less than half of machine accuracy." << std::endl;
             break;
         case 4:
-            // ierr=4, cabs(z) or fnu+n-1 too large - no computa-
-            //  tion because of complete losses of signifi-
-            //  cance by argument reduction
-            std::cerr << "[bessel::slatec::zbesy] Flag -> The abs(z) or _nu+_n-1 too large: No computation because of complete losses of significance by argument reduction." << std::endl;
+            std::cerr << "[bessel::slatec::zbesy_] Flag -> The abs(_z) or abs(_nu)+_n-1 too large: No computation because of complete losses of significance by argument reduction." << std::endl;
             break;
         case 5:
-            // ierr=5, error - no computation,
-            //  algorithm termination condition not met
-            std::cerr << "[bessel::slatec::zbesy] Flag -> Error: No computation, algorithm termination condition not met." << std::endl;
+            std::cerr << "[bessel::slatec::zbesy_] Flag -> Error: No computation, algorithm termination condition not met." << std::endl;
+            break;
+    }
+    if (_nz != 0) std::cerr << "[bessel::slatec::zbesy_] Flag -> Number of components set to zero due to underflow: " << _nz << "." << std::endl;
+}
+void _flag_zbesh_(const int _ierr, const int _nz)
+{
+    // Errors of zbesh_ amos/slatec function
+    switch(_ierr)
+    {
+        case 0:
+            break;
+        case 1:
+            std::cerr << "[bessel::slatec::zbesh_] Flag -> Input error: No computation." << std::endl;
+            break;
+        case 2:
+            std::cerr << "[bessel::slatec::zbesh_] Flag -> Overflow: No computation, abs(_nu) too large or abs(_z) too small or both." << std::endl;
+            break;
+        case 3:
+            std::cerr << "[bessel::slatec::zbesh_] Flag -> The abs(_z) or abs(_nu)+_n-1 large: Computation done but losses of signifcance by argument reduction produce less than half of machine accuracy." << std::endl;
+            break;
+        case 4:
+            std::cerr << "[bessel::slatec::zbesh_] Flag -> The abs(_z) or abs(_nu)+_n-1 too large: No computation because of complete losses of significance by argument reduction." << std::endl;
+            break;
+        case 5:
+            std::cerr << "[bessel::slatec::zbesh_] Flag -> Error: No computation, algorithm termination condition not met." << std::endl;
+            break;
+    }
+    if (_nz != 0) std::cerr << "[bessel::slatec::zbesh_] Flag -> Number of components set to zero due to underflow: " << _nz << "." << std::endl;
+}
+void _flag_zbesi_(const int _ierr, const int _nz)
+{
+    // Errors of zbesi_ amos/slatec function
+    switch(_ierr)
+    {
+        case 0:
+            break;
+        case 1:
+            std::cerr << "[bessel::slatec::zbesi_] Flag -> Input error: No computation." << std::endl;
+            break;
+        case 2:
+            std::cerr << "[bessel::slatec::zbesi_] Flag -> Overflow: No computation, real(_z) too large on nonscaled calculation." << std::endl;
+            break;
+        case 3:
+            std::cerr << "[bessel::slatec::zbesi_] Flag -> The abs(_z) or abs(_nu)+_n-1 large: Computation done but losses of signifcance by argument reduction produce less than half of machine accuracy." << std::endl;
+            break;
+        case 4:
+            std::cerr << "[bessel::slatec::zbesi_] Flag -> The abs(z) or abs(_nu)+_n-1 too large: No computation because of complete losses of significance by argument reduction." << std::endl;
+            break;
+        case 5:
+            std::cerr << "[bessel::slatec::zbesi_] Flag -> Error: No computation, algorithm termination condition not met." << std::endl;
+            break;
+    }
+    if (_nz != 0) std::cerr << "[bessel::slatec::zbesi_] Flag -> Number of components set to zero due to underflow: " << _nz << "." << std::endl;
+}
+void _flag_zbesk_(const int _ierr, const int _nz)
+{
+    // Errors of zbesk_ amos/slatec function
+    switch(_ierr)
+    {
+        case 0:
+            break;
+        case 1:
+            std::cerr << "[bessel::slatec::zbesk_] Flag -> Input error: No computation." << std::endl;
+            break;
+        case 2:
+            std::cerr << "[bessel::slatec::zbesk_] Flag -> Overflow: No computation, abs(_nu) is too large or abs(_z) is too small or both." << std::endl;
+            break;
+        case 3:
+            std::cerr << "[bessel::slatec::zbesk_] Flag -> The abs(_z) or abs(_nu)+_n-1 large: Computation done but losses of signifcance by argument reduction produce less than half of machine accuracy." << std::endl;
+            break;
+        case 4:
+            std::cerr << "[bessel::slatec::zbesk_] Flag -> The abs(_z) or abs(_nu)+_n-1 too large: No computation because of complete losses of significance by argument reduction." << std::endl;
+            break;
+        case 5:
+            std::cerr << "[bessel::slatec::zbesk_] Flag -> Error: No computation, algorithm termination condition not met." << std::endl;
+            break;
+    }
+    if (_nz != 0) std::cerr << "[bessel::slatec::zbesk_] Flag -> Number of components set to zero due to underflow: " << _nz << "." << std::endl;
+}
+void _flag_zairy_(const int _ierr, const int _nz)
+{
+    // Errors of zairy_ amos/slatec function
+    switch(_ierr)
+    {
+        case 0:
+            break;
+        case 1:
+            std::cerr << "[bessel::slatec::zairy_] Flag -> Input error: No computation." << std::endl;
+            break;
+        case 2:
+            std::cerr << "[bessel::slatec::zairy_] Flag -> Overflow: No computation, real((2/3)*_z*sqrt(_z)) is too large on nonscaled calculation." << std::endl;
+            break;
+        case 3:
+            std::cerr << "[bessel::slatec::zairy_] Flag -> The abs(_z) large: Computation completed, losses of signifcance by argument reduction produce less than half of machine accuracy." << std::endl;
+            break;
+        case 4:
+            std::cerr << "[bessel::slatec::zairy_] Flag -> The abs(_z) too large: No computation, complete loss of accuracy by argument reduction." << std::endl;
+            break;
+        case 5:
+            std::cerr << "[bessel::slatec::zairy_] Flag -> Error: No computation, algorithm termination condition not met." << std::endl;
+            break;
+    }
+    if (_nz != 0) std::cerr << "[bessel::slatec::zairy_] Flag -> Result set to zero due to underflow in -pi/3 < arg(_z) < pi/3." << std::endl;
+}
+void _flag_zbiry_(const int _ierr)
+{
+    // Errors of zbiry_ amos/slatec function
+    switch(_ierr)
+    {
+        case 0:
+            break;
+        case 1:
+            std::cerr << "[bessel::slatec::zbiry_] Flag -> Input error: No computation." << std::endl;
+            break;
+        case 2:
+            std::cerr << "[bessel::slatec::zbiry_] Flag -> Overflow: No computation, real(_z) is too large on nonscaled calculation." << std::endl;
+            break;
+        case 3:
+            std::cerr << "[bessel::slatec::zbiry_] Flag -> The abs(_z) large: Computation completed, losses of signifcance by argument reduction produce less than half of machine accuracy." << std::endl;
+            break;
+        case 4:
+            std::cerr << "[bessel::slatec::zbiry_] Flag -> The abs(_z) too large: No computation, complete loss of accuracy by argument reduction." << std::endl;
+            break;
+        case 5:
+            std::cerr << "[bessel::slatec::zbiry_] Flag -> Error: No computation, algorithm termination condition not met." << std::endl;
             break;
     }
 }
@@ -8598,8 +9889,8 @@ std::complex<T2> cyl_j( const T1 _nu, const std::complex<T2> _z, bool _scaled = 
     {
         // Positive order
         double cjr, cji;
-        slatec::zbesj(&x, &y, &fnu, &kode, &n, &cjr, &cji, &nz, &ierr);
-        if (_flags) _flag_zbesj(ierr);
+        slatec::zbesj_(&x, &y, &fnu, &kode, &n, &cjr, &cji, &nz, &ierr);
+        if (_flags) _flag_zbesj_(ierr, nz);
         return std::complex<T2>(cjr, cji);
     }
     else
@@ -8607,31 +9898,31 @@ std::complex<T2> cyl_j( const T1 _nu, const std::complex<T2> _z, bool _scaled = 
         // Negative order
         if ( double(floor(fnu)) == fnu )
         {
-            // Integer negative order
+            // int negative order
             double cjr, cji;
-            slatec::zbesj(&x, &y, &fnu, &kode, &n, &cjr, &cji, &nz, &ierr);
-            if (_flags) _flag_zbesj(ierr);
+            slatec::zbesj_(&x, &y, &fnu, &kode, &n, &cjr, &cji, &nz, &ierr);
+            if (_flags) _flag_zbesj_(ierr, nz);
             return pow(-1., fnu) * std::complex<T2>(cjr, cji);
         }
         else if ( double(floor(fnu)) != fnu && abs(z) == 0. )
         {
-            // Non-integer negative order with abs(z)=0,
+            // Non-int negative order with abs(z)=0,
             //  J_nu = complex infinity since Y_fnu = complex infinity.
             double dinf = std::numeric_limits<double>::infinity();
             return std::complex<double>(dinf, dinf);
         }
         else
         {
-            // Non-integer negative order with abs(z)!=0.
+            // Non-int negative order with abs(z)!=0.
             double cjr, cji;
-            slatec::zbesj(&x, &y, &fnu, &kode, &n, &cjr, &cji, &nz, &ierr);
-            if (_flags) _flag_zbesj(ierr);
+            slatec::zbesj_(&x, &y, &fnu, &kode, &n, &cjr, &cji, &nz, &ierr);
+            if (_flags) _flag_zbesj_(ierr, nz);
 
             double cyr, cyi;
             double * cwrkr = new double [1];
             double * cwrki = new double [1];
-            slatec::zbesy(&x, &y, &fnu, &kode, &n, &cyr, &cyi, &nz, cwrkr, cwrki, &ierr);
-            if (_flags) _flag_zbesy(ierr);
+            slatec::zbesy_(&x, &y, &fnu, &kode, &n, &cyr, &cyi, &nz, cwrkr, cwrki, &ierr);
+            if (_flags) _flag_zbesy_(ierr, nz);
 
             //  Eq. (5.5.4) of Zhang and Jin (1996) [2].
             double tmp = fnu*M_PI;
@@ -8639,7 +9930,11 @@ std::complex<T2> cyl_j( const T1 _nu, const std::complex<T2> _z, bool _scaled = 
         }
     }
 }
-
+template<typename T1, typename T2>
+T2 cyl_j( const T1 _nu, const T2 _z, bool _scaled = false, bool _flags = false )
+{
+    return real( cyl_j( _nu, std::complex<T2>(_z,0.), _scaled, _flags ) ) ;
+}
 // Array of cylindrical Bessel functions of the first kind J_nu(z)
 template<typename T1, typename T2>
 void cyl_j( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<T2> * _cyl_j, bool _scaled = false, bool _flags = false )
@@ -8665,15 +9960,15 @@ void cyl_j( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
 
     if ( n <= 0 )
     {
-        std::cerr << "[bessel::cyl_j] Flag -> Input error: No computation, _n must be an integer greater than zero." << std::endl;
+        if (_flags) std::cerr << "[bessel::cyl_j] Flag -> Input error: No computation, _n must be an integer greater than zero." << std::endl;
     }
     else if ( nu >= 0. )
     {
         // Array of only positive orders, including the order 0
         double * cjr = new double [n];
         double * cji = new double [n];
-        slatec::zbesj(&x, &y, &fnu, &kode, &n, cjr, cji, &nz, &ierr);
-        if (_flags) _flag_zbesj(ierr);
+        slatec::zbesj_(&x, &y, &fnu, &kode, &n, cjr, cji, &nz, &ierr);
+        if (_flags) _flag_zbesj_(ierr, nz);
 
         for ( int i=0; i<n; i++ )
         {
@@ -8685,12 +9980,12 @@ void cyl_j( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
         // Array of only negative orders, including the order 0
         if ( double(floor(fnu)) == fnu )
         {
-            // Integer negative orders, or order 0
+            // int negative orders, or order 0
             double * cjr = new double [n];
             double * cji = new double [n];
             double fnu_m = abs( nu_m );
-            slatec::zbesj(&x, &y, &fnu_m, &kode, &n, cjr, cji, &nz, &ierr);
-            if (_flags) _flag_zbesj(ierr);
+            slatec::zbesj_(&x, &y, &fnu_m, &kode, &n, cjr, cji, &nz, &ierr);
+            if (_flags) _flag_zbesj_(ierr, nz);
 
             for (int i=0; i<n; i++)
             {
@@ -8700,7 +9995,7 @@ void cyl_j( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
         }
         else if ( double(floor(nu_m)) != nu_m && abs(z) == 0. )
         {
-            // Non-integer negative orders with abs(z)=0,
+            // Non-int negative orders with abs(z)=0,
             //  Jnu = complex infinity since Yfnu = complex infinity.
             double dinf = std::numeric_limits<double>::infinity();
             for (int i=0; i<n; i++)
@@ -8710,19 +10005,19 @@ void cyl_j( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
         }
         else
         {
-            // Non-integer negative orders with abs(z)!=0,
+            // Non-int negative orders with abs(z)!=0,
             double * cjr = new double [n];
             double * cji = new double [n];
             double fnu_m = abs( nu_m );
-            slatec::zbesj(&x, &y, &fnu_m, &kode, &n, cjr, cji, &nz, &ierr);
-            if (_flags) _flag_zbesj(ierr);
+            slatec::zbesj_(&x, &y, &fnu_m, &kode, &n, cjr, cji, &nz, &ierr);
+            if (_flags) _flag_zbesj_(ierr, nz);
 
             double * cyr = new double [n];
             double * cyi = new double [n];
             double * cwrkr = new double [n];
             double * cwrki = new double [n];
-            slatec::zbesy(&x, &y, &fnu_m, &kode, &n, cyr, cyi, &nz, cwrkr, cwrki, &ierr);
-            if (_flags) _flag_zbesy(ierr);
+            slatec::zbesy_(&x, &y, &fnu_m, &kode, &n, cyr, cyi, &nz, cwrkr, cwrki, &ierr);
+            if (_flags) _flag_zbesy_(ierr, nz);
 
             for (int i=0; i<n; i++)
             {
@@ -8743,11 +10038,11 @@ void cyl_j( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
         // The negative orders
         if ( double(floor(fnu)) == fnu )
         {
-            // Integer negative orders, or order 0
+            // int negative orders, or order 0
             double * cjr_m = new double [n_m];
             double * cji_m = new double [n_m];
-            slatec::zbesj(&x, &y, &fnu_m, &kode, &n_m, cjr_m, cji_m, &nz, &ierr);
-            if (_flags) _flag_zbesj(ierr);
+            slatec::zbesj_(&x, &y, &fnu_m, &kode, &n_m, cjr_m, cji_m, &nz, &ierr);
+            if (_flags) _flag_zbesj_(ierr, nz);
 
             for (int i=0; i<n_m; i++)
             {
@@ -8757,7 +10052,7 @@ void cyl_j( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
         }
         else if ( double(floor(nu_m)) != nu_m && abs(z) == 0. )
         {
-            // Non-integer negative orders with abs(z)=0,
+            // Non-int negative orders with abs(z)=0,
             //  Jnu = complex infinity since Yfnu = complex infinity.
             double dinf = std::numeric_limits<double>::infinity();
             for (int i=0; i<n_m; i++)
@@ -8768,18 +10063,18 @@ void cyl_j( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
         }
         else
         {
-            // Non-integer negative orders with abs(z)!=0,
+            // Non-int negative orders with abs(z)!=0,
             double * cjr_m = new double [n_m];
             double * cji_m = new double [n_m];
-            slatec::zbesj(&x, &y, &fnu_m, &kode, &n_m, cjr_m, cji_m, &nz, &ierr);
-            if (_flags) _flag_zbesj(ierr);
+            slatec::zbesj_(&x, &y, &fnu_m, &kode, &n_m, cjr_m, cji_m, &nz, &ierr);
+            if (_flags) _flag_zbesj_(ierr, nz);
 
             double * cyr_m = new double [n_m];
             double * cyi_m = new double [n_m];
             double * cwrkr = new double [n_m];
             double * cwrki = new double [n_m];
-            slatec::zbesy(&x, &y, &fnu_m, &kode, &n_m, cyr_m, cyi_m, &nz, cwrkr, cwrki, &ierr);
-            if (_flags) _flag_zbesy(ierr);
+            slatec::zbesy_(&x, &y, &fnu_m, &kode, &n_m, cyr_m, cyi_m, &nz, cwrkr, cwrki, &ierr);
+            if (_flags) _flag_zbesy_(ierr, nz);
 
             for (int i=0; i<n_m; i++)
             {
@@ -8794,8 +10089,8 @@ void cyl_j( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
         double * cjr_p = new double [n_p];
         double * cji_p = new double [n_p];
         double fnu_p = nu + double(n_m);
-        slatec::zbesj(&x, &y, &fnu_p, &kode, &n_p, cjr_p, cji_p, &nz, &ierr);
-        if (_flags) _flag_zbesj(ierr);
+        slatec::zbesj_(&x, &y, &fnu_p, &kode, &n_p, cjr_p, cji_p, &nz, &ierr);
+        if (_flags) _flag_zbesj_(ierr, nz);
 
         for (int i=n_m; i<n; i++)
         {
@@ -8804,8 +10099,18 @@ void cyl_j( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
         }
     }
 }
+template<typename T1, typename T2>
+void cyl_j( const T1 _nu, const int _n, T2 _z, T2 * _cyl_j, bool _scaled = false, bool _flags = false )
+{
+    std::complex<T2> * tmp_cylj = new std::complex<T2> [_n];
+    cyl_j( _nu, _n, std::complex<T2>(_z,0.), tmp_cylj, _scaled, _flags );
+    for (int i=0; i<_n; i++)
+    {
+        _cyl_j[i] = real(tmp_cylj[i]);
+    }
+}
 
-// Cylindrical Bessel function of the second kind Y_nu(z) [Neumann function N_nu(z)]
+// Cylindrical Bessel function of the second kind Y_nu(z)
 template<typename T1, typename T2>
 std::complex<T2> cyl_y( const T1 _nu, const std::complex<T2> _z, bool _scaled = false, bool _flags = false )
 {
@@ -8845,8 +10150,8 @@ std::complex<T2> cyl_y( const T1 _nu, const std::complex<T2> _z, bool _scaled = 
         double cyr, cyi;
         double * cwrkr = new double [1];
         double * cwrki = new double [1];
-        slatec::zbesy(&x, &y, &fnu, &kode, &n, &cyr, &cyi, &nz, cwrkr, cwrki, &ierr);
-        if (_flags) _flag_zbesy(ierr);
+        slatec::zbesy_(&x, &y, &fnu, &kode, &n, &cyr, &cyi, &nz, cwrkr, cwrki, &ierr);
+        if (_flags) _flag_zbesy_(ierr, nz);
         return std::complex<T2>(cyr, cyi);
     }
     else
@@ -8854,26 +10159,26 @@ std::complex<T2> cyl_y( const T1 _nu, const std::complex<T2> _z, bool _scaled = 
         // Negative order
         if ( double(floor(fnu)) == fnu )
         {
-            // Integer negative order
+            // int negative order
             double cyr, cyi;
             double * cwrkr = new double [1];
             double * cwrki = new double [1];
-            slatec::zbesy(&x, &y, &fnu, &kode, &n, &cyr, &cyi, &nz, cwrkr, cwrki, &ierr);
-            if (_flags) _flag_zbesy(ierr);
+            slatec::zbesy_(&x, &y, &fnu, &kode, &n, &cyr, &cyi, &nz, cwrkr, cwrki, &ierr);
+            if (_flags) _flag_zbesy_(ierr, nz);
             return pow(-1., fnu) * std::complex<T2>(cyr, cyi);
         }
         else
         {
-            // Non-integer negative order
+            // Non-int negative order
             double cyr, cyi;
             double * cwrkr = new double [1];
             double * cwrki = new double [1];
-            slatec::zbesy(&x, &y, &fnu, &kode, &n, &cyr, &cyi, &nz, cwrkr, cwrki, &ierr);
-            if (_flags) _flag_zbesy(ierr);
+            slatec::zbesy_(&x, &y, &fnu, &kode, &n, &cyr, &cyi, &nz, cwrkr, cwrki, &ierr);
+            if (_flags) _flag_zbesy_(ierr, nz);
 
             double cjr, cji;
-            slatec::zbesj(&x, &y, &fnu, &kode, &n, &cjr, &cji, &nz, &ierr);
-            if (_flags) _flag_zbesj(ierr);
+            slatec::zbesj_(&x, &y, &fnu, &kode, &n, &cjr, &cji, &nz, &ierr);
+            if (_flags) _flag_zbesj_(ierr, nz);
 
             //  Eq. (5.5.4) of Zhang and Jin (1996) [2].
             double tmp = fnu*M_PI;
@@ -8881,8 +10186,12 @@ std::complex<T2> cyl_y( const T1 _nu, const std::complex<T2> _z, bool _scaled = 
         }
     }
 }
-
-// Array of cylindrical Bessel functions of the second kind Y_nu(z) [Neumann function N_nu(z)]
+template<typename T1, typename T2>
+T2 cyl_y( const T1 _nu, const T2 _z, bool _scaled = false, bool _flags = false )
+{
+    return real( cyl_y( _nu, std::complex<T2>(_z,0.), _scaled, _flags ) ) ;
+}
+// Array of cylindrical Bessel functions of the second kind Y_nu(z)
 template<typename T1, typename T2>
 void cyl_y( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<T2> * _cyl_y, bool _scaled = false, bool _flags = false )
 {
@@ -8907,7 +10216,7 @@ void cyl_y( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
 
     if ( n <= 0 )
     {
-        std::cerr << "[bessel::cyl_y] Flag -> Input error: No computation, _n must be an integer greater than zero." << std::endl;
+        if (_flags) std::cerr << "[bessel::cyl_y] Flag -> Input error: No computation, _n must be an integer greater than zero." << std::endl;
     }
     else if ( abs(z) == 0. )
     {
@@ -8919,7 +10228,7 @@ void cyl_y( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
         }
         if ( nu_m == floor(nu_m) && n > fnu )
         {
-            // Infinity for the integer order 0
+            // Infinity for the int order 0
             _cyl_y[ int(floor(fnu)) ] = std::complex<double>(-dinf, 0.);
         }
     }
@@ -8930,8 +10239,8 @@ void cyl_y( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
         double * cyi = new double [n];
         double * cwrkr = new double [n];
         double * cwrki = new double [n];
-        slatec::zbesy(&x, &y, &fnu, &kode, &n, cyr, cyi, &nz, cwrkr, cwrki, &ierr);
-        if (_flags) _flag_zbesy(ierr);
+        slatec::zbesy_(&x, &y, &fnu, &kode, &n, cyr, cyi, &nz, cwrkr, cwrki, &ierr);
+        if (_flags) _flag_zbesy_(ierr, nz);
 
         for ( int i=0; i<n; i++ )
         {
@@ -8943,14 +10252,14 @@ void cyl_y( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
         // Array of only negative orders, including the order 0, with abs(z)!=0
         if ( double(floor(fnu)) == fnu )
         {
-            // Integer negative orders, or order 0, with abs(z)!=0
+            // int negative orders, or order 0, with abs(z)!=0
             double * cyr = new double [n];
             double * cyi = new double [n];
             double * cwrkr = new double [n];
             double * cwrki = new double [n];
             double fnu_m = abs( nu_m );
-            slatec::zbesy(&x, &y, &fnu_m, &kode, &n, cyr, cyi, &nz, cwrkr, cwrki, &ierr);
-            if (_flags) _flag_zbesy(ierr);   
+            slatec::zbesy_(&x, &y, &fnu_m, &kode, &n, cyr, cyi, &nz, cwrkr, cwrki, &ierr);
+            if (_flags) _flag_zbesy_(ierr, nz);   
 
             for (int i=0; i<n; i++)
             {
@@ -8960,20 +10269,20 @@ void cyl_y( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
         }
         else
         {
-            // Non-integer negative orders with abs(z)!=0
+            // Non-int negative orders with abs(z)!=0
             double fnu_m = abs( nu_m );
 
             double * cyr = new double [n];
             double * cyi = new double [n];
             double * cwrkr = new double [n];
             double * cwrki = new double [n];
-            slatec::zbesy(&x, &y, &fnu_m, &kode, &n, cyr, cyi, &nz, cwrkr, cwrki, &ierr);
-            if (_flags) _flag_zbesy(ierr);
+            slatec::zbesy_(&x, &y, &fnu_m, &kode, &n, cyr, cyi, &nz, cwrkr, cwrki, &ierr);
+            if (_flags) _flag_zbesy_(ierr, nz);
 
             double * cjr = new double [n];
             double * cji = new double [n];
-            slatec::zbesj(&x, &y, &fnu_m, &kode, &n, cjr, cji, &nz, &ierr);
-            if (_flags) _flag_zbesj(ierr);
+            slatec::zbesj_(&x, &y, &fnu_m, &kode, &n, cjr, cji, &nz, &ierr);
+            if (_flags) _flag_zbesj_(ierr, nz);
 
             for (int i=0; i<n; i++)
             {
@@ -8994,13 +10303,13 @@ void cyl_y( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
         // The negative orders
         if ( double(floor(fnu)) == fnu )
         {
-            // Integer negative orders, or order 0, with abs(z)!=0
+            // int negative orders, or order 0, with abs(z)!=0
             double * cyr_m = new double [n_m];
             double * cyi_m = new double [n_m];
             double * cwrkr = new double [n_m];
             double * cwrki = new double [n_m];
-            slatec::zbesy(&x, &y, &fnu_m, &kode, &n_m, cyr_m, cyi_m, &nz, cwrkr, cwrki, &ierr);
-            if (_flags) _flag_zbesy(ierr);   
+            slatec::zbesy_(&x, &y, &fnu_m, &kode, &n_m, cyr_m, cyi_m, &nz, cwrkr, cwrki, &ierr);
+            if (_flags) _flag_zbesy_(ierr, nz);   
 
             for (int i=0; i<n_m; i++)
             {
@@ -9010,18 +10319,18 @@ void cyl_y( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
         }
         else
         {
-            // Non-integer negative orders with abs(z)!=0,
+            // Non-int negative orders with abs(z)!=0,
             double * cyr_m = new double [n_m];
             double * cyi_m = new double [n_m];
             double * cwrkr = new double [n_m];
             double * cwrki = new double [n_m];
-            slatec::zbesy(&x, &y, &fnu_m, &kode, &n_m, cyr_m, cyi_m, &nz, cwrkr, cwrki, &ierr);
-            if (_flags) _flag_zbesy(ierr);
+            slatec::zbesy_(&x, &y, &fnu_m, &kode, &n_m, cyr_m, cyi_m, &nz, cwrkr, cwrki, &ierr);
+            if (_flags) _flag_zbesy_(ierr, nz);
 
             double * cjr_m = new double [n_m];
             double * cji_m = new double [n_m];
-            slatec::zbesj(&x, &y, &fnu_m, &kode, &n_m, cjr_m, cji_m, &nz, &ierr);
-            if (_flags) _flag_zbesj(ierr);
+            slatec::zbesj_(&x, &y, &fnu_m, &kode, &n_m, cjr_m, cji_m, &nz, &ierr);
+            if (_flags) _flag_zbesj_(ierr, nz);
 
             for (int i=0; i<n_m; i++)
             {
@@ -9038,8 +10347,8 @@ void cyl_y( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
         double * cwrkr = new double [n_p];
         double * cwrki = new double [n_p];
         double fnu_p = nu + double(n_m);
-        slatec::zbesy(&x, &y, &fnu_p, &kode, &n_p, cyr_p, cyi_p, &nz, cwrkr, cwrki, &ierr);
-        if (_flags) _flag_zbesy(ierr);
+        slatec::zbesy_(&x, &y, &fnu_p, &kode, &n_p, cyr_p, cyi_p, &nz, cwrkr, cwrki, &ierr);
+        if (_flags) _flag_zbesy_(ierr, nz);
 
         for (int i=n_m; i<n; i++)
         {
@@ -9047,6 +10356,793 @@ void cyl_y( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
             _cyl_y[i] = std::complex<T2>(cyr_p[tmp1], cyi_p[tmp1]);
         }
     }
+}
+template<typename T1, typename T2>
+void cyl_y( const T1 _nu, const int _n, T2 _z, T2 * _cyl_y, bool _scaled = false, bool _flags = false )
+{
+    std::complex<T2> * tmp_cyly = new std::complex<T2> [_n];
+    cyl_y( _nu, _n, std::complex<T2>(_z,0.), tmp_cyly, _scaled, _flags );
+    for (int i=0; i<_n; i++)
+    {
+        _cyl_y[i] = real(tmp_cyly[i]);
+    }
+}
+
+// Hankel function of the first kind H1_nu(z)
+template<typename T1, typename T2>
+std::complex<T2> cyl_h1( const T1 _nu, const std::complex<T2> _z, bool _scaled = false, bool _flags = false )
+{
+    // Parameters
+    //  _nu:     real order.
+    //  _z:      complex argument.
+    //  _scaled: if true, returns the scaled version H1_nu(z)*exp(-iz).
+    //  _flags:  if true, print error messages.
+
+    int kode = ( _scaled ? 2 : 1 );
+    int nz;
+    int ierr;
+    double x = double( real(_z) );
+    double y = double( imag(_z) );
+    std::complex<double> z = std::complex<double> (x, y);
+    int n = 1;
+    double nu = double(_nu);
+    double fnu = abs(nu);
+    int m = 1;
+
+    if ( abs(z) == 0. )
+    {
+        // Complex infinity
+        double dinf = std::numeric_limits<double>::infinity();
+        return std::complex<double>(dinf, dinf);
+    }
+    else
+    {
+        double ch1r, ch1i;
+        slatec::zbesh_(&x, &y, &fnu, &kode, &m, &n, &ch1r, &ch1i, &nz, &ierr);
+        if (_flags) _flag_zbesh_(ierr, nz);
+        if ( nu >= 0. )
+        {
+            // Positive order
+            return std::complex<T2>(ch1r, ch1i);
+        }
+        else
+        {
+            // Negative order, see Eq. (9.1.6) of Ref. [1].
+            std::complex<T2> exp_of_Ipifnu = exp( std::complex<T2> (0.,M_PI*fnu) );
+            return std::complex<T2>(ch1r, ch1i)*exp_of_Ipifnu;
+        }
+    }
+}
+template<typename T1, typename T2>
+T2 cyl_h1( const T1 _nu, const T2 _z, bool _scaled = false, bool _flags = false )
+{
+    return real( cyl_h1( _nu, std::complex<T2>(_z,0.), _scaled, _flags ) ) ;
+}
+// Array of Hankel functiond of the first kind H1_nu(z)
+template<typename T1, typename T2>
+void cyl_h1( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<T2> * _cyl_h1, bool _scaled = false, bool _flags = false )
+{
+    // Parameters
+    //  _nu:     real first order to be calculated.
+    //  _n:      int to return an array with the orders _nu, _nu+1, ..., _nu+_n.
+    //  _z:      complex argument.
+    //  _cyl_h1: array of size _n to output H1_nu(z) for the orders _nu, _nu+1, ..., _nu+_n.
+    //  _scaled: if true, returns an array of size _n with the scaled version H1_nu(z)*exp(-iz). for the orders _nu, _nu+1, ..., _nu+_n.
+    //  _flags:  if true, print error messages.
+
+    int kode = ( _scaled ? 2 : 1 );
+    int nz;
+    int ierr;
+    double x = double( real(_z) );
+    double y = double( imag(_z) );
+    std::complex<double> z = std::complex<double> (x, y);
+    int n = _n;
+    double nu = double(_nu);
+    double fnu = abs(nu);   
+    double nu_m = nu + double(n-1);
+    int m = 1;
+
+    if ( n <= 0 )
+    {
+        if (_flags) std::cerr << "[bessel::cyl_h1] Flag -> Input error: No computation, _n must be an integer greater than zero." << std::endl;
+    }
+    else if ( abs(z) == 0. )
+    {
+        // Complex infinity for all orders
+        double dinf = std::numeric_limits<double>::infinity();
+        for (int i=0; i<n; i++)
+        {
+            _cyl_h1[i] = std::complex<T2>(dinf, dinf);
+        }
+    }
+    else if ( nu >= 0. )
+    {
+        // Array of only positive orders, including the order 0, with abs(z)!=0
+        double * ch1r = new double [n];
+        double * ch1i = new double [n];
+        slatec::zbesh_(&x, &y, &fnu, &kode, &m, &n, ch1r, ch1i, &nz, &ierr);
+        if (_flags) _flag_zbesh_(ierr, nz);
+        for ( int i=0; i<n; i++ )
+        {
+            _cyl_h1[i] = std::complex<T2>(ch1r[i], ch1i[i]);
+        }
+    }
+    else if ( nu_m <= 0. )
+    {
+        // Array of only negative orders, including the order 0, with abs(z)!=0
+        double * ch1r_m = new double [n];
+        double * ch1i_m = new double [n];
+        double fnu_m = abs( nu_m );
+        slatec::zbesh_(&x, &y, &fnu_m, &kode, &m, &n, ch1r_m, ch1i_m, &nz, &ierr);
+        if (_flags) _flag_zbesh_(ierr, nz); 
+        for (int i=0; i<n; i++)
+        {
+            // Eq. (9.1.6) of Ref. [1].
+            int tmp1 = n-1-i;
+            double tmp2 = ( fnu_m + double(tmp1) )*M_PI;
+            std::complex<T2> exp_of_Ipifnu = exp( std::complex<T2> (0.,tmp2) );
+            _cyl_h1[i] = std::complex<T2>(ch1r_m[tmp1], ch1i_m[tmp1])*exp_of_Ipifnu;
+        }        
+    }
+    else
+    {
+        // Array of negative and positive orders with abs(z)!=0
+        int n_m = floor( abs(nu) ) + 1;
+        int n_p = n - n_m;
+        double fnu_m = abs( nu + double(n_m-1) );
+
+        // The negative orders
+        // int negative orders, or order 0, with abs(z)!=0
+        double * ch1r_m = new double [n_m];
+        double * ch1i_m = new double [n_m];
+        slatec::zbesh_(&x, &y, &fnu_m, &kode, &m, &n_m, ch1r_m, ch1i_m, &nz, &ierr);
+        if (_flags) _flag_zbesh_(ierr, nz);   
+        for (int i=0; i<n_m; i++)
+        {
+            // Eq. (9.1.6) of Ref. [1].
+            int tmp1 = n_m-1-i;
+            double tmp2 = ( fnu_m + double(tmp1) )*M_PI;
+            std::complex<T2> exp_of_Ipifnu = exp( std::complex<T2> (0.,tmp2) );
+            _cyl_h1[i] = std::complex<T2>(ch1r_m[tmp1], ch1i_m[tmp1])*exp_of_Ipifnu;
+        }
+
+        // The positive orders
+        double * ch1r_p = new double [n_p];
+        double * ch1i_p = new double [n_p];
+        double fnu_p = nu + double(n_m);
+        slatec::zbesh_(&x, &y, &fnu_p, &kode, &m, &n_p, ch1r_p, ch1i_p, &nz, &ierr);
+        if (_flags) _flag_zbesh_(ierr, nz);
+        for (int i=n_m; i<n; i++)
+        {
+            int tmp1 = i-n_m;
+            _cyl_h1[i] = std::complex<T2>(ch1r_p[tmp1], ch1i_p[tmp1]);
+        }
+    }
+}
+template<typename T1, typename T2>
+void cyl_h1( const T1 _nu, const int _n, T2 _z, T2 * _cyl_h1, bool _scaled = false, bool _flags = false )
+{
+    std::complex<T2> * tmp_cylh1 = new std::complex<T2> [_n];
+    cyl_h1( _nu, _n, std::complex<T2>(_z,0.), tmp_cylh1, _scaled, _flags );
+    for (int i=0; i<_n; i++)
+    {
+        _cyl_h1[i] = real(tmp_cylh1[i]);
+    }
+}
+
+// Hankel function of the second kind H2_nu(z)
+template<typename T1, typename T2>
+std::complex<T2> cyl_h2( const T1 _nu, const std::complex<T2> _z, bool _scaled = false, bool _flags = false )
+{
+    // Parameters
+    //  _nu:     real order.
+    //  _z:      complex argument.
+    //  _scaled: if true, returns the scaled version H2_nu(z)*exp(+iz).
+    //  _flags:  if true, print error messages.
+
+    int kode = ( _scaled ? 2 : 1 );
+    int nz;
+    int ierr;
+    double x = double( real(_z) );
+    double y = double( imag(_z) );
+    std::complex<double> z = std::complex<double> (x, y);
+    int n = 1;
+    double nu = double(_nu);
+    double fnu = abs(nu);
+    int m = 2;
+
+    if ( abs(z) == 0. )
+    {
+        // Complex infinity
+        double dinf = std::numeric_limits<double>::infinity();
+        return std::complex<double>(dinf, dinf);
+    }
+    else
+    {
+        double ch2r, ch2i;
+        slatec::zbesh_(&x, &y, &fnu, &kode, &m, &n, &ch2r, &ch2i, &nz, &ierr);
+        if (_flags) _flag_zbesh_(ierr, nz);
+        if ( nu >= 0. )
+        {
+            // Positive order
+            return std::complex<T2>(ch2r, ch2i);
+        }
+        else
+        {
+            // Negative order, see Eq. (9.1.6) of Ref. [1].
+            std::complex<T2> exp_of_mIpifnu = exp( std::complex<T2> (0.,-M_PI*fnu) );
+            return std::complex<T2>(ch2r, ch2i)*exp_of_mIpifnu;
+        }
+    }
+}
+template<typename T1, typename T2>
+T2 cyl_h2( const T1 _nu, const T2 _z, bool _scaled = false, bool _flags = false )
+{
+    return real( cyl_h2( _nu, std::complex<T2>(_z,0.), _scaled, _flags ) ) ;
+}
+// Array of Hankel functions of the second kind H2_nu(z)
+template<typename T1, typename T2>
+void cyl_h2( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<T2> * _cyl_h2, bool _scaled = false, bool _flags = false )
+{
+    // Parameters
+    //  _nu:     real first order to be calculated.
+    //  _n:      int to return an array with the orders _nu, _nu+1, ..., _nu+_n.
+    //  _z:      complex argument.
+    //  _cyl_h2: array of size _n to output H2_nu(z) for the orders _nu, _nu+1, ..., _nu+_n.
+    //  _scaled: if true, returns an array of size _n with the scaled version H2_nu(z)*exp(+iz). for the orders _nu, _nu+1, ..., _nu+_n.
+    //  _flags:  if true, print error messages.
+
+    int kode = ( _scaled ? 2 : 1 );
+    int nz;
+    int ierr;
+    double x = double( real(_z) );
+    double y = double( imag(_z) );
+    std::complex<double> z = std::complex<double> (x, y);
+    int n = _n;
+    double nu = double(_nu);
+    double fnu = abs(nu);   
+    double nu_m = nu + double(n-1);
+    int m = 2;
+
+    if ( n <= 0 )
+    {
+        if (_flags) std::cerr << "[bessel::cyl_h2] Flag -> Input error: No computation, _n must be an integer greater than zero." << std::endl;
+    }
+    else if ( abs(z) == 0. )
+    {
+        // Complex infinity for all orders
+        double dinf = std::numeric_limits<double>::infinity();
+        for (int i=0; i<n; i++)
+        {
+            _cyl_h2[i] = std::complex<T2>(dinf, dinf);
+        }
+    }
+    else if ( nu >= 0. )
+    {
+        // Array of only positive orders, including the order 0, with abs(z)!=0
+        double * ch2r = new double [n];
+        double * ch2i = new double [n];
+        slatec::zbesh_(&x, &y, &fnu, &kode, &m, &n, ch2r, ch2i, &nz, &ierr);
+        if (_flags) _flag_zbesh_(ierr, nz);
+        for ( int i=0; i<n; i++ )
+        {
+            _cyl_h2[i] = std::complex<T2>(ch2r[i], ch2i[i]);
+        }
+    }
+    else if ( nu_m <= 0. )
+    {
+        // Array of only negative orders, including the order 0, with abs(z)!=0
+        double * ch2r_m = new double [n];
+        double * ch2i_m = new double [n];
+        double fnu_m = abs( nu_m );
+        slatec::zbesh_(&x, &y, &fnu_m, &kode, &m, &n, ch2r_m, ch2i_m, &nz, &ierr);
+        if (_flags) _flag_zbesh_(ierr, nz); 
+        for (int i=0; i<n; i++)
+        {
+            // Eq. (9.1.6) of Ref. [1].
+            int tmp1 = n-1-i;
+            double tmp2 = ( fnu_m + double(tmp1) )*M_PI;
+            std::complex<T2> exp_of_mIpifnu = exp( std::complex<T2> (0.,-tmp2) );
+            _cyl_h2[i] = std::complex<T2>(ch2r_m[tmp1], ch2i_m[tmp1])*exp_of_mIpifnu;
+        }        
+    }
+    else
+    {
+        // Array of negative and positive orders with abs(z)!=0
+        int n_m = floor( abs(nu) ) + 1;
+        int n_p = n - n_m;
+        double fnu_m = abs( nu + double(n_m-1) );
+
+        // The negative orders
+        // int negative orders, or order 0, with abs(z)!=0
+        double * ch2r_m = new double [n_m];
+        double * ch2i_m = new double [n_m];
+        slatec::zbesh_(&x, &y, &fnu_m, &kode, &m, &n_m, ch2r_m, ch2i_m, &nz, &ierr);
+        if (_flags) _flag_zbesh_(ierr, nz);   
+        for (int i=0; i<n_m; i++)
+        {
+            // Eq. (9.1.6) of Ref. [1].
+            int tmp1 = n_m-1-i;
+            double tmp2 = ( fnu_m + double(tmp1) )*M_PI;
+            std::complex<T2> exp_of_mIpifnu = exp( std::complex<T2> (0.,-tmp2) );
+            _cyl_h2[i] = std::complex<T2>(ch2r_m[tmp1], ch2i_m[tmp1])*exp_of_mIpifnu;
+        }
+
+        // The positive orders
+        double * ch2r_p = new double [n_p];
+        double * ch2i_p = new double [n_p];
+        double fnu_p = nu + double(n_m);
+        slatec::zbesh_(&x, &y, &fnu_p, &kode, &m, &n_p, ch2r_p, ch2i_p, &nz, &ierr);
+        if (_flags) _flag_zbesh_(ierr, nz);
+        for (int i=n_m; i<n; i++)
+        {
+            int tmp1 = i-n_m;
+            _cyl_h2[i] = std::complex<T2>(ch2r_p[tmp1], ch2i_p[tmp1]);
+        }
+    }
+}
+template<typename T1, typename T2>
+void cyl_h2( const T1 _nu, const int _n, T2 _z, T2 * _cyl_h2, bool _scaled = false, bool _flags = false )
+{
+    std::complex<T2> * tmp_cylh2 = new std::complex<T2> [_n];
+    cyl_h2( _nu, _n, std::complex<T2>(_z,0.), tmp_cylh2, _scaled, _flags );
+    for (int i=0; i<_n; i++)
+    {
+        _cyl_h2[i] = real(tmp_cylh2[i]);
+    }
+}
+
+// Modified cylindrical Bessel function of the first kind I_nu(z)
+template<typename T1, typename T2>
+std::complex<T2> cyl_i( const T1 _nu, const std::complex<T2> _z, bool _scaled = false, bool _flags = false )
+{
+    // Parameters
+    //  _nu:     real order.
+    //  _z:      complex argument.
+    //  _scaled: if true, returns the scaled version I_nu(z)*exp(-|Re(z)|).
+    //  _flags:  if true, print error messages.
+
+    int kode = ( _scaled ? 2 : 1 );
+    int nz;
+    int ierr;
+    double x = double( real(_z) );
+    double y = double( imag(_z) );
+    std::complex<double> z = std::complex<double> (x, y);
+    int n = 1;
+    double nu = double(_nu);
+    double fnu = abs(nu);
+
+    if ( nu >= 0. )
+    {
+        // Positive order
+        double cir, cii;
+        slatec::zbesi_(&x, &y, &fnu, &kode, &n, &cir, &cii, &nz, &ierr);
+        if (_flags) _flag_zbesi_(ierr, nz);
+        return std::complex<T2>(cir, cii);
+    }
+    else
+    {
+        // Negative order
+        if ( double(floor(fnu)) == fnu )
+        {
+            // int negative order, see Eq. (6.1.5) of [2].
+            double cir, cii;
+            slatec::zbesi_(&x, &y, &fnu, &kode, &n, &cir, &cii, &nz, &ierr);
+            if (_flags) _flag_zbesi_(ierr, nz);
+            return std::complex<T2>(cir, cii);
+        }
+        else if ( double(floor(fnu)) != fnu && abs(z) == 0. )
+        {
+            // Non-int negative order with abs(z)=0,
+            //  I_nu = complex infinity since K_fnu = complex infinity.
+            double dinf = std::numeric_limits<double>::infinity();
+            return std::complex<double>(dinf, dinf);
+        }
+        else
+        {
+            // Non-int negative order with abs(z)!=0, see Eq. (6.5.4) of [2].
+            double cir, cii;
+            slatec::zbesi_(&x, &y, &fnu, &kode, &n, &cir, &cii, &nz, &ierr);
+            if (_flags) _flag_zbesi_(ierr, nz);
+
+            double ckr, cki;
+            slatec::zbesk_(&x, &y, &fnu, &kode, &n, &ckr, &cki, &nz, &ierr);
+            if (_flags) _flag_zbesk_(ierr, nz);
+
+            //  Eq. (5.5.4) of Zhang and Jin (1996) [2].
+            double tmp = fnu*M_PI;
+            return std::complex<T2>(cir, cii) + std::complex<T2>(ckr, cki)*sin(tmp)*M_2_PI;
+        }
+    }
+}
+template<typename T1, typename T2>
+T2 cyl_i( const T1 _nu, const T2 _z, bool _scaled = false, bool _flags = false )
+{
+    return real( cyl_i( _nu, std::complex<T2>(_z,0.), _scaled, _flags ) ) ;
+}
+// Array of modified cylindrical Bessel functions of the first kind I_nu(z)
+template<typename T1, typename T2>
+void cyl_i( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<T2> * _cyl_i, bool _scaled = false, bool _flags = false )
+{
+    // Parameters
+    //  _nu:     real first order to be calculated.
+    //  _n:      int to return an array with the orders _nu, _nu+1, ..., _nu+_n.
+    //  _z:      complex argument.
+    //  _cyl_i:  array of size _n to output I_nu(z) for the orders _nu, _nu+1, ..., _nu+_n.
+    //  _scaled: if true, returns an array of size _n with the scaled version I_nu(z)*exp(-|Re(z)|) for the orders _nu, _nu+1, ..., _nu+_n.
+    //  _flags:  if true, print error messages.
+
+    int kode = ( _scaled ? 2 : 1 );
+    int nz;
+    int ierr;
+    double x = double( real(_z) );
+    double y = double( imag(_z) );
+    std::complex<double> z = std::complex<double> (x, y);
+    int n = _n;
+    double nu = double(_nu);
+    double fnu = abs(nu);   
+    double nu_m = nu + double(n-1);
+
+    if ( n <= 0 )
+    {
+        if (_flags) std::cerr << "[bessel::cyl_i] Flag -> Input error: No computation, _n must be an integer greater than zero." << std::endl;
+    }
+    else if ( nu >= 0. )
+    {
+        // Array of only positive orders, including the order 0
+        double * cir = new double [n];
+        double * cii = new double [n];
+        slatec::zbesi_(&x, &y, &fnu, &kode, &n, cir, cii, &nz, &ierr);
+        if (_flags) _flag_zbesi_(ierr, nz);
+
+        for ( int i=0; i<n; i++ )
+        {
+            _cyl_i[i] = std::complex<T2>(cir[i], cii[i]);
+        }
+    }
+    else if ( nu_m <= 0. )
+    {
+        // Array of only negative orders, including the order 0
+        if ( double(floor(fnu)) == fnu )
+        {
+            // int negative orders, or order 0, see Eq. (6.1.5) of [2].
+            double * cir = new double [n];
+            double * cii = new double [n];
+            double fnu_m = abs( nu_m );
+            slatec::zbesi_(&x, &y, &fnu_m, &kode, &n, cir, cii, &nz, &ierr);
+            if (_flags) _flag_zbesi_(ierr, nz);
+
+            for (int i=0; i<n; i++)
+            {
+                int tmp = n-1-i;
+                _cyl_i[i] = std::complex<T2>(cir[tmp], cii[tmp]);
+            }
+        }
+        else if ( double(floor(nu_m)) != nu_m && abs(z) == 0. )
+        {
+            // Non-int negative order with abs(z)=0,
+            //  I_nu = complex infinity since K_fnu = complex infinity.
+            double dinf = std::numeric_limits<double>::infinity();
+            for (int i=0; i<n; i++)
+            {
+                _cyl_i[i] = std::complex<T2>(dinf, dinf);
+            }
+        }
+        else
+        {
+            // Non-int negative orders with abs(z)!=0, see Eq. (6.5.4) of [2].
+            double * cir = new double [n];
+            double * cii = new double [n];
+            double fnu_m = abs( nu_m );
+            slatec::zbesi_(&x, &y, &fnu_m, &kode, &n, cir, cii, &nz, &ierr);
+            if (_flags) _flag_zbesi_(ierr, nz);
+
+            double * ckr = new double [n];
+            double * cki = new double [n];
+            slatec::zbesk_(&x, &y, &fnu_m, &kode, &n, ckr, cki, &nz, &ierr);
+            if (_flags) _flag_zbesk_(ierr, nz);
+
+            for (int i=0; i<n; i++)
+            {
+                //  Eq. (6.5.4) of Zhang and Jin (1996) [2].
+                int tmp1 = n-1-i;
+                double tmp2 = ( fnu_m + double(tmp1) )*M_PI;
+                _cyl_i[i] = ( std::complex<T2>(cir[tmp1], cii[tmp1]) ) + ( std::complex<T2>(ckr[tmp1], cki[tmp1]) )*sin(tmp2)*M_2_PI;
+            }
+        }
+    }
+    else
+    {
+        // Array of negative and positive orders
+        int n_m = floor( abs(nu) ) + 1;
+        int n_p = n - n_m;
+        double fnu_m = abs( nu + double(n_m-1) );
+
+        // The negative orders
+        if ( double(floor(fnu)) == fnu )
+        {
+            // int negative orders, or order 0, see Eq. (6.1.5) of [2].
+            double * cir_m = new double [n_m];
+            double * cii_m = new double [n_m];
+            slatec::zbesi_(&x, &y, &fnu_m, &kode, &n_m, cir_m, cii_m, &nz, &ierr);
+            if (_flags) _flag_zbesi_(ierr, nz);
+
+            for (int i=0; i<n_m; i++)
+            {
+                int tmp = n_m-1-i;
+                _cyl_i[i] = std::complex<T2>(cir_m[tmp], cii_m[tmp]);
+            }
+        }
+        else if ( double(floor(nu_m)) != nu_m && abs(z) == 0. )
+        {
+            // Non-int negative orders with abs(z)=0,
+            //  I_nu = complex infinity since K_fnu = complex infinity.
+            double dinf = std::numeric_limits<double>::infinity();
+            for (int i=0; i<n_m; i++)
+            {
+                // Complex infinity
+                _cyl_i[i] = std::complex<T2>(dinf, dinf);
+            }
+        }
+        else
+        {
+            // Non-int negative orders with abs(z)!=0,
+            double * cir_m = new double [n_m];
+            double * cii_m = new double [n_m];
+            slatec::zbesi_(&x, &y, &fnu_m, &kode, &n_m, cir_m, cii_m, &nz, &ierr);
+            if (_flags) _flag_zbesi_(ierr, nz);
+
+            double * ckr_m = new double [n_m];
+            double * cki_m = new double [n_m];
+            slatec::zbesk_(&x, &y, &fnu_m, &kode, &n_m, ckr_m, cki_m, &nz, &ierr);
+            if (_flags) _flag_zbesk_(ierr, nz);
+
+            for (int i=0; i<n_m; i++)
+            {
+                //  Eq. (6.5.4) of Zhang and Jin (1996) [2].
+                int tmp1 = n_m-1-i;
+                double tmp2 = ( fnu_m + double(tmp1) )*M_PI;
+                _cyl_i[i] = ( std::complex<T2>(cir_m[tmp1], cii_m[tmp1]) ) + ( std::complex<T2>(ckr_m[tmp1], cki_m[tmp1]) )*sin(tmp2)*M_2_PI;
+            }
+        }
+
+        // The positive orders
+        double * cir_p = new double [n_p];
+        double * cii_p = new double [n_p];
+        double fnu_p = nu + double(n_m);
+        slatec::zbesi_(&x, &y, &fnu_p, &kode, &n_p, cir_p, cii_p, &nz, &ierr);
+        if (_flags) _flag_zbesi_(ierr, nz);
+
+        for (int i=n_m; i<n; i++)
+        {
+            int tmp1 = i-n_m;
+            _cyl_i[i] = std::complex<T2>(cir_p[tmp1], cii_p[tmp1]);
+        }
+    }
+}
+template<typename T1, typename T2>
+void cyl_i( const T1 _nu, const int _n, T2 _z, T2 * _cyl_i, bool _scaled = false, bool _flags = false )
+{
+    std::complex<T2> * tmp_modi = new std::complex<T2> [_n];
+    cyl_i( _nu, _n, std::complex<T2>(_z,0.), tmp_modi, _scaled, _flags );
+    for (int i=0; i<_n; i++)
+    {
+        _cyl_i[i] = real(tmp_modi[i]);
+    }
+}
+
+// Modified cylindrical Bessel function of the second kind K_nu(z) [Basset or MacDonald function]
+template<typename T1, typename T2>
+std::complex<T2> cyl_k( const T1 _nu, const std::complex<T2> _z, bool _scaled = false, bool _flags = false )
+{
+    // Parameters
+    //  _nu:     real order.
+    //  _z:      complex argument.
+    //  _scaled: if true, returns the scaled version K_nu(z)*exp(z).
+    //  _flags:  if true, print error messages.
+
+    int kode = ( _scaled ? 2 : 1 );
+    int nz;
+    int ierr;
+    double x = double( real(_z) );
+    double y = double( imag(_z) );
+    std::complex<double> z = std::complex<double> (x, y);
+    int n = 1;
+    double nu = double(_nu);
+    double fnu = abs(nu);
+
+    if ( abs(z) == 0. )
+    {
+        double dinf = std::numeric_limits<double>::infinity();
+        if ( nu == 0. )
+        {
+            // Infinity
+            return std::complex<double>(dinf, 0.);
+        }
+        else
+        {
+            // Complex infinity
+            return std::complex<double>(dinf, dinf);
+        }
+    }
+    else
+    {
+        // Positive or negative order, see Eq. (6.5.5) of Ref. [2].
+        double ckr, cki;
+        slatec::zbesk_(&x, &y, &fnu, &kode, &n, &ckr, &cki, &nz, &ierr);
+        if (_flags) _flag_zbesk_(ierr, nz);
+        return std::complex<T2>(ckr, cki);
+    }
+}
+template<typename T1, typename T2>
+T2 cyl_k( const T1 _nu, const T2 _z, bool _scaled = false, bool _flags = false )
+{
+    return real( cyl_k( _nu, std::complex<T2>(_z,0.), _scaled, _flags ) ) ;
+}
+// Array of modified cylindrical Bessel functions of the second kind K_nu(z) [Basset or MacDonald functions]
+template<typename T1, typename T2>
+void cyl_k( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<T2> * _cyl_k, bool _scaled = false, bool _flags = false )
+{
+    // Parameters
+    //  _nu:     real first order to be calculated.
+    //  _n:      int to return an array with the orders _nu, _nu+1, ..., _nu+_n.
+    //  _z:      complex argument.
+    //  _cyl_k:  array of size _n to output K_nu(z) for the orders _nu, _nu+1, ..., _nu+_n.
+    //  _scaled: if true, returns an array of size _n with the scaled version K_nu(z)*exp(z) for the orders _nu, _nu+1, ..., _nu+_n.
+    //  _flags:  if true, print error messages.
+
+    int kode = ( _scaled ? 2 : 1 );
+    int nz;
+    int ierr;
+    double x = double( real(_z) );
+    double y = double( imag(_z) );
+    std::complex<double> z = std::complex<double> (x, y);
+    int n = _n;
+    double nu = double(_nu);
+    double fnu = abs(nu);   
+    double nu_m = nu + double(n-1);
+
+    if ( n <= 0 )
+    {
+        if (_flags) std::cerr << "[bessel::cyl_k] Flag -> Input error: No computation, _n must be an integer greater than zero." << std::endl;
+    }
+    else if ( abs(z) == 0. )
+    {
+        double dinf = std::numeric_limits<double>::infinity();
+        for (int i=0; i<n; i++)
+        {
+            // Complex infinity for all orders
+            _cyl_k[i] = std::complex<T2>(dinf, dinf);
+        }
+        if ( nu_m == floor(nu_m) && n > fnu )
+        {
+            // Infinity for the int order 0
+            _cyl_k[ int(floor(fnu)) ] = std::complex<double>(dinf, 0.);
+        }
+    }
+    else if ( nu >= 0. )
+    {
+        // Array of only positive orders, including the order 0, with abs(z)!=0
+        double * ckr = new double [n];
+        double * cki = new double [n];
+        slatec::zbesk_(&x, &y, &fnu, &kode, &n, ckr, cki, &nz, &ierr);
+        if (_flags) _flag_zbesk_(ierr, nz);
+
+        for ( int i=0; i<n; i++ )
+        {
+            _cyl_k[i] = std::complex<T2>(ckr[i], cki[i]);
+        }
+    }
+    else if ( nu_m <= 0. )
+    {
+        // Array of only negative orders, including the order 0, with abs(z)!=0
+        // See Eq. (6.5.5) of Ref. [2].
+        double * ckr = new double [n];
+        double * cki = new double [n];
+        double fnu_m = abs( nu_m );
+        slatec::zbesk_(&x, &y, &fnu_m, &kode, &n, ckr, cki, &nz, &ierr);
+        if (_flags) _flag_zbesk_(ierr, nz);   
+
+        for (int i=0; i<n; i++)
+        {
+            int tmp = n-1-i;
+            _cyl_k[i] = std::complex<T2>(ckr[tmp], cki[tmp]);
+        }        
+    }
+    else
+    {
+        // Array of negative and positive orders with abs(z)!=0
+        int n_m = floor( abs(nu) ) + 1;
+        int n_p = n - n_m;
+        double fnu_m = abs( nu + double(n_m-1) );
+
+        // The negative orders
+        // int negative orders, or order 0, with abs(z)!=0
+        // See Eq. (6.5.5) of Ref. [2].
+        double * ckr_m = new double [n_m];
+        double * cki_m = new double [n_m];
+        slatec::zbesk_(&x, &y, &fnu_m, &kode, &n_m, ckr_m, cki_m, &nz, &ierr);
+        if (_flags) _flag_zbesk_(ierr, nz);   
+
+        for (int i=0; i<n_m; i++)
+        {
+            int tmp = n_m-1-i;
+            _cyl_k[i] = std::complex<T2>(ckr_m[tmp], cki_m[tmp]);
+        }
+
+        // The positive orders
+        double * ckr_p = new double [n_p];
+        double * cki_p = new double [n_p];
+        double fnu_p = nu + double(n_m);
+        slatec::zbesk_(&x, &y, &fnu_p, &kode, &n_p, ckr_p, cki_p, &nz, &ierr);
+        if (_flags) _flag_zbesk_(ierr, nz);
+
+        for (int i=n_m; i<n; i++)
+        {
+            int tmp1 = i-n_m;
+            _cyl_k[i] = std::complex<T2>(ckr_p[tmp1], cki_p[tmp1]);
+        }
+    }
+}
+template<typename T1, typename T2>
+void cyl_k( const T1 _nu, const int _n, T2 _z, T2 * _cyl_k, bool _scaled = false, bool _flags = false )
+{
+    std::complex<T2> * tmp_modk = new std::complex<T2> [_n];
+    cyl_k( _nu, _n, std::complex<T2>(_z,0.), tmp_modk, _scaled, _flags );
+    for (int i=0; i<_n; i++)
+    {
+        _cyl_k[i] = real(tmp_modk[i]);
+    }
+}
+
+// Airy Ai function
+template<typename T1>
+std::complex<T1> airy_ai( const std::complex<T1> _z, bool _scaled = false, bool _flags = false )
+{
+    // Parameters
+    //  _z:      complex argument.
+    //  _scaled: if true, returns the scaled version exp[(2/3)*z*sqrt(z)]*Ai(z).
+    //  _flags:  if true, print error messages.
+    
+    int kode = ( _scaled ? 2 : 1 );
+    int nz;
+    int ierr;
+    double x = double( real(_z) );
+    double y = double( imag(_z) );
+    int id = 0;
+    double air, aii;
+    slatec::zairy_(&x, &y, &id, &kode, &air, &aii, &nz, &ierr);
+    if (_flags) _flag_zairy_(ierr, nz);
+    return std::complex<T1>(air, aii);
+}
+template<typename T1>
+T1 airy_ai( const T1 _z, bool _scaled = false, bool _flags = false )
+{
+    return real( airy_ai( std::complex<T1>(_z,0.), _scaled, _flags ) ) ;
+}
+// Airy Bi function
+template<typename T1>
+std::complex<T1> airy_bi( const std::complex<T1> _z, bool _scaled = false, bool _flags = false )
+{
+    // Parameters
+    //  _z:      complex argument.
+    //  _scaled: if true, returns the scaled version exp{-|Re[(2/3)*z*sqrt(z)]|}*Bi(z).
+    //  _flags:  if true, print error messages.
+   
+    int kode = ( _scaled ? 2 : 1 );
+    int ierr;
+    double x = double( real(_z) );
+    double y = double( imag(_z) );
+    int id = 0;
+    double bir, bii;
+    slatec::zbiry_(&x, &y, &id, &kode, &bir, &bii, &ierr);
+    if (_flags) _flag_zbiry_(ierr);
+    return std::complex<T1>(bir, bii);
+}
+template<typename T1>
+T1 airy_bi( const T1 _z, bool _scaled = false, bool _flags = false )
+{
+    return real( airy_bi( std::complex<T1>(_z,0.), _scaled, _flags ) ) ;
 }
 
 // C++ CALLABLE BESSEL ROUTINES
@@ -9057,4 +11153,3 @@ void cyl_y( const T1 _nu, const int _n, const std::complex<T2> _z, std::complex<
 
 // C++ CODE
 //-^------------------------------------------------------------------------
-
