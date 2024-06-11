@@ -17,10 +17,10 @@ The following contains a list of the C++ available functions. Click on each for 
   
 - **Description:** Calculation of _cylindrical Bessel function of the first kind_ of integer or real order $\nu$ and real or complex argument $z$, that is, $J_\nu(z)$.
 - **Input parameters:**
-- `_nu`: Integer or real order $\nu$ in `T1` type, with `T1` being `int`, `float` or `double`.
-- `_z`: Real argument $z$ in `T2` type, or complex argument $z$ in `std::complex<T2>` form, with `T2` being `float` or `double`.
-- `_scaled`: Optional `bool` parameter. If `true`, returns a scaled version of the result (see Output topic below).
-- `_flags`: Optional `bool` parameter. If `true`, print error and warning messages.
+  - `_nu`: Integer or real order $\nu$ in `T1` type, with `T1` being `int`, `float` or `double`.
+  - `_z`: Real argument $z$ in `T2` type, or complex argument $z$ in `std::complex<T2>` form, with `T2` being `float` or `double`.
+  - `_scaled`: Optional `bool` parameter. If `true`, returns a scaled version of the result (see Output topic below).
+  - `_flags`: Optional `bool` parameter. If `true`, print error and warning messages.
 - **Output:** For real $z$, it returns $J_\nu(z)$ in `T2` type; for complex $z$, the complex value of $J_\nu(z)$ in `std::complex<T2>` form.  If `_scaled = true`, it returns $J_\nu(z)\textrm{ }e^{-|\text{Im}(z)|}$.
 - **Implementation:** In general, the routine is based on the D. E. Amos Fortran 77 routines of the SLATEC library [[3](#references)]. Such Fortran routines, and all their dependencies, were carefully translated to be used in this library. Negative orders are handled by Eqs. (5.4.2) and (5.5.4) of Ref. [[2](#references)] for, respectively, $\nu \in \mathtt{Z}$ and $\nu \notin \mathtt{Z}$; in the latter case, it yields $\infty+i\infty$ when $|z|=0$.
 - **Usage example:**
@@ -185,10 +185,10 @@ The following contains a list of the C++ available functions. Click on each for 
   
 - **Description:** Calculation of _cylindrical Hankel function of the first kind_ of integer or real order $\nu$ and real or complex argument $z$, that is, $H_\nu^{(1)}(z)$. Hankel functions are also known as _Bessel function of the third kind_.
 - **Input parameters:**
-- `_nu`: Integer or real order $\nu$ in `T1` type, with `T1` being `int`, `float` or `double`.
-- `_z`: Real argument $z$ in `T2` type, or complex argument $z$ in `std::complex<T2>` form, with `T2` being `float` or `double`.
-- `_scaled`: Optional `bool` parameter. If `true`, returns a scaled version of the result (see Output topic below).
-- `_flags`: Optional `bool` parameter. If `true`, print error and warning messages.
+  - `_nu`: Integer or real order $\nu$ in `T1` type, with `T1` being `int`, `float` or `double`.
+  - `_z`: Real argument $z$ in `T2` type, or complex argument $z$ in `std::complex<T2>` form, with `T2` being `float` or `double`.
+  - `_scaled`: Optional `bool` parameter. If `true`, returns a scaled version of the result (see Output topic below).
+  - `_flags`: Optional `bool` parameter. If `true`, print error and warning messages.
 - **Output:** For real $z$, it returns  $H_\nu^{(1)}(z)$ in `T2` type; for complex $z$, the complex value of  $H_\nu^{(1)}(z)$ in `std::complex<T2>` form.  If `_scaled = true`, it returns  $H_\nu^{(1)}(z)\textrm{ }e^{-iz}$.
 - **Implementation:** In general, the routine is based on the D. E. Amos Fortran 77 routines of the SLATEC library [[3](#references)]. Such Fortran routines, and all their dependencies, were carefully translated to be used in this library. Negative orders are handled by Eq. (9.1.6) of Ref. [[1](#references)]. It yields $\infty+i\infty$ when $|z|=0$.
 - **Usage example:**
@@ -269,10 +269,10 @@ The following contains a list of the C++ available functions. Click on each for 
   
 - **Description:** Calculation of _cylindrical Hankel function of the second kind_ of integer or real order $\nu$ and real or complex argument $z$, that is, $H_\nu^{(2)}(z)$. Hankel functions are also known as _Bessel function of the third kind_.
 - **Input parameters:**
-- `_nu`: Integer or real order $\nu$ in `T1` type, with `T1` being `int`, `float` or `double`.
-- `_z`: Real argument $z$ in `T2` type, or complex argument $z$ in `std::complex<T2>` form, with `T2` being `float` or `double`.
-- `_scaled`: Optional `bool` parameter. If `true`, returns a scaled version of the result (see Output topic below).
-- `_flags`: Optional `bool` parameter. If `true`, print error and warning messages.
+  - `_nu`: Integer or real order $\nu$ in `T1` type, with `T1` being `int`, `float` or `double`.
+  - `_z`: Real argument $z$ in `T2` type, or complex argument $z$ in `std::complex<T2>` form, with `T2` being `float` or `double`.
+  - `_scaled`: Optional `bool` parameter. If `true`, returns a scaled version of the result (see Output topic below).
+  - `_flags`: Optional `bool` parameter. If `true`, print error and warning messages.
 - **Output:** For real $z$, it returns  $H_\nu^{(2)}(z)$ in `T2` type; for complex $z$, the complex value of  $H_\nu^{(2)}(z)$ in `std::complex<T2>` form.  If `_scaled = true`, it returns  $H_\nu^{(2)}(z)\textrm{ }e^{iz}$.
 - **Implementation:** In general, the routine is based on the D. E. Amos Fortran 77 routines of the SLATEC library [[3](#references)]. Such Fortran routines, and all their dependencies, were carefully translated to be used in this library. Negative orders are handled by Eq. (9.1.6) of Ref. [[1](#references)]. It yields $\infty+i\infty$ when $|z|=0$.
 - **Usage example:**
@@ -353,10 +353,10 @@ The following contains a list of the C++ available functions. Click on each for 
   
 - **Description:** Calculation of _modified cylindrical Bessel function of the first kind_ of integer or real order $\nu$ and real or complex argument $z$, that is, $I_\nu(z)$. Such function is also known as _cylindrical Bessel function of imaginary argument_ or sometimes as _hyperbolic Bessel function_.
 - **Input parameters:**
-- `_nu`: Integer or real order $\nu$ in `T1` type, with `T1` being `int`, `float` or `double`.
-- `_z`: Real argument $z$ in `T2` type, or complex argument $z$ in `std::complex<T2>` form, with `T2` being `float` or `double`.
-- `_scaled`: Optional `bool` parameter. If `true`, returns a scaled version of the result (see Output topic below).
-- `_flags`: Optional `bool` parameter. If `true`, print error and warning messages.
+  - `_nu`: Integer or real order $\nu$ in `T1` type, with `T1` being `int`, `float` or `double`.
+  - `_z`: Real argument $z$ in `T2` type, or complex argument $z$ in `std::complex<T2>` form, with `T2` being `float` or `double`.
+  - `_scaled`: Optional `bool` parameter. If `true`, returns a scaled version of the result (see Output topic below).
+  - `_flags`: Optional `bool` parameter. If `true`, print error and warning messages.
 - **Output:** For real $z$, it returns $I_\nu(z)$ in `T2` type; for complex $z$, the complex value of $I_\nu(z)$ in `std::complex<T2>` form.  If `_scaled = true`, it returns $I_\nu(z)\textrm{ }e^{-|\text{Re}(z)|}$.
 - **Implementation:** In general, the routine is based on the D. E. Amos Fortran 77 routines of the SLATEC library [[3](#references)]. Such Fortran routines, and all their dependencies, were carefully translated to be used in this library. Negative orders are handled by Eqs. (6.1.5) and (6.5.4) of Ref. [[2](#references)] for, respectively, $\nu \in \mathtt{Z}$ and $\nu \notin \mathtt{Z}$; in the latter case, it yields $\infty+i\infty$ when $|z|=0$.
 - **Usage example:**
@@ -474,7 +474,7 @@ The following contains a list of the C++ available functions. Click on each for 
 
 <details>
   <summary><code>bessel::cyl_k(_nu, _n, _z, _cyl_k, _scaled, _flags)</code></summary>
-  
+
   - **Description:** Concomitant calculation of a number $n \geq 1$ of _modified cylindrical Bessel functions of the second kind_ of integer or real orders $\nu+k-1$, where $k=1,2,...,n$, and real or complex argument $z$, that is, the sequence $K_\nu(z), K_{\nu+1}(z), ..., K_{\nu+n-1}(z)$. Such functions are also known as _Basset functions_ or _MacDonald functions_.
   - **Input parameters:**
     - `_nu`: Integer or real initial order $\nu$ of the sequence in `T1` type, `T1` being `int`, `float` or `double`.
@@ -489,7 +489,7 @@ The following contains a list of the C++ available functions. Click on each for 
     ```cpp
     #include <iostream>
     #include "bessel-library.hpp"
-  
+
     int main()
     {
       // Declaration of variables
@@ -500,13 +500,13 @@ The following contains a list of the C++ available functions. Click on each for 
       
       // Calculation of functions
       bessel::cyl_k( nu, 3, z, results );
-  
+
       // Alternative calculation with flags
       bessel::cyl_k( nu, 3, z, results, false, true );
-  
+
       // Calculation of the scaled versions
       bessel::cyl_k( nu, 3, z, scaled_results, true );
-  
+
       // Printing the results
       std::cout << results[0] << ", " << results[1] << ", " << results[2] << std::endl;
       std::cout << scaled_results[0] << ", " << scaled_results[1] << ", " << scaled_results[2];
