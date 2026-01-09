@@ -3,7 +3,7 @@
 Refer to the reference section of the [README.md](README.md) file
 for a complete list of references.
 
-## v1.0.0 Jun 09, 2024 (current version)
+## v1.0.0 Jan 09, 2026
 - The library was consistently renamed to "Bessel Library: A C library with
 routines for computing Bessel functions".
 - The library was rewritten in C using the C99 standards, but is still
