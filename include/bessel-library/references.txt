@@ -1,0 +1,11 @@
+[1] M. Abramowitz and I. A. Stegun, Handbook of Mathematical Functions With
+Formulas, Graphs, and Mathematical Tables. Washington, D. C.: National Bureau
+of Standards, 1972.
+
+[2] S. Zhang and J. Jin, Computation of Special Functions. New York: Wiley,
+1996.
+
+[3] SLATEC Common Mathematical Library, Version 4.1, July 1993. Comprehensive
+software library containing over 1400 general purpose mathematical and
+statistical routines written in Fortran 77. Available at
+<https://www.netlib.org/slatec/> (Accessed: May 25, 2024).

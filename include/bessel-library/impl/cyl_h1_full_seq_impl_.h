@@ -1,0 +1,198 @@
+/* 
+    Bessel Library: A C library with routines for computing Bessel functions
+
+    File: include/bessel-library/impl/cyl_h1_full_seq_impl_.h
+    Version: include/bessel-library/version.h
+    Author: Jhonas Olivati de Sarro
+    Language standards: C99 with guards for C++98 compatibility
+    References: include/bessel-library/references.txt
+
+    Description:
+        Implements and computes a n-sequency array, in double complex type for
+        C, or in std::complex<double> type for C++, of cylindrical Hankel
+        functions of the first kind, real order nu, and complex argument z,
+        i.e., {H1_nu(z), H1_(nu+1)(z), ..., H1_(nu+n-1)(z)}, for also negative
+        orders, by means of the routines of the Slatec library and recurrence
+        relations for negative orders.
+*/
+
+#ifndef BESSEL_LIBRARY_CYL_H1_FULL_SEQ_IMPL_H
+#define BESSEL_LIBRARY_CYL_H1_FULL_SEQ_IMPL_H
+
+#ifdef __cplusplus
+
+/* Includes, typedefs and/or macros for C++98 compatibility */
+#include <complex> /* for complex numbers */
+#include <cstdlib> /* for malloc and free */
+typedef std::complex<double> tpdcomplex_impl_;
+#define CPLX_impl_(x, y) tpdcomplex_impl_(x, y)
+#define I_impl_ std::complex<double>(0.0, 1.0)
+#define creal(z) std::real(z)
+#define cimag(z) std::imag(z)
+#define cabs(z) std::abs(z)
+#define cexp(z) std::exp(z)
+
+extern "C" {
+
+#else
+
+#include <complex.h> /* for complex numbers */
+#include <stdlib.h> /* for malloc and free */
+typedef double complex tpdcomplex_impl_;
+#define I_impl_ I
+#define CPLX_impl_(x, y) (x + I * y)
+
+#endif /* __cplusplus */
+
+#include <math.h> /* for math operations */
+#include <float.h>  /* for DBL_EPSILON */
+#include "slatec_zbesh_impl_.h"
+#include "slatec_flags_impl_.h"
+
+/* Fallback for M_PI if not defined by <math.h> */
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+/*
+    Implements and computes a n-sequency array of cylindrical Hankel functions
+    of the first kind, real order nu, and complex argument z, i.e.,
+    {H1_nu(z), H1_(nu+1)(z), ..., H1_(nu+n-1)(z)}, for also negative orders, by
+    means of the routines of the Slatec library and recurrence relations for
+    negative orders.
+    
+    Parameters:
+    - nu, real order of H1_nu(z).
+    - n, number of elements in the sequence for computing the orders nu, nu+1,
+    ..., nu+n-1 It is also the size of the cyl_h1_arr array.
+    - z, complex argument of H1_nu(z).
+    - cyl_h1_arr, array of size n to output H1_nu(z) for the orders nu, nu+1,
+    ..., nu+n-1
+    - scaled, returns the scaled version H1_nu(z)*exp(-i*z)) if 1.
+*/
+static inline void cyl_h1_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
+    tpdcomplex_impl_ *cyl_h1_arr, int scaled) {
+
+    int kode = (scaled == 1 ? 2 : 1);
+    int nz, ierr;
+    double x = creal(z);
+    double y = cimag(z);
+    double fnu = fabs(nu);
+    double nu_m = nu + (double)(n - 1);
+    int m = 1;
+
+    if (cabs(z) < DBL_EPSILON) {
+
+        /* Complex infinity for all orders */
+        for (int i = 0; i < n; ++i) {
+            cyl_h1_arr[i] = CPLX_impl_(INFINITY, INFINITY);
+        }
+    }
+    else if (nu >= 0.0) {
+
+        /* Dynamic mem alloc of auxiliary arrays */
+        double *ch1r = (double*)malloc((n + 1) * sizeof(double));
+        double *ch1i = (double*)malloc((n + 1) * sizeof(double));
+        ++ch1r; ++ch1i;
+
+        /* Compute zbesh */
+        slatec_zbesh_impl_(&x, &y, &fnu, &kode, &m, &n, &ch1r[0], &ch1i[0],
+            &nz, &ierr);
+        slatec_flags_zbesh_impl_(ierr, nz);
+        
+        /* Store in the array */
+        for (int i = 0; i < n; ++i) {
+            cyl_h1_arr[i] = ch1r[i] + I_impl_ * ch1i[i];
+        }
+
+        /* Free auxiliary pointers */
+        free(--ch1r); free(--ch1i);
+    }
+    else if (nu_m <= 0.0) {
+        
+        /* Array of only negative orders */
+
+        /* Dynamic mem alloc of auxiliary arrays */
+        double *ch1r_m = (double*)malloc((n + 1) * sizeof(double));
+        double *ch1i_m = (double*)malloc((n + 1) * sizeof(double));
+        ++ch1r_m; ++ch1i_m;
+
+        /* Compute zbesh */
+        double fnu_m = fabs(nu_m);
+        slatec_zbesh_impl_(&x, &y, &fnu_m, &kode, &m, &n, &ch1r_m[0],
+            &ch1i_m[0], &nz, &ierr);
+        slatec_flags_zbesh_impl_(ierr, nz);
+        
+        /* Store in the array */
+        for (int i = 0; i < n; ++i) {
+            int tmp1 = n - 1 - i;
+            double tmp2 = (fnu_m + (double)tmp1) * M_PI;
+            /* Eq. (9.1.6) of Ref. [1] */
+            cyl_h1_arr[i] = (ch1r_m[tmp1] + I_impl_ * ch1i_m[tmp1])
+                          * cexp(I_impl_ * tmp2);
+        }
+    
+        /* Free auxiliary pointers */
+        free(--ch1r_m); free(--ch1i_m);
+    }
+    else {
+
+        /* Array of negative and positive orders */
+        
+        int n_m = (int)floor(fabs(nu)) + 1;
+        int n_p = n - n_m;
+        double fnu_m = fabs(nu + (double)(n_m - 1));
+
+        /* Negative orders */
+
+        /* Dynamic mem alloc of auxiliary arrays */
+        double *ch1r_m = (double*)malloc((n_m + 1) * sizeof(double));
+        double *ch1i_m = (double*)malloc((n_m + 1) * sizeof(double));
+        ++ch1r_m; ++ch1i_m;
+
+        /* Compute zbesh */
+        slatec_zbesh_impl_(&x, &y, &fnu_m, &kode, &m, &n_m, &ch1r_m[0],
+            &ch1i_m[0], &nz, &ierr);
+        slatec_flags_zbesh_impl_(ierr, nz);
+        
+        /* Store in the array */
+        for (int i = 0; i < n_m; ++i) {
+            int tmp1 = n_m - 1 - i;
+            double tmp2 = (fnu_m + (double)tmp1) * M_PI;
+            /* Eq. (9.1.6) of Ref. [1] */
+            cyl_h1_arr[i] = (ch1r_m[tmp1] + I_impl_ * ch1i_m[tmp1])
+                          * cexp(I_impl_ * tmp2);
+        }
+
+        /* Free auxiliary pointers */
+        free(--ch1r_m); free(--ch1i_m);
+
+        /* Positive orders */
+
+        /* Dynamic mem alloc of auxiliary arrays */
+        double *ch1r_p = (double*)malloc((n_p + 1) * sizeof(double));
+        double *ch1i_p = (double*)malloc((n_p + 1) * sizeof(double));
+        ++ch1r_p; ++ch1i_p;
+
+        /* Compute zbesh */
+        double fnu_p = nu + (double)n_m;
+        slatec_zbesh_impl_(&x, &y, &fnu_p, &kode, &m, &n_p, &ch1r_p[0],
+            &ch1i_p[0], &nz, &ierr);
+        slatec_flags_zbesh_impl_(ierr, nz);
+
+        /* Store in the array */
+        for (int i = n_m; i < n; ++i) {
+            int tmp1 = i - n_m;
+            cyl_h1_arr[i] = ch1r_p[tmp1] + I_impl_ * ch1i_p[tmp1];
+        }
+
+        /* Free auxiliary pointers */
+        free(--ch1r_p); free(--ch1i_p);
+    }
+}
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif /* __cplusplus */
+
+#endif /* BESSEL_LIBRARY_CYL_H1_FULL_SEQ_IMPL_H */
