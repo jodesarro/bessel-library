@@ -624,13 +624,13 @@ The following subsections contain examples of how to compile this library.
 ### Compiling on Windows with MinGW gcc
 
 ```bash
-gcc -shared -o bessel-library.dll bessel-library.c -Iinclude
+gcc -shared -o src/bessel-library.dll src/bessel-library.c -Iinclude
 ```
 
 ### Compiling on Linux/macOS with gcc
 
 ```bash
-gcc -shared -fPIC -o bessel-library.so bessel-library.c -Iinclude
+gcc -shared -fPIC -o src/bessel-library.so src/bessel-library.c -Iinclude
 ```
 
 ### Compiling on Windows with MSVC cl
