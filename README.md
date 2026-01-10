@@ -23,7 +23,7 @@ found in Refs. [[1–3](#references)].
     - `nu`, real order of $J_\nu(z)$.
     - `z`, complex argument of $J_\nu(z)$.
   - **Implementation:**
-    - Similar to the `cyl_j_seq()` function but for an one-sized array.
+    - Similar to the `cyl_j_seq()` function.
 </details>
 
 <details>
@@ -33,13 +33,12 @@ found in Refs. [[1–3](#references)].
 
   - **Description:** Returns the scaled version of the cylindrical Bessel
   function of the first kind, real order $\nu$, and complex argument $z$,
-  i.e., $J_\nu(z)e^{-|\mathrm{Im}(z)|}$.
+  i.e., $J_\nu(z) \ e^{-|\mathrm{Im}(z)|}$.
   - **Parameters:**
-    - `nu`, real order of $J_\nu(z)e^{-|\mathrm{Im}(z)|}$.
-    - `z`, complex argument of $J_\nu(z)e^{-|\mathrm{Im}(z)|}$.
+    - `nu`, real order of $J_\nu(z) \ e^{-|\mathrm{Im}(z)|}$.
+    - `z`, complex argument of $J_\nu(z) \ e^{-|\mathrm{Im}(z)|}$.
   - **Implementation:**
-    - Similar to the `cyl_j_seq()` function but for an one-sized
-    array.
+    - Similar to the `cyl_j_seq()` function.
 </details>
 
 <details>
@@ -55,16 +54,15 @@ found in Refs. [[1–3](#references)].
     - `n`, number of elements in the sequence for computing the orders $\nu$,
     $\nu+1$, ..., $\nu+n-1$. It is also the size of the `cyl_j_arr` array.
     - `z`, complex argument of $J_\nu(z)$.
-    - `cyl_j_arr`, array of size $n$ to output $J_\nu(z)$ for the orders $\nu$,
-    $\nu+1$, ..., $\nu+n-1$.
+    - `cyl_j_arr`, array of size $n$ to output $J_\nu(z)$ for the orders
+    $\nu$, $\nu+1$, ..., $\nu+n-1$.
   - **Implementation:**
-    - In general, the routine is based on the D. E. Amos Fortran 77 routines
-    of the Slatec library [[3](#references)]. Such Fortran routines, and all
-    their dependencies, were carefully translated to be used in this library.
-    Negative orders are handled by Eqs. (5.4.2) and (5.5.4) of
-    Ref. [[2](#references)] for, respectively, $\nu \in \mathtt{Z}$ and
-    $\nu \notin \mathtt{Z}$; in the latter case, it yields $\infty+i\infty$
-    when $|z|=0$.
+    - In general, the implementation is based on the D. E. Amos Fortran 77
+    routines of the Slatec library [[3](#references)]. Such Fortran routines,
+    and all their dependencies, were carefully translated to C. Negative
+    orders are handled by Eqs. (5.4.2) and (5.5.4) of Ref. [[2](#references)]
+    for, respectively, $\nu \in \mathtt{Z}$ and $\nu \notin \mathtt{Z}$; in
+    the latter case, it yields $\infty+i\infty$ when $|z|=0$.
 </details>
 
 <details>
@@ -74,17 +72,17 @@ found in Refs. [[1–3](#references)].
 
   - **Description:** Computes a $n$-sequency array of the scaled version of
   the cylindrical Bessel functions of the first kind, real order $\nu$, and
-  complex argument $z$, i.e., { $J_\nu(z)e^{-|\mathrm{Im}(z)|}$,
-  $J_{\nu+1}(z)e^{-|\mathrm{Im}(z)|}$, ...,
-  $J_{\nu+n-1}(z)e^{-|\mathrm{Im}(z)|}$ }.
+  complex argument $z$, i.e., { $J_\nu(z) \ e^{-|\mathrm{Im}(z)|}$,
+  $J_{\nu+1}(z) \ e^{-|\mathrm{Im}(z)|}$, ...,
+  $J_{\nu+n-1}(z) \ e^{-|\mathrm{Im}(z)|}$ }.
   - **Parameters:**
-    - `nu`, real order of $J_\nu(z)e^{-|\mathrm{Im}(z)|}$.
+    - `nu`, real order of $J_\nu(z) \ e^{-|\mathrm{Im}(z)|}$.
     - `n`, number of elements in the sequence for computing the orders $\nu$,
     $\nu+1$, ..., $\nu+n-1$. It is also the size of the `cyl_j_scal_arr`
     array.
-    - `z`, complex argument of $J_\nu(z)e^{-|\mathrm{Im}(z)|}.
+    - `z`, complex argument of $J_\nu(z) \ e^{-|\mathrm{Im}(z)|}$.
     - `cyl_j_scal_arr`, array of size $n$ to output
-    $J_\nu(z)e^{-|\mathrm{Im}(z)|} for the orders $\nu$, $\nu+1$, ...,
+    $J_\nu(z) \ e^{-|\mathrm{Im}(z)|}$ for the orders $\nu$, $\nu+1$, ...,
     $\nu+n-1$.
   - **Implementation:**
     - Similar to the `cyl_j_seq()` function.
@@ -103,7 +101,7 @@ found in Refs. [[1–3](#references)].
     - `nu`, real order of $Y_\nu(z)$.
     - `z`, complex argument of $Y_\nu(z)$.
   - **Implementation:**
-    - Similar to the `cyl_y_seq()` function but for an one-sized array.
+    - Similar to the `cyl_y_seq()` function.
 </details>
 
 <details>
@@ -113,13 +111,12 @@ found in Refs. [[1–3](#references)].
 
   - **Description:** Returns the scaled version of the cylindrical Bessel
   function of the second kind, real order $\nu$, and complex argument $z$,
-  i.e., $Y_\nu(z)e^{-|\mathrm{Im}(z)|}$.
+  i.e., $Y_\nu(z) \ e^{-|\mathrm{Im}(z)|}$.
   - **Parameters:**
-    - `nu`, real order of $Y_\nu(z)e^{-|\mathrm{Im}(z)|}$.
-    - `z`, complex argument of $Y_\nu(z)e^{-|\mathrm{Im}(z)|}$.
+    - `nu`, real order of $Y_\nu(z) \ e^{-|\mathrm{Im}(z)|}$.
+    - `z`, complex argument of $Y_\nu(z) \ e^{-|\mathrm{Im}(z)|}$.
   - **Implementation:**
-    - Similar to the `cyl_y_seq()` function but for an one-sized
-    array.
+    - Similar to the `cyl_y_seq()` function.
 </details>
 
 <details>
@@ -138,13 +135,13 @@ found in Refs. [[1–3](#references)].
     - `cyl_y_arr`, array of size $n$ to output $Y_\nu(z)$ for the orders
     $\nu$, $\nu+1$, ..., $\nu+n-1$.
   - **Implementation:**
-    - In general, the routine is based on the D. E. Amos Fortran 77 routines
-    of the Slatec library [[3](#references)]. Such Fortran routines, and all
-    their dependencies, were carefully translated to be used in this library.
-    Negative orders are handled by Eqs. (5.4.2) and (5.5.4) of
-    Ref. [[2](#references)] for, respectively, $\nu \in \mathtt{Z}$ and
-    $\nu \notin \mathtt{Z}$. When $|z|=0$, it yields $-\infty$ if $\nu=0$,
-    or $\infty+i\infty$ otherwise.
+    - In general, the implementation is based on the D. E. Amos Fortran 77
+    routines of the Slatec library [[3](#references)]. Such Fortran routines,
+    and all their dependencies, were carefully translated to C. Negative
+    orders are handled by Eqs. (5.4.2) and (5.5.4) of Ref. [[2](#references)]
+    for, respectively, $\nu \in \mathtt{Z}$ and $\nu \notin \mathtt{Z}$.
+    When $|z|=0$, it yields $-\infty$ if $\nu=0$, or $\infty+i\infty$
+    otherwise.
 </details>
 
 <details>
@@ -154,17 +151,17 @@ found in Refs. [[1–3](#references)].
 
   - **Description:** Computes a $n$-sequency array of the scaled version of
   the cylindrical Bessel functions of the second kind, real order $\nu$, and
-  complex argument $z$, i.e., { $Y_\nu(z)e^{-|\mathrm{Im}(z)|}$,
-  $Y_{\nu+1}(z)e^{-|\mathrm{Im}(z)|}$, ...,
-  $Y_{\nu+n-1}(z)e^{-|\mathrm{Im}(z)|}$ }.
+  complex argument $z$, i.e., { $Y_\nu(z) \ e^{-|\mathrm{Im}(z)|}$,
+  $Y_{\nu+1}(z) \ e^{-|\mathrm{Im}(z)|}$, ...,
+  $Y_{\nu+n-1}(z) \ e^{-|\mathrm{Im}(z)|}$ }.
   - **Parameters:**
-    - `nu`, real order of $Y_\nu(z)e^{-|\mathrm{Im}(z)|}$.
+    - `nu`, real order of $Y_\nu(z) \ e^{-|\mathrm{Im}(z)|}$.
     - `n`, number of elements in the sequence for computing the orders $\nu$,
     $\nu+1$, ..., $\nu+n-1$. It is also the size of the `cyl_y_scal_arr`
     array.
-    - `z`, complex argument of $Y_\nu(z)e^{-|\mathrm{Im}(z)|}$.
+    - `z`, complex argument of $Y_\nu(z) \ e^{-|\mathrm{Im}(z)|}$.
     - `cyl_j_scal_arr`, array of size $n$ to output
-    $Y_\nu(z)e^{-|\mathrm{Im}(z)|}$ for the orders $\nu$, $\nu+1$, ...,
+    $Y_\nu(z) \ e^{-|\mathrm{Im}(z)|}$ for the orders $\nu$, $\nu+1$, ...,
     $\nu+n-1$.
   - **Implementation:**
     - Similar to the `cyl_y_seq()` function.
@@ -183,7 +180,7 @@ found in Refs. [[1–3](#references)].
     - `nu`, real order of $H_\nu^{(1)}(z)$.
     - `z`, complex argument of $H_\nu^{(1)}(z)$.
   - **Implementation:**
-    - Similar to the `cyl_h1_seq()` function but for an one-sized array.
+    - Similar to the `cyl_h1_seq()` function.
 </details>
 
 <details>
@@ -193,13 +190,12 @@ found in Refs. [[1–3](#references)].
 
   - **Description:** Returns the scaled version of the cylindrical Hankel
   function of the first kind, real order $\nu$, and complex argument $z$,
-  i.e., $H_\nu^{(1)}(z)e^{-iz}$.
+  i.e., $H_\nu^{(1)}(z) \ e^{-iz}$.
   - **Parameters:**
-    - `nu`, real order of $H_\nu^{(1)}(z)e^{-iz}$.
-    - `z`, complex argument of $H_\nu^{(1)}(z)e^{-iz}$.
+    - `nu`, real order of $H_\nu^{(1)}(z) \ e^{-iz}$.
+    - `z`, complex argument of $H_\nu^{(1)}(z) \ e^{-iz}$.
   - **Implementation:**
-    - Similar to the `cyl_h1_seq()` function but for an one-sized
-    array.
+    - Similar to the `cyl_h1_seq()` function.
 </details>
 
 <details>
@@ -219,10 +215,10 @@ found in Refs. [[1–3](#references)].
     - `cyl_h1_arr`, array of size $n$ to output $H_\nu^{(1)}(z)$ for the
     orders $\nu$, $\nu+1$, ..., $\nu+n-1$.
   - **Implementation:**
-    - In general, the routine is based on the D. E. Amos Fortran 77 routines
-    of the Slatec library [[3](#references)]. Such Fortran routines, and all
-    their dependencies, were carefully translated to be used in this library.
-    Negative orders are handled by Eq. (9.1.6) of Ref. [[1](#references)].
+    - In general, the implementation is based on the D. E. Amos Fortran 77
+    routines of the Slatec library [[3](#references)]. Such Fortran routines,
+    and all their dependencies, were carefully translated to C. Negative
+    orders are handled by Eq. (9.1.6) of Ref. [[1](#references)].
     It yields $\infty+i\infty$ when $|z|=0$.
 </details>
 
@@ -233,15 +229,16 @@ found in Refs. [[1–3](#references)].
 
   - **Description:** Computes a $n$-sequency array of the scaled version of
   the cylindrical Hankel functions of the first kind, real order $\nu$, and
-  complex argument $z$, i.e., { $H_\nu^{(1)}(z)e^{-iz}$,
-  $H_{\nu+1}^{(1)}(z)e^{-iz}$, ..., $H_{\nu+n-1}^{(1)}(z)e^{-iz}$ }.
+  complex argument $z$, i.e., { $H_\nu^{(1)}(z) \ e^{-iz}$,
+  $H_{\nu+1}^{(1)}(z) \ e^{-iz}$, ..., $H_{\nu+n-1}^{(1)}(z) \ e^{-iz}$ }.
   - **Parameters:**
-    - `nu`, real order of $H_\nu^{(1)}(z)e^{-iz}$.
+    - `nu`, real order of $H_\nu^{(1)}(z) \ e^{-iz}$.
     - `n`, number of elements in the sequence for computing the orders $\nu$,
     $\nu+1$, ..., $\nu+n-1$. It is also the size of the `cyl_h1_scal_arr`
     array.
-    - `z`, complex argument of $H_\nu^{(1)}(z)e^{-iz}$.
-    - `cyl_h1_scal_arr`, array of size $n$ to output $H_\nu^{(1)}(z)e^{-iz}$
+    - `z`, complex argument of $H_\nu^{(1)}(z) \ e^{-iz}$.
+    - `cyl_h1_scal_arr`, array of size $n$ to output
+    $H_\nu^{(1)}(z) \ e^{-iz}$
     for the orders $\nu$, $\nu+1$, ..., $\nu+n-1$.
   - **Implementation:**
     - Similar to the `cyl_h1_seq()` function.
@@ -260,7 +257,7 @@ found in Refs. [[1–3](#references)].
     - `nu`, real order of $H_\nu^{(2)}(z)$.
     - `z`, complex argument of $H_\nu^{(2)}(z)$.
   - **Implementation:**
-    - Similar to the `cyl_h2_seq()` function but for an one-sized array.
+    - Similar to the `cyl_h2_seq()` function.
 </details>
 
 <details>
@@ -270,13 +267,12 @@ found in Refs. [[1–3](#references)].
 
   - **Description:** Returns the scaled version of the cylindrical Hankel
   function of the second kind, real order $\nu$, and complex argument $z$,
-  i.e., $H_\nu^{(2)}(z)e^{iz}$.
+  i.e., $H_\nu^{(2)}(z) \ e^{iz}$.
   - **Parameters:**
-    - `nu`, real order of $H_\nu^{(2)}(z)e^{iz}$.
-    - `z`, complex argument of $H_\nu^{(2)}(z)e^{iz}$.
+    - `nu`, real order of $H_\nu^{(2)}(z) \ e^{iz}$.
+    - `z`, complex argument of $H_\nu^{(2)}(z) \ e^{iz}$.
   - **Implementation:**
-    - Similar to the `cyl_h2_seq()` function but for an one-sized
-    array.
+    - Similar to the `cyl_h2_seq()` function.
 </details>
 
 <details>
@@ -296,11 +292,11 @@ found in Refs. [[1–3](#references)].
     - `cyl_h2_arr`, array of size $n$ to output $H_\nu^{(2)}(z)$ for the
     orders $\nu$, $\nu+1$, ..., $\nu+n-1$.
   - **Implementation:**
-    - In general, the routine is based on the D. E. Amos Fortran 77 routines
-    of the Slatec library [[3](#references)]. Such Fortran routines, and all
-    their dependencies, were carefully translated to be used in this library.
-    Negative orders are handled by Eq. (9.1.6) of Ref. [[1](#references)].
-    It yields $\infty+i\infty$ when $|z|=0$.
+    - In general, the implementation is based on the D. E. Amos Fortran 77
+    routines of the Slatec library [[3](#references)]. Such Fortran routines,
+    and all their dependencies, were carefully translated to C. Negative
+    orders are handled by Eq. (9.1.6) of Ref. [[1](#references)]. It yields
+    $\infty+i\infty$ when $|z|=0$.
 </details>
 
 <details>
@@ -310,15 +306,15 @@ found in Refs. [[1–3](#references)].
 
   - **Description:** Computes a $n$-sequency array of the scaled version of
   the cylindrical Hankel functions of the second kind, real order $\nu$, and
-  complex argument $z$, i.e., { $H_\nu^{(2)}(z)e^{iz}$,
-  $H_{\nu+1}^{(2)}(z)e^{iz}$, ..., $H_{\nu+n-1}^{(2)}(z)e^{iz}$ }.
+  complex argument $z$, i.e., { $H_\nu^{(2)}(z) \ e^{iz}$,
+  $H_{\nu+1}^{(2)}(z) \ e^{iz}$, ..., $H_{\nu+n-1}^{(2)}(z) \ e^{iz}$ }.
   - **Parameters:**
-    - `nu`, real order of $H_\nu^{(2)}(z)e^{iz}$.
+    - `nu`, real order of $H_\nu^{(2)}(z) \ e^{iz}$.
     - `n`, number of elements in the sequence for computing the orders $\nu$,
     $\nu+1$, ..., $\nu+n-1$. It is also the size of the `cyl_h2_scal_arr`
     array.
-    - `z`, complex argument of $H_\nu^{(2)}(z)e^{iz}$.
-    - `cyl_h2_scal_arr`, array of size $n$ to output $H_\nu^{(2)}(z)e^{iz}$
+    - `z`, complex argument of $H_\nu^{(2)}(z) \ e^{iz}$.
+    - `cyl_h2_scal_arr`, array of size $n$ to output $H_\nu^{(2)}(z) \ e^{iz}$
     for the orders $\nu$, $\nu+1$, ..., $\nu+n-1$.
   - **Implementation:**
     - Similar to the `cyl_h2_seq()` function.
@@ -337,7 +333,7 @@ found in Refs. [[1–3](#references)].
     - `nu`, real order of $I_\nu(z)$.
     - `z`, complex argument of $I_\nu(z)$.
   - **Implementation:**
-    - Similar to the `cyl_i_seq()` function but for an one-sized array.
+    - Similar to the `cyl_i_seq()` function.
 </details>
 
 <details>
@@ -347,13 +343,12 @@ found in Refs. [[1–3](#references)].
 
   - **Description:** Returns the scaled version of the modified cylindrical
   Bessel function of the first kind, real order $\nu$, and complex argument
-  $z$, i.e., $I_\nu(z)e^{-|\mathrm{Re}(z)|}$.
+  $z$, i.e., $I_\nu(z) \ e^{-|\mathrm{Re}(z)|}$.
   - **Parameters:**
-    - `nu`, real order of $I_\nu(z)e^{-|\mathrm{Re}(z)|}$.
-    - `z`, complex argument of $I_\nu(z)e^{-|\mathrm{Re}(z)|}$.
+    - `nu`, real order of $I_\nu(z) \ e^{-|\mathrm{Re}(z)|}$.
+    - `z`, complex argument of $I_\nu(z) \ e^{-|\mathrm{Re}(z)|}$.
   - **Implementation:**
-    - Similar to the `cyl_i_seq()` function but for an one-sized
-    array.
+    - Similar to the `cyl_i_seq()` function.
 </details>
 
 <details>
@@ -372,13 +367,12 @@ found in Refs. [[1–3](#references)].
     - `cyl_i_arr`, array of size $n$ to output $I_\nu(z)$ for the
     orders $\nu$, $\nu+1$, ..., $\nu+n-1$.
   - **Implementation:**
-    - In general, the routine is based on the D. E. Amos Fortran 77 routines
-    of the Slatec library [[3](#references)]. Such Fortran routines, and all
-    their dependencies, were carefully translated to be used in this library.
-    Negative orders are handled by Eqs. (6.1.5) and (6.5.4) of
-    Ref. [[2](#references)] for, respectively, $\nu \in \mathtt{Z}$ and
-    $\nu \notin \mathtt{Z}$; in the latter case, it yields $\infty+i\infty$
-    when $|z|=0$.
+    - In general, the implementation is based on the D. E. Amos Fortran 77
+    routines of the Slatec library [[3](#references)]. Such Fortran routines,
+    and all their dependencies, were carefully translated to C. Negative
+    orders are handled by Eqs. (6.1.5) and (6.5.4) of Ref. [[2](#references)]
+    for, respectively, $\nu \in \mathtt{Z}$ and $\nu \notin \mathtt{Z}$; in
+    the latter case, it yields $\infty+i\infty$ when $|z|=0$.
 </details>
 
 <details>
@@ -388,17 +382,17 @@ found in Refs. [[1–3](#references)].
 
   - **Description:** Computes a $n$-sequency array of the scaled version of
   the modified cylindrical Bessel functions of the first kind, real order
-  $\nu$, and complex argument $z$, i.e., { $I_\nu(z)e^{-|\mathrm{Re}(z)|}$,
-  $I_{\nu+1}(z)e^{-|\mathrm{Re}(z)|}$, ...,
-  $I_{\nu+n-1}(z)e^{-|\mathrm{Re}(z)|}$ }.
+  $\nu$, and complex argument $z$, i.e., { $I_\nu(z) \ e^{-|\mathrm{Re}(z)|}$,
+  $I_{\nu+1}(z) \ e^{-|\mathrm{Re}(z)|}$, ...,
+  $I_{\nu+n-1}(z) \ e^{-|\mathrm{Re}(z)|}$ }.
   - **Parameters:**
-    - `nu`, real order of $I_\nu(z)e^{-|\mathrm{Re}(z)|}$.
+    - `nu`, real order of $I_\nu(z) \ e^{-|\mathrm{Re}(z)|}$.
     - `n`, number of elements in the sequence for computing the orders $\nu$,
     $\nu+1$, ..., $\nu+n-1$. It is also the size of the `cyl_i_scal_arr`
     array.
-    - `z`, complex argument of $I_\nu(z)e^{-|\mathrm{Re}(z)|}$.
+    - `z`, complex argument of $I_\nu(z) \ e^{-|\mathrm{Re}(z)|}$.
     - `cyl_i_scal_arr`, array of size $n$ to output
-    $I_\nu(z)e^{-|\mathrm{Re}(z)|}$ for the orders $\nu$, $\nu+1$, ...,
+    $I_\nu(z) \ e^{-|\mathrm{Re}(z)|}$ for the orders $\nu$, $\nu+1$, ...,
     $\nu+n-1$.
   - **Implementation:**
     - Similar to the `cyl_i_seq()` function.
@@ -417,7 +411,7 @@ found in Refs. [[1–3](#references)].
     - `nu`, real order of $K_\nu(z)$.
     - `z`, complex argument of $K_\nu(z)$.
   - **Implementation:**
-    - Similar to the `cyl_k_seq()` function but for an one-sized array.
+    - Similar to the `cyl_k_seq()` function.
 </details>
 
 <details>
@@ -427,13 +421,12 @@ found in Refs. [[1–3](#references)].
 
   - **Description:** Returns the scaled version of the modified cylindrical
   Bessel function of the second kind, real order $\nu$, and complex argument
-  $z$, i.e., $K_\nu(z)e^{z}$.
+  $z$, i.e., $K_\nu(z) \ e^{z}$.
   - **Parameters:**
-    - `nu`, real order of $K_\nu(z)e^{z}$.
-    - `z`, complex argument of $K_\nu(z)e^{z}$.
+    - `nu`, real order of $K_\nu(z) \ e^{z}$.
+    - `z`, complex argument of $K_\nu(z) \ e^{z}$.
   - **Implementation:**
-    - Similar to the `cyl_k_seq()` function but for an one-sized
-    array.
+    - Similar to the `cyl_k_seq()` function.
 </details>
 
 <details>
@@ -452,12 +445,11 @@ found in Refs. [[1–3](#references)].
     - `cyl_k_arr`, array of size $n$ to output $K_\nu(z)$ for the
     orders $\nu$, $\nu+1$, ..., $\nu+n-1$.
   - **Implementation:**
-    - In general, the routine is based on the D. E. Amos Fortran 77 routines
-    of the Slatec library [[3](#references)]. Such Fortran routines, and all
-    their dependencies, were carefully translated to be used in this library.
-    Negative orders are handled by Eqs. (6.5.5) of Ref. [[2](#references)].
-    When $|z|=0$, it yields $\infty$ if $\nu=0$, or $\infty+i\infty$
-    otherwise.
+    - In general, the implementation is based on the D. E. Amos Fortran 77
+    routines of the Slatec library [[3](#references)]. Such Fortran routines,
+    and all their dependencies, were carefully translated to C. Negative
+    orders are handled by Eqs. (6.5.5) of Ref. [[2](#references)]. When
+    $|z|=0$, it yields $\infty$ if $\nu=0$, or $\infty+i\infty$ otherwise.
 </details>
 
 <details>
@@ -467,16 +459,16 @@ found in Refs. [[1–3](#references)].
 
   - **Description:** Computes a $n$-sequency array of the scaled version of
   the modified cylindrical Bessel functions of the second kind, real order
-  $\nu$, and complex argument $z$, i.e., { $K_\nu(z)e^{z}$,
-  $K_{\nu+1}(z)e^{z}$, ..., $K_{\nu+n-1}(z)e^{z}$ }.
+  $\nu$, and complex argument $z$, i.e., { $K_\nu(z) \ e^{z}$,
+  $K_{\nu+1}(z) \ e^{z}$, ..., $K_{\nu+n-1}(z) \ e^{z}$ }.
   - **Parameters:**
-    - `nu`, real order of $K_\nu(z)e^{z}$.
+    - `nu`, real order of $K_\nu(z) \ e^{z}$.
     - `n`, number of elements in the sequence for computing the orders $\nu$,
     $\nu+1$, ..., $\nu+n-1$. It is also the size of the `cyl_k_scal_arr`
     array.
-    - `z`, complex argument of $K_\nu(z)e^{z}$.
+    - `z`, complex argument of $K_\nu(z) \ e^{z}$.
     - `cyl_k_scal_arr`, array of size $n$ to output
-    $K_\nu(z)e^{z}$ for the orders $\nu$, $\nu+1$, ...,
+    $K_\nu(z) \ e^{z}$ for the orders $\nu$, $\nu+1$, ...,
     $\nu+n-1$.
   - **Implementation:**
     - Similar to the `cyl_k_seq()` function.
@@ -494,9 +486,9 @@ found in Refs. [[1–3](#references)].
   - **Parameter:**
     - `z`, complex argument of $Ai(z)$.
   - **Implementation:**
-    - In general, the routine is based on the D. E. Amos Fortran 77 routines
-    of the Slatec library [[3](#references)]. Such Fortran routines, and all
-    their dependencies, were carefully translated to be used in this library.
+    - In general, the implementation is based on the D. E. Amos Fortran 77
+    routines of the Slatec library [[3](#references)]. Such Fortran routines,
+    and all their dependencies, were carefully translated to C.
 </details>
 
 <details>
@@ -507,7 +499,7 @@ found in Refs. [[1–3](#references)].
   - **Description:** Returns the first derivative of the Airy function of the
   first kind and complex argument $z$, i.e., $\mathrm{d}Ai(z)/\mathrm{d}z$.
   - **Parameter:**
-    - `z`, complex argument of $Ai(z)$.
+    - `z`, complex argument of $\mathrm{d}Ai(z)/\mathrm{d}z$.
   - **Implementation:**
     - Similar to the `airy_ai()` function.
 </details>
@@ -518,9 +510,9 @@ found in Refs. [[1–3](#references)].
   </summary>
 
   - **Description:** Returns the scaled version of the Airy function of the
-  first kind and complex argument $z$, i.e., $Ai(z)e^{(2/3)z^{3/2}}$.
+  first kind and complex argument $z$, i.e., $Ai(z) \ e^{(2/3)z^{3/2}}$.
   - **Parameter:**
-    - `z`, complex argument of $Ai(z)e^{(2/3)z^{3/2}}$.
+    - `z`, complex argument of $Ai(z) \ e^{(2/3)z^{3/2}}$.
   - **Implementation:**
     - Similar to the `airy_ai()` function.
 </details>
@@ -532,10 +524,10 @@ found in Refs. [[1–3](#references)].
 
   - **Description:** Returns the scaled version of the first derivative of the
   Airy function of the first kind and complex argument $z$, i.e.,
-  $\mathrm{d}Ai(z)/\mathrm{d}z \, e^{(2/3)z^{3/2}}$.
+  $[\mathrm{d}Ai(z)/\mathrm{d}z] \ e^{(2/3)z^{3/2}}$.
   - **Parameter:**
     - `z`, complex argument of
-    $\mathrm{d}Ai(z)/\mathrm{d}z \, e^{(2/3)z^{3/2}}$.
+    $[\mathrm{d}Ai(z)/\mathrm{d}z] \ e^{(2/3)z^{3/2}}$.
   - **Implementation:**
     - Similar to the `airy_ai()` function.
 </details>
@@ -552,9 +544,9 @@ found in Refs. [[1–3](#references)].
   - **Parameter:**
     - `z`, complex argument of $Bi(z)$.
   - **Implementation:**
-    - In general, the routine is based on the D. E. Amos Fortran 77 routines
-    of the Slatec library [[3](#references)]. Such Fortran routines, and all
-    their dependencies, were carefully translated to be used in this library.
+    - In general, the implementation is based on the D. E. Amos Fortran 77
+    routines of the Slatec library [[3](#references)]. Such Fortran routines,
+    and all their dependencies, were carefully translated to C.
 </details>
 
 <details>
@@ -565,7 +557,7 @@ found in Refs. [[1–3](#references)].
   - **Description:** Returns the first derivative of the Airy function of the
   second kind and complex argument $z$, i.e., $\mathrm{d}Bi(z)/\mathrm{d}z$.
   - **Parameter:**
-    - `z`, complex argument of $Bi(z)$.
+    - `z`, complex argument of $\mathrm{d}Bi(z)/\mathrm{d}z$.
   - **Implementation:**
     - Similar to the `airy_bi()` function.
 </details>
@@ -577,9 +569,9 @@ found in Refs. [[1–3](#references)].
 
   - **Description:** Returns the scaled version of the Airy function of the
   second kind and complex argument $z$, i.e.,
-  $Bi(z)e^{-|\mathrm{Re}([2/3)z^{3/2}]}$.
+  $Bi(z) \ e^{-|\mathrm{Re}[(2/3)z^{3/2}]|}$.
   - **Parameter:**
-    - `z`, complex argument of $Bi(z)e^{-|\mathrm{Re}([2/3)z^{3/2}]}$.
+    - `z`, complex argument of $Bi(z) \ e^{-|\mathrm{Re}[(2/3)z^{3/2}]|}$.
   - **Implementation:**
     - Similar to the `airy_bi()` function.
 </details>
@@ -591,10 +583,10 @@ found in Refs. [[1–3](#references)].
 
   - **Description:** Returns the scaled version of the first derivative of the
   Airy function of the second kind and complex argument $z$, i.e.,
-  $\mathrm{d}Bi(z)/\mathrm{d}z \, e^{-|\mathrm{Re}([2/3)z^{3/2}]}$.
+  $[\mathrm{d}Bi(z)/\mathrm{d}z] \ e^{-|\mathrm{Re}[(2/3)z^{3/2}]|}$.
   - **Parameter:**
     - `z`, complex argument of
-    $\mathrm{d}Bi(z)/\mathrm{d}z \, e^{-|\mathrm{Re}([2/3)z^{3/2}]}$.
+    $[\mathrm{d}Bi(z)/\mathrm{d}z] \ e^{-|\mathrm{Re}[(2/3)z^{3/2}]|}$.
   - **Implementation:**
     - Similar to the `airy_ai()` function.
 </details>
@@ -681,24 +673,36 @@ As aforementioned, usually it is not necessary to compile the library.
 However, in any case, the file [bessel-library.c](src/bessel-library.c) inside
 the [src](src/) folder is a C wrapper that may be used for compilation.
 
-The following subsections contain examples of how to compile this library.
+The following are examples of how to compile this library.
 
-### Compiling on Windows with MinGW gcc
+<details>
+  <summary>
+    <b>Compiling on Windows with MinGW gcc</b>
+  </summary>
 
-```bash
-gcc -shared -o src/bessel-library.dll src/bessel-library.c -Iinclude
-```
+  ```bash
+  gcc -shared -o src/bessel-library.dll src/bessel-library.c -Iinclude
+  ```
+</details>
 
-### Compiling on Linux/macOS with gcc
+<details>
+  <summary>
+    <b>Compiling on Linux/macOS with gcc</b>
+  </summary>
 
-```bash
-gcc -shared -fPIC -o src/bessel-library.so src/bessel-library.c -Iinclude
-```
+  ```bash
+  gcc -shared -fPIC -o src/bessel-library.so src/bessel-library.c -Iinclude
+  ```
+</details>
 
-### Compiling on Windows with MSVC cl
+<details>
+  <summary>
+    <b>Compiling on Windows with MSVC cl</b>
+  </summary> 
 
-Compiling this library with MSVC is not recommended because MSVC does not
-support the `double complex` type of the C `<complex.h>` library.
+  Compiling this library with MSVC is not recommended because MSVC does not
+  support the `double complex` type of the C `<complex.h>` library.
+</details>
 
 ## Other programming languages
 
