@@ -86,7 +86,7 @@ static inline tpdcomplex_impl_ cyl_y_scal(double nu,
     - cyl_y_arr, array of size n to output Y_nu(z) for the orders nu,
     nu+1, ..., nu+n-1
 */
-static inline void cyl_y_seq(double nu, unsigned int n, tpdcomplex_impl_ z,
+static inline void cyl_y_seq(double nu, int n, tpdcomplex_impl_ z,
     tpdcomplex_impl_ *cyl_y_arr) {
 
     cyl_y_full_seq_impl_(nu, n, z, cyl_y_arr, 0);
@@ -106,7 +106,7 @@ static inline void cyl_y_seq(double nu, unsigned int n, tpdcomplex_impl_ z,
     - cyl_y_scaled_arr, array of size n to output Y_nu(z)*exp(-abs(imag(z)))
     for the orders nu, nu+1, ..., nu+n-1
 */
-static inline void cyl_y_scal_seq(double nu, unsigned int n,
+static inline void cyl_y_scal_seq(double nu, int n,
     tpdcomplex_impl_ z, tpdcomplex_impl_ *cyl_y_scaled_arr) {
     
     cyl_y_full_seq_impl_(nu, n, z, cyl_y_scaled_arr, 1);

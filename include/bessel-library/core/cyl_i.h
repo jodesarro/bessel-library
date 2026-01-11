@@ -87,7 +87,7 @@ static inline tpdcomplex_impl_ cyl_i_scal(double nu,
     ..., nu+n-1
 */
 static inline
-void cyl_i_seq(double nu, unsigned int n, tpdcomplex_impl_ z,
+void cyl_i_seq(double nu, int n, tpdcomplex_impl_ z,
     tpdcomplex_impl_ *cyl_i_arr) {
 
     cyl_i_full_seq_impl_(nu, n, z, cyl_i_arr, 0);
@@ -107,7 +107,7 @@ void cyl_i_seq(double nu, unsigned int n, tpdcomplex_impl_ z,
     - cyl_i_scal_arr, array of size n to output I_nu(z)*exp(-abs(real(z))) for
     the orders nu, nu+1, ..., nu+n-1
 */
-static inline void cyl_i_scal_seq(double nu, unsigned int n,
+static inline void cyl_i_scal_seq(double nu, int n,
     tpdcomplex_impl_ z, tpdcomplex_impl_ *cyl_i_scal_arr) {
     
     cyl_i_full_seq_impl_(nu, n, z, cyl_i_scal_arr, 1);

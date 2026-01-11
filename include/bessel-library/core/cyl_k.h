@@ -86,7 +86,7 @@ static inline tpdcomplex_impl_ cyl_k_scal(double nu,
     - cyl_k_arr, array of size n to output K_nu(z) for the orders nu,
     nu+1, ..., nu+n-1
 */
-static inline void cyl_k_seq(double nu, unsigned int n, tpdcomplex_impl_ z,
+static inline void cyl_k_seq(double nu, int n, tpdcomplex_impl_ z,
     tpdcomplex_impl_ *cyl_k_arr) {
 
     cyl_k_full_seq_impl_(nu, n, z, cyl_k_arr, 0);
@@ -106,7 +106,7 @@ static inline void cyl_k_seq(double nu, unsigned int n, tpdcomplex_impl_ z,
     - cyl_k_scaled_arr, array of size n to output K_nu(z)*exp(z) for the
     orders nu, nu+1, ..., nu+n-1
 */
-static inline void cyl_k_scal_seq(double nu, unsigned int n,
+static inline void cyl_k_scal_seq(double nu, int n,
     tpdcomplex_impl_ z, tpdcomplex_impl_ *cyl_k_scaled_arr) {
     
     cyl_k_full_seq_impl_(nu, n, z, cyl_k_scaled_arr, 1);

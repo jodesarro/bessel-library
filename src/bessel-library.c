@@ -167,7 +167,7 @@ tpdcomplex_impl_ cyl_h1_scal(double nu,
     - cyl_h1_arr, array of size n to output H1_nu(z) for the orders nu, nu+1,
     ..., nu+n-1
 */
-void cyl_h1_seq(double nu, unsigned int n,
+void cyl_h1_seq(double nu, int n,
     tpdcomplex_impl_ z, tpdcomplex_impl_ *cyl_h1_arr) {
 
     cyl_h1_full_seq_impl_(nu, n, z, cyl_h1_arr, 0);
@@ -187,7 +187,7 @@ void cyl_h1_seq(double nu, unsigned int n,
     - cyl_h2_scal_arr, array of size n to output  H1_nu(z)*exp(-i*z) for the
     orders nu, nu+1, ..., nu+n-1
 */
-void cyl_h1_scal_seq(double nu, unsigned int n,
+void cyl_h1_scal_seq(double nu, int n,
     tpdcomplex_impl_ z, tpdcomplex_impl_ *cyl_h2_scal_arr) {
     
     cyl_h1_full_seq_impl_(nu, n, z, cyl_h2_scal_arr, 1);
@@ -248,7 +248,7 @@ tpdcomplex_impl_ cyl_h2_scal(double nu,
     - cyl_h2_arr, array of size n to output H2_nu(z) for the orders nu, nu+1,
     ..., nu+n-1
 */
-void cyl_h2_seq(double nu, unsigned int n,
+void cyl_h2_seq(double nu, int n,
     tpdcomplex_impl_ z, tpdcomplex_impl_ *cyl_h2_arr) {
 
     cyl_h2_full_seq_impl_(nu, n, z, cyl_h2_arr, 0);
@@ -268,7 +268,7 @@ void cyl_h2_seq(double nu, unsigned int n,
     - cyl_h2_scal_arr, array of size n to output H2_nu(z)*exp(i*z) for the
     orders nu, nu+1, ..., nu+n-1
 */
-void cyl_h2_scal_seq(double nu, unsigned int n,
+void cyl_h2_scal_seq(double nu, int n,
     tpdcomplex_impl_ z, tpdcomplex_impl_ *cyl_h2_scal_arr) {
     
     cyl_h2_full_seq_impl_(nu, n, z, cyl_h2_scal_arr, 1);
@@ -330,7 +330,7 @@ tpdcomplex_impl_ cyl_i_scal(double nu,
     ..., nu+n-1
 */
 static inline
-void cyl_i_seq(double nu, unsigned int n, tpdcomplex_impl_ z,
+void cyl_i_seq(double nu, int n, tpdcomplex_impl_ z,
     tpdcomplex_impl_ *cyl_i_arr) {
 
     cyl_i_full_seq_impl_(nu, n, z, cyl_i_arr, 0);
@@ -350,7 +350,7 @@ void cyl_i_seq(double nu, unsigned int n, tpdcomplex_impl_ z,
     - cyl_i_scal_arr, array of size n to output I_nu(z)*exp(-abs(real(z))) for
     the orders nu, nu+1, ..., nu+n-1
 */
-void cyl_i_scal_seq(double nu, unsigned int n,
+void cyl_i_scal_seq(double nu, int n,
     tpdcomplex_impl_ z, tpdcomplex_impl_ *cyl_i_scal_arr) {
     
     cyl_i_full_seq_impl_(nu, n, z, cyl_i_scal_arr, 1);
@@ -411,7 +411,7 @@ tpdcomplex_impl_ cyl_k_scal(double nu,
     - cyl_k_arr, array of size n to output K_nu(z) for the orders nu,
     nu+1, ..., nu+n-1
 */
-void cyl_k_seq(double nu, unsigned int n, tpdcomplex_impl_ z,
+void cyl_k_seq(double nu, int n, tpdcomplex_impl_ z,
     tpdcomplex_impl_ *cyl_k_arr) {
 
     cyl_k_full_seq_impl_(nu, n, z, cyl_k_arr, 0);
@@ -431,7 +431,7 @@ void cyl_k_seq(double nu, unsigned int n, tpdcomplex_impl_ z,
     - cyl_k_scaled_arr, array of size n to output K_nu(z)*exp(z) for the
     orders nu, nu+1, ..., nu+n-1
 */
-void cyl_k_scal_seq(double nu, unsigned int n,
+void cyl_k_scal_seq(double nu, int n,
     tpdcomplex_impl_ z, tpdcomplex_impl_ *cyl_k_scaled_arr) {
     
     cyl_k_full_seq_impl_(nu, n, z, cyl_k_scaled_arr, 1);
@@ -492,7 +492,7 @@ tpdcomplex_impl_ cyl_y_scal(double nu,
     - cyl_y_arr, array of size n to output Y_nu(z) for the orders nu,
     nu+1, ..., nu+n-1
 */
-void cyl_y_seq(double nu, unsigned int n, tpdcomplex_impl_ z,
+void cyl_y_seq(double nu, int n, tpdcomplex_impl_ z,
     tpdcomplex_impl_ *cyl_y_arr) {
 
     cyl_y_full_seq_impl_(nu, n, z, cyl_y_arr, 0);
@@ -512,7 +512,7 @@ void cyl_y_seq(double nu, unsigned int n, tpdcomplex_impl_ z,
     - cyl_y_scaled_arr, array of size n to output Y_nu(z)*exp(-abs(imag(z)))
     for the orders nu, nu+1, ..., nu+n-1
 */
-void cyl_y_scal_seq(double nu, unsigned int n,
+void cyl_y_scal_seq(double nu, int n,
     tpdcomplex_impl_ z, tpdcomplex_impl_ *cyl_y_scaled_arr) {
     
     cyl_y_full_seq_impl_(nu, n, z, cyl_y_scaled_arr, 1);
