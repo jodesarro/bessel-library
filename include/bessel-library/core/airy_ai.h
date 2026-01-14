@@ -15,15 +15,20 @@
 #ifndef BESSEL_LIBRARY_AIRY_AI_H
 #define BESSEL_LIBRARY_AIRY_AI_H
 
+#ifndef BESSEL_LIBRARY_STATIC_INLINE_IMPL_
+#define BESSEL_LIBRARY_STATIC_INLINE_IMPL_ static inline
+#endif
+
 #ifdef __cplusplus
 
 /* Includes, typedefs and/or macros for C++98 compatibility */
-#include <complex> /* for complex numbers */
+
+#include <complex> /* For complex numbers */
 typedef std::complex<double> tpdcomplex_impl_;
 
 #else
 
-#include <complex.h> /* for complex numbers */
+#include <complex.h> /* For complex numbers */
 typedef double complex tpdcomplex_impl_;
 
 #endif /* __cplusplus */
@@ -36,8 +41,14 @@ typedef double complex tpdcomplex_impl_;
 
     Parameter:
     - z, complex argument of Ai(z).
+
+    Implementation:
+    - In general, the implementation is based on the D. E. Amos Fortran 77
+    routines of the Slatec library [3]. Such Fortran routines,
+    and all their dependencies, were carefully translated to C.
 */
-static inline tpdcomplex_impl_ airy_ai(tpdcomplex_impl_ z) {
+BESSEL_LIBRARY_STATIC_INLINE_IMPL_
+tpdcomplex_impl_ airy_ai(tpdcomplex_impl_ z) {
     return airy_ai_impl_(z, 0, 0);
 }
 
@@ -47,8 +58,12 @@ static inline tpdcomplex_impl_ airy_ai(tpdcomplex_impl_ z) {
 
     Parameter:
     - z, complex argument of dAi(z)/dz.
+    
+    Implementation:
+    - Similar to the airy_ai() function.
 */
-static inline tpdcomplex_impl_ airy_ai_deriv(tpdcomplex_impl_ z) {
+BESSEL_LIBRARY_STATIC_INLINE_IMPL_
+tpdcomplex_impl_ airy_ai_diff(tpdcomplex_impl_ z) {
     return airy_ai_impl_(z, 1, 0);
 }
 
@@ -58,8 +73,12 @@ static inline tpdcomplex_impl_ airy_ai_deriv(tpdcomplex_impl_ z) {
 
     Parameter:
     - z, complex argument of Ai(z)*exp((2/3)*pow(z,3/2)).
+
+    Implementation:
+    - Similar to the airy_ai() function.
 */
-static inline tpdcomplex_impl_ airy_ai_scal(tpdcomplex_impl_ z) {
+BESSEL_LIBRARY_STATIC_INLINE_IMPL_
+tpdcomplex_impl_ airy_ai_scal(tpdcomplex_impl_ z) {
     return airy_ai_impl_(z, 0, 1);
 }
 
@@ -70,8 +89,12 @@ static inline tpdcomplex_impl_ airy_ai_scal(tpdcomplex_impl_ z) {
 
     Parameter:
     - z, complex argument of (dAi(z)/dz)*exp((2/3)*pow(z,3/2)).
+
+    Implementation:
+    - Similar to the airy_ai() function.
 */
-static inline tpdcomplex_impl_ airy_ai_deriv_scal(tpdcomplex_impl_ z) {
+BESSEL_LIBRARY_STATIC_INLINE_IMPL_
+tpdcomplex_impl_ airy_ai_diff_scal(tpdcomplex_impl_ z) {
     return airy_ai_impl_(z, 1, 1);
 }
 

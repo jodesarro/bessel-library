@@ -6,6 +6,7 @@
     Author: Jhonas Olivati de Sarro
     Language standards: C99
     References: include/bessel-library/references.txt
+    License: include/bessel-library/license.txt
 
     Description:
         Slatec's ZBESI subroutine, originally translated from Fortran to C

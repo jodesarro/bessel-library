@@ -493,7 +493,7 @@ found in Refs. [[1–3](#references)].
 
 <details>
   <summary>
-    <b><code>airy_ai_deriv(z)</code></b>
+    <b><code>airy_ai_diff(z)</code></b>
   </summary>
 
   - **Description:** Returns the first derivative of the Airy function of the
@@ -519,7 +519,7 @@ found in Refs. [[1–3](#references)].
 
 <details>
   <summary>
-    <b><code>airy_ai_deriv_scal(z)</code></b>
+    <b><code>airy_ai_diff_scal(z)</code></b>
   </summary>
 
   - **Description:** Returns the scaled version of the first derivative of the
@@ -551,7 +551,7 @@ found in Refs. [[1–3](#references)].
 
 <details>
   <summary>
-    <b><code>airy_bi_deriv(z)</code></b>
+    <b><code>airy_bi_diff(z)</code></b>
   </summary>
 
   - **Description:** Returns the first derivative of the Airy function of the
@@ -578,7 +578,7 @@ found in Refs. [[1–3](#references)].
 
 <details>
   <summary>
-    <b><code>airy_bi_deriv_scal(z)</code></b>
+    <b><code>airy_bi_diff_scal(z)</code></b>
   </summary>
 
   - **Description:** Returns the scaled version of the first derivative of the
@@ -751,7 +751,9 @@ They are mainly written based on, or a translation of, the content of Refs.
 
 ## Licensing
 
-This project is protected under [MIT License](LICENSE).
+This project is protected under [MIT License](LICENSE). A copy of the license
+is available at
+[include/bessel-library/license.txt](include/bessel-library/license.txt).
 
 ## References
 
@@ -766,3 +768,6 @@ of Standards, 1972.
 software library containing over 1400 general purpose mathematical and
 statistical routines written in Fortran 77. Available at
 <https://www.netlib.org/slatec/> (Accessed: May 25, 2024).
+
+A copy of this list is available at
+[include/bessel-library/references.txt](include/bessel-library/references.txt).

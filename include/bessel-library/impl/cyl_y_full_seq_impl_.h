@@ -6,6 +6,7 @@
     Author: Jhonas Olivati de Sarro
     Language standards: C99 with guards for C++98 compatibility
     References: include/bessel-library/references.txt
+    License: include/bessel-library/license.txt
 
     Description:
         Implements and computes a n-sequency array in double complex type for
@@ -22,8 +23,9 @@
 #ifdef __cplusplus
 
 /* Includes, typedefs and/or macros for C++98 compatibility */
-#include <complex> /* for complex numbers */
-#include <cstdlib> /* for malloc and free */
+
+#include <complex> /* For complex numbers */
+#include <cstdlib> /* For malloc and free */
 typedef std::complex<double> tpdcomplex_impl_;
 #define CPLX_impl_(x, y) tpdcomplex_impl_(x, y)
 #define I_impl_ std::complex<double>(0.0, 1.0)
@@ -37,8 +39,8 @@ extern "C" {
 
 #else
 
-#include <complex.h> /* for complex numbers */
-#include <stdlib.h> /* for malloc and free */
+#include <complex.h> /* For complex numbers */
+#include <stdlib.h> /* For malloc and free */
 typedef double complex tpdcomplex_impl_;
 #define I_impl_ I
 #define CPLX_impl_(x, y) (x + I * y)
@@ -69,8 +71,17 @@ typedef double complex tpdcomplex_impl_;
     ..., nu+n-1 It is also the size of the cyl_y_arr array.
     - z, complex argument of Y_nu(z).
     - cyl_y_arr, array of size n to output Y_nu(z) for the orders nu, nu+1,
-    ..., nu+n-1
+    ..., nu+n-1.
     - scaled, returns the scaled version Y_nu(z)*exp(-abs(imag(z))) if 1.
+    
+    Implementation:
+    - In general, the implementation is based on the D. E. Amos Fortran 77
+    routines of the Slatec library [3]. Such Fortran routines,
+    and all their dependencies, were carefully translated to C. Negative
+    orders are handled by Eqs. (5.4.2) and (5.5.4) of Ref. [2]
+    for, respectively, nu integer and nu real.
+    When abs(z)=0, it yields -INFINITY if nu=0, or INFINITY + I * INFINITY
+    otherwise.
 */
 static inline void cyl_y_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
     tpdcomplex_impl_ *cyl_y_arr, int scaled) {
@@ -85,7 +96,7 @@ static inline void cyl_y_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
     if (cabs(z) < DBL_EPSILON) {
         
         /* Store in the array */
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; i++) {
             /* Complex infinity for i!=0 orders */
             cyl_y_arr[i] = CPLX_impl_(INFINITY, INFINITY);
         }
@@ -111,7 +122,7 @@ static inline void cyl_y_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
         slatec_flags_zbesy_impl_(ierr, nz);
 
         /* Store in the array */
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; i++) {
             cyl_y_arr[i] = cyr_ptr[i] + I_impl_ * cyi_ptr[i];
         }
 
@@ -142,7 +153,7 @@ static inline void cyl_y_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
             slatec_flags_zbesy_impl_(ierr, nz);
 
             /* Store in the array */
-            for (int i = 0; i < n; ++i) {
+            for (int i = 0; i < n; i++) {
                 int tmp = n - 1 - i;
                 cyl_y_arr[i] = pow(-1.0, fnu_m + tmp)
                          * (cyr_ptr[tmp] + I_impl_ * cyi_ptr[tmp]);
@@ -181,7 +192,7 @@ static inline void cyl_y_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
             slatec_flags_zbesj_impl_(ierr, nz);
 
             /* Store in the array */
-            for (int i = 0; i < n; ++i) {
+            for (int i = 0; i < n; i++) {
                 int tmp1 = n - 1 - i;
                 double tmp2 = (fnu_m + (double)tmp1) * M_PI;
                 /* Eq. (5.5.4) of Ref. [2] */
@@ -221,7 +232,7 @@ static inline void cyl_y_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
             slatec_flags_zbesy_impl_(ierr, nz);
             
             /* Store in the array */
-            for (int i = 0; i < n_m; ++i) {
+            for (int i = 0; i < n_m; i++) {
                 int tmp = n_m - 1 - i;
                 cyl_y_arr[i] = pow(-1.0, fnu_m + tmp)
                          * (cyr_m_ptr[tmp] + I_impl_ * cyi_m_ptr[tmp]);
@@ -259,7 +270,7 @@ static inline void cyl_y_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
             slatec_flags_zbesj_impl_(ierr, nz);
 
             /* Store in the array */
-            for (int i = 0; i < n_m; ++i) {
+            for (int i = 0; i < n_m; i++) {
                 int tmp1 = n_m - 1 - i;
                 double tmp2 = (fnu_m + (double)tmp1) * M_PI;
                 /* Eq. (5.5.4) of Ref. [2] */
@@ -290,7 +301,7 @@ static inline void cyl_y_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
             &cyi_p_ptr[0], &nz, &cwrkr_ptr[0], &cwrki_ptr[0], &ierr);
         slatec_flags_zbesy_impl_(ierr, nz);
 
-        for (int i = n_m; i < n; ++i) {
+        for (int i = n_m; i < n; i++) {
             int tmp1 = i - n_m;
             cyl_y_arr[i] = cyr_p_ptr[tmp1] + I_impl_ * cyi_p_ptr[tmp1];
         }

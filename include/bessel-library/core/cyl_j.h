@@ -6,6 +6,7 @@
     Author: Jhonas Olivati de Sarro
     Language standards: C99 with guards for C++98 compatibility
     References: include/bessel-library/references.txt
+    License: include/bessel-library/license.txt
 
     Description:
         Computes, in double complex type for C, or in std::complex<double>
@@ -16,15 +17,20 @@
 #ifndef BESSEL_LIBRARY_CYL_J_H
 #define BESSEL_LIBRARY_CYL_J_H
 
+#ifndef BESSEL_LIBRARY_STATIC_INLINE_IMPL_
+#define BESSEL_LIBRARY_STATIC_INLINE_IMPL_ static inline
+#endif
+
 #ifdef __cplusplus
 
 /* Includes, typedefs and/or macros for C++98 compatibility */
-#include <complex> /* for complex numbers */
+
+#include <complex> /* For complex numbers */
 typedef std::complex<double> tpdcomplex_impl_;
 
 #else
 
-#include <complex.h> /* for complex numbers */
+#include <complex.h> /* For complex numbers */
 typedef double complex tpdcomplex_impl_;
 
 #endif /* __cplusplus */
@@ -38,8 +44,12 @@ typedef double complex tpdcomplex_impl_;
     Parameters:
     - nu, real order of J_nu(z).
     - z, complex argument of J_nu(z).
+    
+    Implementation:
+    - Similar to the cyl_j_seq() function.
 */
-static inline tpdcomplex_impl_ cyl_j(double nu, tpdcomplex_impl_ z) {
+BESSEL_LIBRARY_STATIC_INLINE_IMPL_
+tpdcomplex_impl_ cyl_j(double nu, tpdcomplex_impl_ z) {
     
     /* Array of one size */
     tpdcomplex_impl_ cj[1];
@@ -59,8 +69,12 @@ static inline tpdcomplex_impl_ cyl_j(double nu, tpdcomplex_impl_ z) {
     Parameters:
     - nu, real order of J_nu(z)*exp(-abs(imag(z))).
     - z, complex argument of J_nu(z)*exp(-abs(imag(z))).
+        
+    Implementation:
+    - Similar to the cyl_j_seq() function.
 */
-static inline tpdcomplex_impl_ cyl_j_scal(double nu,
+BESSEL_LIBRARY_STATIC_INLINE_IMPL_
+tpdcomplex_impl_ cyl_j_scal(double nu,
     tpdcomplex_impl_ z) {
     
     /* Array of one size */
@@ -85,8 +99,17 @@ static inline tpdcomplex_impl_ cyl_j_scal(double nu,
     - z, complex argument of J_nu(z).
     - cyl_j_arr, array of size n to output J_nu(z) for the orders nu, nu+1,
     ..., nu+n-1
+
+    Implementation:
+    - In general, the implementation is based on the D. E. Amos Fortran 77
+    routines of the Slatec library [3]. Such Fortran routines,
+    and all their dependencies, were carefully translated to C. Negative
+    orders are handled by Eqs. (5.4.2) and (5.5.4) of Ref. [2]
+    for, respectively, nu integer and nu real; in
+    the latter case, it yields INFINITY + I * INFINITY when abs(z)=0.
 */
-static inline void cyl_j_seq(double nu, int n, tpdcomplex_impl_ z,
+BESSEL_LIBRARY_STATIC_INLINE_IMPL_
+void cyl_j_seq(double nu, int n, tpdcomplex_impl_ z,
     tpdcomplex_impl_ *cyl_j_arr) {
 
     cyl_j_full_seq_impl_(nu, n, z, cyl_j_arr, 0);
@@ -105,8 +128,12 @@ static inline void cyl_j_seq(double nu, int n, tpdcomplex_impl_ z,
     - z, complex argument of J_nu(z)*exp(-abs(imag(z))).
     - cyl_j_scal_arr, array of size n to output J_nu(z)*exp(-abs(imag(z)))
     for the orders nu, nu+1, ..., nu+n-1
+        
+    Implementation:
+    - Similar to the cyl_j_seq() function.
 */
-static inline void cyl_j_scal_seq(double nu, int n,
+BESSEL_LIBRARY_STATIC_INLINE_IMPL_
+void cyl_j_scal_seq(double nu, int n,
     tpdcomplex_impl_ z, tpdcomplex_impl_ *cyl_j_scal_arr) {
     
     cyl_j_full_seq_impl_(nu, n, z, cyl_j_scal_arr, 1);

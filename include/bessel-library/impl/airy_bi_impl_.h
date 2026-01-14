@@ -6,6 +6,7 @@
     Author: Jhonas Olivati de Sarro
     Language standards: C99 with guards for C++98 compatibility
     References: include/bessel-library/references.txt
+    License: include/bessel-library/license.txt
 
     Description:
         Returns the Airy function of the second kind and complex argument z,
@@ -19,7 +20,8 @@
 #ifdef __cplusplus
 
 /* Includes, typedefs and/or macros for C++98 compatibility */
-#include <complex> /* for complex numbers */
+
+#include <complex> /* For complex numbers */
 typedef std::complex<double> tpdcomplex_impl_;
 #define I_impl_ std::complex<double>(0.0, 1.0)
 #define creal(z) std::real(z)
@@ -47,6 +49,11 @@ typedef double complex tpdcomplex_impl_;
     - derivative, replaces Bi(z) by dBi(z)/dz if 1.
     - scaled, returns the scaled version
     Bi(z)*exp(abs(real((2/3)*pow(z,3/2)))) if 1.
+
+    Implementation:
+    - In general, the implementation is based on the D. E. Amos Fortran 77
+    routines of the Slatec library [3] Such Fortran routines,
+    and all their dependencies, were carefully translated to C.
 */
 static inline tpdcomplex_impl_ airy_bi_impl_(tpdcomplex_impl_ z,
     int derivative, int scaled) {
