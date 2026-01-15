@@ -673,7 +673,7 @@ As aforementioned, usually it is not necessary to compile the library.
 However, in any case, the file [bessel-library.c](src/bessel-library.c) inside
 the [src](src/) folder is a C wrapper that may be used for compilation.
 
-The following are examples of how to compile this library.
+The following are examples of how to compile this library using C compilers.
 
 <details>
   <summary>
@@ -700,8 +700,15 @@ The following are examples of how to compile this library.
     <b>Compiling on Windows with MSVC cl</b>
   </summary> 
 
-  Compiling this library with MSVC is not recommended because MSVC does not
-  support the `double complex` type of the C `<complex.h>` library.
+  Compiling this library with MSVC targeting the C language is discouraged
+  because MSVC does not support the `double complex` type from the C
+  `<complex.h>` library. However, as a workaround, you may build it in MSVC
+  targeting the C++ language (e.g., using the `/TP` flag), and then you shall
+  be able to use the `std::complex<double>` from the C++ `<complex>` library.
+
+  ```bash
+  cl /TP src/bessel-library.c
+  ```
 </details>
 
 ## Other programming languages
