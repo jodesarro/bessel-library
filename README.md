@@ -705,8 +705,8 @@ from cffi import FFI
 
 ffi = FFI()
 
-# Read the functions declarations
-with open("bessel-library-declarations.c") as f:
+# Read the C functions declarations
+with open("bessel-library-declarations.c", "r") as f:
     ffi.cdef(f.read())
 
 # Import the compiled file
