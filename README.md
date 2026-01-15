@@ -1,12 +1,12 @@
 # Bessel Library: A C library with routines for computing Bessel functions
 
-This project provides a C library
-([fully compatible with C++](#compatibility-with-c)) designed for the
+This project provides a C library fully
+([compatible with C++](#compatibility-with-c)) designed for the
 computation of Bessel functions and related special functions for real orders
 and complex arguments.
 
 Detailed discussions on Bessel functions and their numerical evaluation may be
-found in the works listed in the [References section](#references).
+found in the works listed in the [References](#references) section.
 
 ## Available features
 
@@ -569,7 +569,7 @@ This library is in a header-only style, i.e., there is nothing to build
 (see the section [Compiling the library](#compiling-the-library) if you still
 want to compile it).
 Therefore, you only need to paste all the content of the
-[include folder](include/)
+[include](include/) folder
 inside the include folder of your project (if you do not have an include
 folder in your project, paste the content inside the root folder of your
 project). Finally, just write `#include "bessel-library.h"` at the very
@@ -581,9 +581,9 @@ beginning of your code and you shall be ready to use the functions.
   </summary>
 
 ```c
-#include "bessel-library.h" /* the bessel-library */
-#include <stdio.h> /* for printf() */
-#include <complex.h> /* for double complex type */
+#include "bessel-library.h" /* The bessel-library */
+#include <stdio.h> /* For printf() */
+#include <complex.h> /* For double complex type */
 
 int main() {
   double nu = 3.5;
@@ -602,9 +602,9 @@ int main() {
   </summary>
 
 ```cpp
-#include "bessel-library.h" /* the bessel-library */
-#include <iostream> /* for cout */
-#include <complex> /* for std::complex<double> type */
+#include "bessel-library.h" /* The bessel-library */
+#include <iostream> /* For cout */
+#include <complex> /* For std::complex<double> type */
 
 int main() {
   double nu = 3.5;
@@ -642,8 +642,11 @@ Moreover, all the complex variables are handled using the
 ## Compiling the library
 
 As aforementioned, usually it is not necessary to compile the library.
-However, in any case, the file [bessel-library.c](src/bessel-library.c) inside
-the [src](src/) folder is a C wrapper that may be used for compilation.
+However, in any case, the [src](src/) folder contains the file
+[bessel-library-declarations.c](src/bessel-library-declarations.c) with the
+declarations of all functions, and the file
+[bessel-library.c](src/bessel-library.c), which is a C wrapper that may be
+used for compilation.
 
 The following are examples of how to compile this library using C compilers.
 
@@ -701,17 +704,16 @@ import numpy as np
 from cffi import FFI
 
 ffi = FFI()
-ffi.cdef("""
-    double complex cyl_j(double nu, double complex z);
-""")
+with open("bessel-library-declarations.c") as f:
+    ffi.cdef(f.read())
 
-lib = ffi.dlopen("./bessel-library.so") # for Linux/macOS
-# lib = ffi.dlopen("./bessel-library.dll") # for Windows
+bess = ffi.dlopen("./bessel-library.so") # for Linux/macOS
+# bess = ffi.dlopen("./bessel-library.dll") # for Windows
 
 # Use NumPy complex128
 z = np.complex128(1.23 + 4.56j)
 
-val = lib.cyl_j(1.0, z)
+val = bess.cyl_j(1.0, z)
 print("Result: ", val)
 ```
 </details>
@@ -726,12 +728,12 @@ The codes and routines were developed and are updated by
 <a href="https://www.researchgate.net/profile/Jhonas-de-Sarro">
 Jhonas O. de Sarro</a> ([@jodesarro](https://github.com/jodesarro)).
 They are mainly written based on, or a translation of, the works listed in the
-[References section](#references).
+[References](#references) section.
 
 ## Licensing
 
 This project is protected under [MIT License](LICENSE). A copy of the license
-is available at
+is also available at
 [include/bessel-library/license.txt](include/bessel-library/license.txt).
 
 ## References

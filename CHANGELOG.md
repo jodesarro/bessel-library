@@ -11,6 +11,8 @@ for a complete list of references.
 - More descriptions were included in the comments for some functions.
 - Added macro for `static inline` for all core functions. Now
 src/bessel-library.c just overwrites such macro.
+- Added file src/bessel-library-declarations.c containing a list of all the
+functions declarations.
 - Inclusion of the header version.h in the include/bessel-library.h file.
 - A copy of the license was included in include/bessel-library/license.txt,
 and reference to it were included at the beginning of all code files.
