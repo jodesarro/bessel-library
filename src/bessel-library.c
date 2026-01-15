@@ -12,5 +12,11 @@
         Wrapper for compiling the include/bessel-library.h file.
 */
 
-#define BESSEL_LIBRARY_STATIC_INLINE_IMPL_ /* Overwrites 'static inline' */
+/* Overwrite 'static inline' */
+#if defined(_WIN32) || defined(_WIN64)
+#define BESSEL_LIBRARY_STATIC_INLINE_IMPL_ __declspec(dllexport)
+#else
+#define BESSEL_LIBRARY_STATIC_INLINE_IMPL_
+#endif
+
 #include "../include/bessel-library.h"
