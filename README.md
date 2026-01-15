@@ -6,7 +6,7 @@ computation of Bessel functions and related special functions for real orders
 and complex arguments.
 
 Detailed discussions on Bessel functions and their numerical evaluation may be
-found in Refs. [[1–3](#references)].
+found in the works listed in the [References section](#references).
 
 ## Available features
 
@@ -725,8 +725,8 @@ Refer to the [CHANGELOG.md](CHANGELOG.md) file for the latest updates.
 The codes and routines were developed and are updated by
 <a href="https://www.researchgate.net/profile/Jhonas-de-Sarro">
 Jhonas O. de Sarro</a> ([@jodesarro](https://github.com/jodesarro)).
-They are mainly written based on, or a translation of, the content of Refs.
-[[1–3](#references)].
+They are mainly written based on, or a translation of, the works listed in the
+[References section](#references).
 
 ## Licensing
 
