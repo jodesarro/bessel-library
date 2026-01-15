@@ -704,17 +704,21 @@ import numpy as np
 from cffi import FFI
 
 ffi = FFI()
+
+# Read the functions declarations
 with open("bessel-library-declarations.c") as f:
     ffi.cdef(f.read())
 
+# Import the compiled file
 bess = ffi.dlopen("./bessel-library.so") # for Linux/macOS
 # bess = ffi.dlopen("./bessel-library.dll") # for Windows
 
 # Use NumPy complex128
 z = np.complex128(1.23 + 4.56j)
 
-val = bess.cyl_j(1.0, z)
-print("Result: ", val)
+# Use a function and print the result
+result = bess.cyl_j(1.0, z)
+print("Result: ", result)
 ```
 </details>
 
