@@ -50,9 +50,8 @@ typedef double complex tpdcomplex_impl_;
     - scaled, returns the scaled version
     Bi(z)*exp(abs(real((2/3)*pow(z,3/2)))) if 1.
 
-    Implementation:
-    - In general, the implementation is based on the D. E. Amos Fortran 77
-    routines of the Slatec library [3] Such Fortran routines,
+    Implementation: In general, the implementation is based on the D. E. Amos
+    Fortran 77 routines of the Slatec library [3] Such Fortran routines,
     and all their dependencies, were carefully translated to C.
 */
 static inline tpdcomplex_impl_ airy_bi_impl_(tpdcomplex_impl_ z,

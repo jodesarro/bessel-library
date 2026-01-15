@@ -43,9 +43,8 @@ typedef double complex tpdcomplex_impl_;
     Parameter:
     - z, complex argument of Bi(z).
 
-    Implementation:
-    - In general, the implementation is based on the D. E. Amos Fortran 77
-    routines of the Slatec library [3] Such Fortran routines,
+    Implementation: In general, the implementation is based on the D. E. Amos
+    Fortran 77 routines of the Slatec library [3] Such Fortran routines,
     and all their dependencies, were carefully translated to C.
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
@@ -60,8 +59,7 @@ tpdcomplex_impl_ airy_bi(tpdcomplex_impl_ z) {
     Parameter:
     - z, complex argument of dBi(z)/dz.
         
-    Implementation:
-    - Similar to the airy_bi() function.
+    Implementation: Similar to the airy_bi() function.
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
 tpdcomplex_impl_ airy_bi_diff(tpdcomplex_impl_ z) {
@@ -75,8 +73,7 @@ tpdcomplex_impl_ airy_bi_diff(tpdcomplex_impl_ z) {
     Parameter:
     - z, complex argument of Bi(z)*exp(-abs(real((2/3)*pow(z,3/2)))).
         
-    Implementation:
-    - Similar to the airy_bi() function.
+    Implementation: Similar to the airy_bi() function.
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
 tpdcomplex_impl_ airy_bi_scal(tpdcomplex_impl_ z) {
@@ -91,8 +88,7 @@ tpdcomplex_impl_ airy_bi_scal(tpdcomplex_impl_ z) {
     Parameter:
     - z, complex argument of (dBi(z)/dz)*exp(-abs(real((2/3)*pow(z,3/2)))).
     
-    Implementation:
-    - Similar to the airy_bi() function.
+    Implementation: Similar to the airy_bi() function.
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
 tpdcomplex_impl_ airy_bi_diff_scal(tpdcomplex_impl_ z) {

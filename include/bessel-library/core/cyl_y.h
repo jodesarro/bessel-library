@@ -45,8 +45,7 @@ typedef double complex tpdcomplex_impl_;
     - nu, real order of Y_nu(z).
     - z, complex argument of Y_nu(z).
     
-    Implementation:
-    - Similar to the cyl_y_seq() function.
+    Implementation: Similar to the cyl_y_seq() function.
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
 tpdcomplex_impl_ cyl_y(double nu, tpdcomplex_impl_ z) {
@@ -70,8 +69,7 @@ tpdcomplex_impl_ cyl_y(double nu, tpdcomplex_impl_ z) {
     - nu, real order of Y_nu(z)*exp(-abs(imag(z))).
     - z, complex argument of Y_nu(z)*exp(-abs(imag(z))).
         
-    Implementation:
-    - Similar to the cyl_y_seq() function.
+    Implementation: Similar to the cyl_y_seq() function.
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
 tpdcomplex_impl_ cyl_y_scal(double nu, tpdcomplex_impl_ z) {
@@ -99,9 +97,8 @@ tpdcomplex_impl_ cyl_y_scal(double nu, tpdcomplex_impl_ z) {
     - cyl_y_arr, array of size n to output Y_nu(z) for the orders nu,
     nu+1, ..., nu+n-1.
     
-    Implementation:
-    - In general, the implementation is based on the D. E. Amos Fortran 77
-    routines of the Slatec library [3]. Such Fortran routines,
+    Implementation: In general, the implementation is based on the D. E. Amos
+    Fortran 77 routines of the Slatec library [3]. Such Fortran routines,
     and all their dependencies, were carefully translated to C. Negative
     orders are handled by Eqs. (5.4.2) and (5.5.4) of Ref. [2]
     for, respectively, nu integer and nu real.
@@ -129,8 +126,7 @@ void cyl_y_seq(double nu, int n, tpdcomplex_impl_ z,
     - cyl_y_scaled_arr, array of size n to output Y_nu(z)*exp(-abs(imag(z)))
     for the orders nu, nu+1, ..., nu+n-1.
         
-    Implementation:
-    - Similar to the cyl_y_seq() function.
+    Implementation: Similar to the cyl_y_seq() function.
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
 void cyl_y_scal_seq(double nu, int n,

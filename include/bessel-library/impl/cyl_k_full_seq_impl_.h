@@ -71,9 +71,8 @@ typedef double complex tpdcomplex_impl_;
     ..., nu+n-1
     - scaled, returns the scaled version K_nu(z)*exp(z) if 1.
     
-    Implementation:
-    - In general, the implementation is based on the D. E. Amos Fortran 77
-    routines of the Slatec library [3]. Such Fortran routines,
+    Implementation: In general, the implementation is based on the D. E. Amos
+    Fortran 77 routines of the Slatec library [3]. Such Fortran routines,
     and all their dependencies, were carefully translated to C. Negative
     orders are handled by Eqs. (6.5.5) of Ref. [2]. When
     abs(z)=0, it yields INFINITY if nu=0, or INFINITY + I * INFINITY

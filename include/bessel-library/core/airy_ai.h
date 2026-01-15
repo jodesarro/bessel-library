@@ -42,10 +42,9 @@ typedef double complex tpdcomplex_impl_;
     Parameter:
     - z, complex argument of Ai(z).
 
-    Implementation:
-    - In general, the implementation is based on the D. E. Amos Fortran 77
-    routines of the Slatec library [3]. Such Fortran routines,
-    and all their dependencies, were carefully translated to C.
+    Implementation: In general, the implementation is based on the D. E.
+    Amos Fortran 77 routines of the Slatec library [3]. Such Fortran
+    routines, and all their dependencies, were carefully translated to C.
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
 tpdcomplex_impl_ airy_ai(tpdcomplex_impl_ z) {
@@ -59,8 +58,7 @@ tpdcomplex_impl_ airy_ai(tpdcomplex_impl_ z) {
     Parameter:
     - z, complex argument of dAi(z)/dz.
     
-    Implementation:
-    - Similar to the airy_ai() function.
+    Implementation: Similar to the airy_ai() function.
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
 tpdcomplex_impl_ airy_ai_diff(tpdcomplex_impl_ z) {
@@ -74,8 +72,7 @@ tpdcomplex_impl_ airy_ai_diff(tpdcomplex_impl_ z) {
     Parameter:
     - z, complex argument of Ai(z)*exp((2/3)*pow(z,3/2)).
 
-    Implementation:
-    - Similar to the airy_ai() function.
+    Implementation: Similar to the airy_ai() function.
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
 tpdcomplex_impl_ airy_ai_scal(tpdcomplex_impl_ z) {
@@ -90,8 +87,7 @@ tpdcomplex_impl_ airy_ai_scal(tpdcomplex_impl_ z) {
     Parameter:
     - z, complex argument of (dAi(z)/dz)*exp((2/3)*pow(z,3/2)).
 
-    Implementation:
-    - Similar to the airy_ai() function.
+    Implementation: Similar to the airy_ai() function.
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
 tpdcomplex_impl_ airy_ai_diff_scal(tpdcomplex_impl_ z) {
