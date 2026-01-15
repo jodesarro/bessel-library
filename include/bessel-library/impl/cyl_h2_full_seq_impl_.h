@@ -27,8 +27,8 @@
 #include <complex> /* For complex numbers */
 #include <cstdlib> /* For malloc and free */
 typedef std::complex<double> tpdcomplex_impl_;
-#define CPLX_impl_(x, y) tpdcomplex_impl_(x, y)
-#define I_impl_ std::complex<double>(0.0, 1.0)
+#define CPLX_IMPL_(x, y) tpdcomplex_impl_(x, y)
+#define I_IMPL_ std::complex<double>(0.0, 1.0)
 #define creal(z) std::real(z)
 #define cimag(z) std::imag(z)
 #define cabs(z) std::abs(z)
@@ -41,8 +41,8 @@ extern "C" {
 #include <complex.h> /* For complex numbers */
 #include <stdlib.h> /* For malloc and free */
 typedef double complex tpdcomplex_impl_;
-#define I_impl_ I
-#define CPLX_impl_(x, y) (x + I * y)
+#define I_IMPL_ I
+#define CPLX_IMPL_(x, y) (x + I * y)
 
 #endif /* __cplusplus */
 
@@ -94,7 +94,7 @@ static inline void cyl_h2_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
 
         /* Complex infinity for all orders */
         for (int i = 0; i < n; i++) {
-            cyl_h2_arr[i] = CPLX_impl_(INFINITY, INFINITY);
+            cyl_h2_arr[i] = CPLX_IMPL_(INFINITY, INFINITY);
         }
     }
     else if (nu >= 0.0) {
@@ -111,7 +111,7 @@ static inline void cyl_h2_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
         
         /* Store in the array */
         for (int i = 0; i < n; i++) {
-            cyl_h2_arr[i] = ch2r[i] + I_impl_ * ch2i[i];
+            cyl_h2_arr[i] = ch2r[i] + I_IMPL_ * ch2i[i];
         }
 
         /* Free auxiliary pointers */
@@ -137,8 +137,8 @@ static inline void cyl_h2_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
             int tmp1 = n - 1 - i;
             double tmp2 = (fnu_m + (double)tmp1) * M_PI;
             /* Eq. (9.1.6) of Ref. [1] */
-            cyl_h2_arr[i] = (ch2r_m[tmp1] + I_impl_ * ch2i_m[tmp1])
-                          * cexp(-I_impl_ * tmp2);
+            cyl_h2_arr[i] = (ch2r_m[tmp1] + I_IMPL_ * ch2i_m[tmp1])
+                          * cexp(-I_IMPL_ * tmp2);
         }
     
         /* Free auxiliary pointers */
@@ -169,8 +169,8 @@ static inline void cyl_h2_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
             int tmp1 = n_m - 1 - i;
             double tmp2 = (fnu_m + (double)tmp1) * M_PI;
             /* Eq. (9.1.6) of Ref. [1] */
-            cyl_h2_arr[i] = (ch2r_m[tmp1] + I_impl_ * ch2i_m[tmp1])
-                          * cexp(-I_impl_ * tmp2);
+            cyl_h2_arr[i] = (ch2r_m[tmp1] + I_IMPL_ * ch2i_m[tmp1])
+                          * cexp(-I_IMPL_ * tmp2);
         }
 
         /* Free auxiliary pointers */
@@ -192,7 +192,7 @@ static inline void cyl_h2_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
         /* Store in the array */
         for (int i = n_m; i < n; i++) {
             int tmp1 = i - n_m;
-            cyl_h2_arr[i] = ch2r_p[tmp1] + I_impl_ * ch2i_p[tmp1];
+            cyl_h2_arr[i] = ch2r_p[tmp1] + I_IMPL_ * ch2i_p[tmp1];
         }
 
         /* Free auxiliary pointers */

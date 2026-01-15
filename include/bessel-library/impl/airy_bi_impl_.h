@@ -23,7 +23,7 @@
 
 #include <complex> /* For complex numbers */
 typedef std::complex<double> tpdcomplex_impl_;
-#define I_impl_ std::complex<double>(0.0, 1.0)
+#define I_IMPL_ std::complex<double>(0.0, 1.0)
 #define creal(z) std::real(z)
 #define cimag(z) std::imag(z)
 
@@ -33,7 +33,7 @@ extern "C" {
 
 #include <complex.h> /* for complex numbers */
 typedef double complex tpdcomplex_impl_;
-#define I_impl_ I
+#define I_IMPL_ I
 
 #endif /* __cplusplus */
 
@@ -72,7 +72,7 @@ static inline tpdcomplex_impl_ airy_bi_impl_(tpdcomplex_impl_ z,
     slatec_flags_zbiry_impl_(ierr);
 
     /* Return */
-    return bir_arr[1] + I_impl_ * bii_arr[1];
+    return bir_arr[1] + I_IMPL_ * bii_arr[1];
 }
 
 #ifdef __cplusplus

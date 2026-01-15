@@ -27,8 +27,8 @@
 #include <complex> /* For complex numbers */
 #include <cstdlib> /* For malloc and free */
 typedef std::complex<double> tpdcomplex_impl_;
-#define CPLX_impl_(x, y) tpdcomplex_impl_(x, y)
-#define I_impl_ std::complex<double>(0.0, 1.0)
+#define CPLX_IMPL_(x, y) tpdcomplex_impl_(x, y)
+#define I_IMPL_ std::complex<double>(0.0, 1.0)
 #define creal(z) std::real(z)
 #define cimag(z) std::imag(z)
 #define cabs(z) std::abs(z)
@@ -41,8 +41,8 @@ extern "C" {
 #include <complex.h> /* For complex numbers */
 #include <stdlib.h> /* For malloc and free */
 typedef double complex tpdcomplex_impl_;
-#define I_impl_ I
-#define CPLX_impl_(x, y) (x + I * y)
+#define I_IMPL_ I
+#define CPLX_IMPL_(x, y) (x + I * y)
 
 #endif /* __cplusplus */
 
@@ -107,7 +107,7 @@ static inline void cyl_i_full_seq_impl_(double nu, int n,
         
         /* Store in the array */
         for (int i = 0; i < n; i++) {
-            cyl_i_arr[i] = cir[i] + I_impl_ * cii[i];
+            cyl_i_arr[i] = cir[i] + I_IMPL_ * cii[i];
         }
 
         /* Free auxiliary pointers */
@@ -136,7 +136,7 @@ static inline void cyl_i_full_seq_impl_(double nu, int n,
             for (int i = 0; i < n; i++) {
                 int tmp = n - 1 - i;
                 /* Eq. (6.1.5) of Ref. [2] */
-                cyl_i_arr[i] = cir[tmp] + I_impl_ * cii[tmp];
+                cyl_i_arr[i] = cir[tmp] + I_IMPL_ * cii[tmp];
             }
 
             /* Free auxiliary pointers */
@@ -148,7 +148,7 @@ static inline void cyl_i_full_seq_impl_(double nu, int n,
             /* Non-int negative order with z=0 -> infinity */
         
             for (int i = 0; i < n; i++) {
-                cyl_i_arr[i] = CPLX_impl_(INFINITY, INFINITY);
+                cyl_i_arr[i] = CPLX_IMPL_(INFINITY, INFINITY);
             }
         }
         else {
@@ -188,8 +188,8 @@ static inline void cyl_i_full_seq_impl_(double nu, int n,
                 int tmp1 = n - 1 - i;
                 /* Eq. (6.5.4) of Ref. [2] */
                 double tmp2 = (fnu_m + (double)tmp1) * M_PI;
-                cyl_i_arr[i] = (cir[tmp1] + I_impl_ * cii[tmp1])
-                         + (ckr[tmp1] + I_impl_ * cki[tmp1])
+                cyl_i_arr[i] = (cir[tmp1] + I_IMPL_ * cii[tmp1])
+                         + (ckr[tmp1] + I_IMPL_ * cki[tmp1])
                          * sin(tmp2) * c_2_pi_e_m_abs_zr;
             }
 
@@ -226,7 +226,7 @@ static inline void cyl_i_full_seq_impl_(double nu, int n,
             for (int i = 0; i < n_m; i++) {
                 int tmp = n_m - 1 - i;
                 /* Eq. (6.1.5) of Ref. [2] */
-                cyl_i_arr[i] = cir_m[tmp] + I_impl_ * cii_m[tmp];
+                cyl_i_arr[i] = cir_m[tmp] + I_IMPL_ * cii_m[tmp];
             }
 
             /* Free auxiliary pointers */
@@ -238,7 +238,7 @@ static inline void cyl_i_full_seq_impl_(double nu, int n,
             /* Non-int negative order with z=0 -> infinity */
             
             for (int i = 0; i < n_m; i++) {
-                cyl_i_arr[i] = CPLX_impl_(INFINITY, INFINITY);
+                cyl_i_arr[i] = CPLX_IMPL_(INFINITY, INFINITY);
             }
         }
         else {
@@ -277,8 +277,8 @@ static inline void cyl_i_full_seq_impl_(double nu, int n,
                 int tmp1 = n_m - 1 - i;
                 /* Eq. (6.5.4) of Ref. [2] */
                 double tmp2 = (fnu_m + (double)tmp1) * M_PI;
-                cyl_i_arr[i] = (cir_m[tmp1] + I_impl_ * cii_m[tmp1])
-                         + (ckr_m[tmp1] + I_impl_ * cki_m[tmp1])
+                cyl_i_arr[i] = (cir_m[tmp1] + I_IMPL_ * cii_m[tmp1])
+                         + (ckr_m[tmp1] + I_IMPL_ * cki_m[tmp1])
                          * sin(tmp2) * c_2_pi_e_m_abs_zr;
             }
 
@@ -303,7 +303,7 @@ static inline void cyl_i_full_seq_impl_(double nu, int n,
         /* Store in the array */
         for (int i = n_m; i < n; i++) {
             int tmp1 = i - n_m;
-            cyl_i_arr[i] = cir_p[tmp1] + I_impl_ * cii_p[tmp1];
+            cyl_i_arr[i] = cir_p[tmp1] + I_IMPL_ * cii_p[tmp1];
         }
 
         /* Free auxiliary pointers */

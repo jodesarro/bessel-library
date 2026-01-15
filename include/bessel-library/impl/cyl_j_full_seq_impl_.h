@@ -27,8 +27,8 @@
 #include <complex> /* For complex numbers */
 #include <cstdlib> /* For malloc and free */
 typedef std::complex<double> tpdcomplex_impl_;
-#define CPLX_impl_(x, y) tpdcomplex_impl_(x, y)
-#define I_impl_ std::complex<double>(0.0, 1.0)
+#define CPLX_IMPL_(x, y) tpdcomplex_impl_(x, y)
+#define I_IMPL_ std::complex<double>(0.0, 1.0)
 #define creal(z) std::real(z)
 #define cimag(z) std::imag(z)
 #define cabs(z) std::abs(z)
@@ -42,8 +42,8 @@ extern "C" {
 #include <complex.h> /* For complex numbers */
 #include <stdlib.h> /* For malloc and free */
 typedef double complex tpdcomplex_impl_;
-#define I_impl_ I
-#define CPLX_impl_(x, y) (x + I * y)
+#define I_IMPL_ I
+#define CPLX_IMPL_(x, y) (x + I * y)
 
 #endif /* __cplusplus */
 
@@ -108,7 +108,7 @@ static inline void cyl_j_full_seq_impl_(double nu, int n,
         
         /* Store in the array */
         for (int i = 0; i < n; i++) {
-            cyl_j_arr[i] = cjr_ptr[i] + I_impl_ * cji_ptr[i];
+            cyl_j_arr[i] = cjr_ptr[i] + I_IMPL_ * cji_ptr[i];
         }
 
         /* Free auxiliary pointers */
@@ -136,7 +136,7 @@ static inline void cyl_j_full_seq_impl_(double nu, int n,
             for (int i = 0; i < n; i++) {
                 int tmp = n - 1 - i;
                 cyl_j_arr[i] = pow(-1.0, fnu_m + tmp)
-                         * (cjr_ptr[tmp] + I_impl_ * cji_ptr[tmp]);
+                         * (cjr_ptr[tmp] + I_IMPL_ * cji_ptr[tmp]);
             }
 
             /* Free auxiliary pointers */
@@ -148,7 +148,7 @@ static inline void cyl_j_full_seq_impl_(double nu, int n,
             
             /* Non-int negative orders with abs(z) = 0 */
             for (int i = 0; i < n; i++) {
-                cyl_j_arr[i] = CPLX_impl_(INFINITY, INFINITY);
+                cyl_j_arr[i] = CPLX_IMPL_(INFINITY, INFINITY);
             }
         }
         else {
@@ -183,9 +183,9 @@ static inline void cyl_j_full_seq_impl_(double nu, int n,
                 int tmp1 = n - 1 - i;
                 double tmp2 = (fnu_m + (double)tmp1) * M_PI;
                 /* Eq. (5.5.4) of Ref. [2] */
-                cyl_j_arr[i] = (cjr_ptr[tmp1] + I_impl_ * cji_ptr[tmp1])
+                cyl_j_arr[i] = (cjr_ptr[tmp1] + I_IMPL_ * cji_ptr[tmp1])
                          * cos(tmp2)
-                         - (cyr_ptr[tmp1] + I_impl_ * cyi_ptr[tmp1])
+                         - (cyr_ptr[tmp1] + I_IMPL_ * cyi_ptr[tmp1])
                          * sin(tmp2);
             }
 
@@ -219,7 +219,7 @@ static inline void cyl_j_full_seq_impl_(double nu, int n,
             for (int i = 0; i < n_m; i++) {
                 int tmp = n_m - 1 - i;
                 cyl_j_arr[i] = pow(-1.0, fnu_m + tmp)
-                         * (cjr_m_ptr[tmp] + I_impl_ * cji_m_ptr[tmp]);
+                         * (cjr_m_ptr[tmp] + I_IMPL_ * cji_m_ptr[tmp]);
             }
             
             /* Free auxiliary pointers */
@@ -231,7 +231,7 @@ static inline void cyl_j_full_seq_impl_(double nu, int n,
             
             /* Store in the array */
             for (int i = 0; i < n_m; i++) {
-                cyl_j_arr[i] = CPLX_impl_(INFINITY, INFINITY);
+                cyl_j_arr[i] = CPLX_IMPL_(INFINITY, INFINITY);
             }
         }
         else {
@@ -263,9 +263,9 @@ static inline void cyl_j_full_seq_impl_(double nu, int n,
                 int tmp1 = n_m - 1 - i;
                 double tmp2 = (fnu_m + (double)tmp1) * M_PI;
                 /* Eq. (5.5.4) of Ref. [2] */
-                cyl_j_arr[i] = (cjr_m_ptr[tmp1] + I_impl_ * cji_m_ptr[tmp1])
+                cyl_j_arr[i] = (cjr_m_ptr[tmp1] + I_IMPL_ * cji_m_ptr[tmp1])
                          * cos(tmp2)
-                         - (cyr_m_ptr[tmp1] + I_impl_ * cyi_m_ptr[tmp1])
+                         - (cyr_m_ptr[tmp1] + I_IMPL_ * cyi_m_ptr[tmp1])
                          * sin(tmp2);
             }
 
@@ -291,7 +291,7 @@ static inline void cyl_j_full_seq_impl_(double nu, int n,
         /* Store in the array */
         for (int i = n_m; i < n; i++) {
             int tmp1 = i - n_m;
-            cyl_j_arr[i] = cjr_p_ptr[tmp1] + I_impl_ * cji_p_ptr[tmp1];
+            cyl_j_arr[i] = cjr_p_ptr[tmp1] + I_IMPL_ * cji_p_ptr[tmp1];
         }
 
         /* Free auxiliary pointers */

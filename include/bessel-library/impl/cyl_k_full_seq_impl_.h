@@ -27,8 +27,8 @@
 #include <complex> /* For complex numbers */
 #include <cstdlib> /* For malloc and free */
 typedef std::complex<double> tpdcomplex_impl_;
-#define CPLX_impl_(x, y) tpdcomplex_impl_(x, y)
-#define I_impl_ std::complex<double>(0.0, 1.0)
+#define CPLX_IMPL_(x, y) tpdcomplex_impl_(x, y)
+#define I_IMPL_ std::complex<double>(0.0, 1.0)
 #define creal(z) std::real(z)
 #define cimag(z) std::imag(z)
 #define cabs(z) std::abs(z)
@@ -40,8 +40,8 @@ extern "C" {
 #include <complex.h> /* For complex numbers */
 #include <stdlib.h> /* For malloc and free */
 typedef double complex tpdcomplex_impl_;
-#define I_impl_ I
-#define CPLX_impl_(x, y) (x + I * y)
+#define I_IMPL_ I
+#define CPLX_IMPL_(x, y) (x + I * y)
 
 #endif /* __cplusplus */
 
@@ -93,12 +93,12 @@ static inline void cyl_k_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
         
         /* Complex infinity for all orders */
         for (int i = 0; i < n; i++) {
-            cyl_k_arr[i] = CPLX_impl_(INFINITY, INFINITY);
+            cyl_k_arr[i] = CPLX_IMPL_(INFINITY, INFINITY);
         }
         if (fabs(nu_m - floor(nu_m)) < DBL_EPSILON && n > fnu) {
             
             /* Infinity for integer order 0 */
-            cyl_k_arr[(int)floor(fnu)] = CPLX_impl_(INFINITY, 0.0);
+            cyl_k_arr[(int)floor(fnu)] = CPLX_IMPL_(INFINITY, 0.0);
         }
     }
     else if (nu >= 0.0) {
@@ -117,7 +117,7 @@ static inline void cyl_k_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
 
         /* Store in the array */
         for (int i = 0; i < n; i++) {
-            cyl_k_arr[i] = ckr[i] + I_impl_ * cki[i];
+            cyl_k_arr[i] = ckr[i] + I_IMPL_ * cki[i];
         }
         
         /* Free auxiliary pointers */
@@ -141,7 +141,7 @@ static inline void cyl_k_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
         for (int i = 0; i < n; i++) {
             int tmp = n - 1 - i;
             /* Eq. (6.5.5) of Ref. [2] */
-            cyl_k_arr[i] = ckr[tmp] + I_impl_ * cki[tmp];
+            cyl_k_arr[i] = ckr[tmp] + I_IMPL_ * cki[tmp];
         }
         
         /* Free auxiliary pointers */        
@@ -171,7 +171,7 @@ static inline void cyl_k_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
         for (int i = 0; i < n_m; i++) {
             int tmp = n_m - 1 - i;
             /* Eq. (6.5.5) of Ref. [2] */
-            cyl_k_arr[i] = ckr_m[tmp] + I_impl_ * cki_m[tmp];
+            cyl_k_arr[i] = ckr_m[tmp] + I_IMPL_ * cki_m[tmp];
         }
 
         /* Free auxiliary pointers */
@@ -193,7 +193,7 @@ static inline void cyl_k_full_seq_impl_(double nu, int n, tpdcomplex_impl_ z,
         /* Store in the array */
         for (int i = n_m; i < n; i++) {
             int tmp1 = i - n_m;
-            cyl_k_arr[i] = ckr_p[tmp1] + I_impl_ * cki_p[tmp1];
+            cyl_k_arr[i] = ckr_p[tmp1] + I_IMPL_ * cki_p[tmp1];
         }
         
         /* Free auxiliary pointers */
