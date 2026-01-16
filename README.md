@@ -56,10 +56,10 @@ found in the works listed in the [References](#references) section.
     - `cyl_j_arr`, array of size $n$ to output $J_\nu(z)$ for the orders
     $\nu$, $\nu+1$, ..., $\nu+n-1$.
   - **Implementation:** In general, the implementation is based on the D. E.
-  Amos Fortran 77 routines from the Slatec library [[3](#references)]. Such
+  Amos Fortran 77 routines from the Slatec library [[3]](#ref3). Such
   Fortran routines, and all their dependencies, were carefully translated to
   C. Negative orders are handled by Eqs. (5.4.2) and (5.5.4) of
-  Ref. [[2](#references)] for, respectively, $\nu \in \mathtt{Z}$ and
+  Ref. [[2]](#ref2) for, respectively, $\nu \in \mathtt{Z}$ and
   $\nu \notin \mathtt{Z}$; in the latter case, it yields $\infty+i\infty$ when
   $|z|=0$.
 </details>
@@ -132,10 +132,10 @@ found in the works listed in the [References](#references) section.
     - `cyl_y_arr`, array of size $n$ to output $Y_\nu(z)$ for the orders
     $\nu$, $\nu+1$, ..., $\nu+n-1$.
   - **Implementation:** In general, the implementation is based on the D. E.
-  Amos Fortran 77 routines from the Slatec library [[3](#references)]. Such
+  Amos Fortran 77 routines from the Slatec library [[3]](#ref3). Such
   Fortran routines, and all their dependencies, were carefully translated to
   C. Negative orders are handled by Eqs. (5.4.2) and (5.5.4) of
-  Ref. [[2](#references)] for, respectively, $\nu \in \mathtt{Z}$ and
+  Ref. [[2]](#ref2) for, respectively, $\nu \in \mathtt{Z}$ and
   $\nu \notin \mathtt{Z}$. When $|z|=0$, it yields $-\infty$ if $\nu=0$, or
   $\infty+i\infty$ otherwise.
 </details>
@@ -209,9 +209,9 @@ found in the works listed in the [References](#references) section.
     - `cyl_h1_arr`, array of size $n$ to output $H_\nu^{(1)}(z)$ for the
     orders $\nu$, $\nu+1$, ..., $\nu+n-1$.
   - **Implementation:** In general, the implementation is based on the D. E.
-  Amos Fortran 77 routines from the Slatec library [[3](#references)]. Such
+  Amos Fortran 77 routines from the Slatec library [[3]](#ref3). Such
   Fortran routines, and all their dependencies, were carefully translated to
-  C. Negative orders are handled by Eq. (9.1.6) of Ref. [[1](#references)]. It
+  C. Negative orders are handled by Eq. (9.1.6) of Ref. [[1]](#ref1). It
   yields $\infty+i\infty$ when $|z|=0$.
 </details>
 
@@ -283,9 +283,9 @@ found in the works listed in the [References](#references) section.
     - `cyl_h2_arr`, array of size $n$ to output $H_\nu^{(2)}(z)$ for the
     orders $\nu$, $\nu+1$, ..., $\nu+n-1$.
   - **Implementation:** In general, the implementation is based on the D. E.
-  Amos Fortran 77 routines from the Slatec library [[3](#references)]. Such
+  Amos Fortran 77 routines from the Slatec library [[3]](#ref3). Such
   Fortran routines, and all their dependencies, were carefully translated to
-  C. Negative orders are handled by Eq. (9.1.6) of Ref. [[1](#references)]. It
+  C. Negative orders are handled by Eq. (9.1.6) of Ref. [[1]](#ref1). It
   yields $\infty+i\infty$ when $|z|=0$.
 </details>
 
@@ -355,10 +355,10 @@ found in the works listed in the [References](#references) section.
     - `cyl_i_arr`, array of size $n$ to output $I_\nu(z)$ for the
     orders $\nu$, $\nu+1$, ..., $\nu+n-1$.
   - **Implementation:** In general, the implementation is based on the D. E.
-  Amos Fortran 77 routines from the Slatec library [[3](#references)]. Such
+  Amos Fortran 77 routines from the Slatec library [[3]](#ref3). Such
   Fortran routines, and all their dependencies, were carefully translated to
   C. Negative orders are handled by Eqs. (6.1.5) and (6.5.4) of
-  Ref. [[2](#references)] for, respectively, $\nu \in \mathtt{Z}$ and
+  Ref. [[2]](#ref2) for, respectively, $\nu \in \mathtt{Z}$ and
   $\nu \notin \mathtt{Z}$; in the latter case, it yields $\infty+i\infty$ when
   $|z|=0$.
 </details>
@@ -431,9 +431,9 @@ found in the works listed in the [References](#references) section.
     - `cyl_k_arr`, array of size $n$ to output $K_\nu(z)$ for the
     orders $\nu$, $\nu+1$, ..., $\nu+n-1$.
   - **Implementation:** In general, the implementation is based on the D. E.
-  Amos Fortran 77 routines from the Slatec library [[3](#references)]. Such
+  Amos Fortran 77 routines from the Slatec library [[3]](#ref3). Such
   Fortran routines, and all their dependencies, were carefully translated to
-  C. Negative orders are handled by Eqs. (6.5.5) of Ref. [[2](#references)].
+  C. Negative orders are handled by Eqs. (6.5.5) of Ref. [[2]](#ref2).
   When $|z|=0$, it yields $\infty$ if $\nu=0$, or $\infty+i\infty$ otherwise.
 </details>
 
@@ -470,7 +470,7 @@ found in the works listed in the [References](#references) section.
   - **Parameter:**
     - `z`, complex argument of $Ai(z)$.
   - **Implementation:** In general, the implementation is based on the D. E.
-  Amos Fortran 77 routines from the Slatec library [[3](#references)]. Such
+  Amos Fortran 77 routines from the Slatec library [[3]](#ref3). Such
   Fortran routines, and all their dependencies, were carefully translated to
   C.
 </details>
@@ -525,7 +525,7 @@ found in the works listed in the [References](#references) section.
   - **Parameter:**
     - `z`, complex argument of $Bi(z)$.
   - **Implementation:** In general, the implementation is based on the D. E.
-  Amos Fortran 77 routines from the Slatec library [[3](#references)]. Such
+  Amos Fortran 77 routines from the Slatec library [[3]](#ref3). Such
   Fortran routines, and all their dependencies, were carefully translated to
   C.
 </details>
@@ -748,13 +748,16 @@ is also available at
 
 ## References
 
+<a id="ref1"></a>
 [1] M. Abramowitz and I. A. Stegun, Handbook of Mathematical Functions With
 Formulas, Graphs, and Mathematical Tables. Washington, D. C.: National Bureau
 of Standards, 1972.
 
+<a id="ref2"></a>
 [2] S. Zhang and J. Jin, Computation of Special Functions. New York: Wiley,
 1996.
 
+<a id="ref3"></a>
 [3] SLATEC Common Mathematical Library, Version 4.1, July 1993. Comprehensive
 software library containing over 1400 general purpose mathematical and
 statistical routines written in Fortran 77. Available at
