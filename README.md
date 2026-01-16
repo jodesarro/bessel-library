@@ -1,7 +1,7 @@
 # Bessel Library: A C library with routines for computing Bessel functions
 
-This project provides a C library fully
-([compatible with C++](#compatibility-with-c)) designed for the
+This project provides a C library (fully
+[compatible with C++](#compatibility-with-c)) designed for the
 computation of Bessel functions and related special functions for real orders
 and complex arguments.
 
