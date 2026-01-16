@@ -1,7 +1,7 @@
 # CHANGELOG
 
-Refer to the reference section of the [README.md](README.md) file
-for a complete list of references.
+Refer to the [References](README.md#references) section of the
+[README.md](README.md) file for a complete list of references.
 
 ## v1.0.1 Jan 13, 2026
 
