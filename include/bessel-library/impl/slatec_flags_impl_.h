@@ -9,7 +9,7 @@
     License: include/bessel-library/license.txt
 
     Description:
-        Functions for printing in stderr the original flags of the Slatec
+        Functions for printing in stderr the original flags from the Slatec
         routines.
 */
 

@@ -91,14 +91,14 @@ tpdcomplex_impl_ cyl_h1_scal(double nu, tpdcomplex_impl_ z) {
 
     Parameters:
     - nu, real order of H1_nu(z).
-    - n, number of elements in the sequence for computing the orders nu, nu+1,
-    ..., nu+n-1 It is also the size of the cyl_h1_arr array.
+    - n, number n of elements in the sequence for computing the orders nu,
+    nu+1, ..., nu+n-1. It is also the size of the cyl_h1_arr array.
     - z, complex argument of H1_nu(z).
     - cyl_h1_arr, array of size n to output H1_nu(z) for the orders nu, nu+1,
     ..., nu+n-1.
 
     Implementation: In general, the implementation is based on the D. E. Amos
-    Fortran 77 routines of the Slatec library [3]. Such Fortran routines,
+    Fortran 77 routines from the Slatec library [3]. Such Fortran routines,
     and all their dependencies, were carefully translated to C. Negative
     orders are handled by Eq. (9.1.6) of Ref. [1].
     It yields INFINITY + I * INFINITY when abs(z)=0.
@@ -111,15 +111,15 @@ void cyl_h1_seq(double nu, int n,
 }
 
 /*
-    Computes a n-sequency array of the scaled version of the cylindrical
+    Computes a n-sequency array of scaled versions of cylindrical
     Hankel functions of the first kind, real order nu, and complex argument z,
     i.e., {H1_nu(z)*exp(-i*z), H1_(nu+1)(z)*exp(-i*z), ...,
     H1_(nu+n-1)(z)*exp(-i*z)}.
 
     Parameters:
     - nu, real order of H1_nu(z)*exp(-i*z).
-    - n, number of elements in the sequence for computing the orders nu, nu+1,
-    ..., nu+n-1 It is also the size of the cyl_h2_scal_arr array.
+    - n, number n of elements in the sequence for computing the orders nu,
+    nu+1, ..., nu+n-1. It is also the size of the cyl_h2_scal_arr array.
     - z, complex argument of H1_nu(z)*exp(-i*z).
     - cyl_h2_scal_arr, array of size n to output  H1_nu(z)*exp(-i*z) for the
     orders nu, nu+1, ..., nu+n-1.

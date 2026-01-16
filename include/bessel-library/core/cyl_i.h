@@ -91,14 +91,14 @@ tpdcomplex_impl_ cyl_i_scal(double nu, tpdcomplex_impl_ z) {
 
     Parameters:
     - nu, real order of I_nu(z).
-    - n, number of elements in the sequence for computing the orders nu, nu+1,
-    ..., nu+n-1 It is also the size of the cyl_i_arr array.
+    - n, number n of elements in the sequence for computing the orders nu,
+    nu+1, ..., nu+n-1. It is also the size of the cyl_i_arr array.
     - z, complex argument of I_nu(z).
     - cyl_i_arr, array of size n to output I_nu(z) for the orders nu, nu+1,
     ..., nu+n-1.
 
     Implementation: In general, the implementation is based on the D. E. Amos
-    Fortran 77 routines of the Slatec library [3]. Such Fortran routines,
+    Fortran 77 routines from the Slatec library [3]. Such Fortran routines,
     and all their dependencies, were carefully translated to C. Negative
     orders are handled by Eqs. (6.1.5) and (6.5.4) of Ref. [2]
     for, respectively, nu integer and nu real; in
@@ -112,15 +112,15 @@ void cyl_i_seq(double nu, int n, tpdcomplex_impl_ z,
 }
 
 /*
-    Computes a n-sequency array of the scaled version of the modified
+    Computes a n-sequency array of scaled versions of modified
     cylindrical Bessel functions of the first kind, real order nu, and complex
     argument z, i.e., {I_nu(z)*exp(-abs(real(z))),
     I_(nu+1)(z)*exp(-abs(real(z))), ..., I_(nu+n-1)(z)*exp(-abs(real(z)))}.
 
     Parameters:
     - nu, real order of I_nu(z)*exp(-abs(real(z))).
-    - n, number of elements in the sequence for computing the orders nu, nu+1,
-    ..., nu+n-1 It is also the size of the cyl_i_scal_arr array.
+    - n, number n of elements in the sequence for computing the orders nu,
+    nu+1, ..., nu+n-1. It is also the size of the cyl_i_scal_arr array.
     - z, complex argument of I_nu(z)*exp(-abs(real(z))).
     - cyl_i_scal_arr, array of size n to output I_nu(z)*exp(-abs(real(z))) for
     the orders nu, nu+1, ..., nu+n-1.

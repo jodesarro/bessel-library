@@ -13,8 +13,8 @@
         C, or in std::complex<double> type for C++, of cylindrical Hankel
         functions of the second kind, real order nu, and complex argument z,
         i.e., {H2_nu(z), H2_(nu+1)(z), ..., H2_(nu+n-1)(z)}, for also negative
-        orders, by means of the routines of the Slatec library and recurrence
-        relations for negative orders.
+        orders, by means of the routines from the Slatec library and
+        recurrence relations for negative orders.
 */
 
 #ifndef BESSEL_LIBRARY_CYL_H2_FULL_SEQ_IMPL_H
@@ -59,21 +59,21 @@ typedef double complex tpdcomplex_impl_;
 /*
     Implements and computes a n-sequency array of cylindrical Hankel functions
     of the second kind, real order nu, and complex argument z, i.e.,
-    {H2_nu(z), H2_(nu+1)(z), ..., H2_(nu+n-1)(z)}, for also negative orders, by
-    means of the routines of the Slatec library and recurrence relations for
-    negative orders.
+    {H2_nu(z), H2_(nu+1)(z), ..., H2_(nu+n-1)(z)}, for also negative orders,
+    by means of the routines from the Slatec library and recurrence relations
+    for negative orders.
     
     Parameters:
     - nu, real order of H2_nu(z).
-    - n, number of elements in the sequence for computing the orders nu, nu+1,
-    ..., nu+n-1 It is also the size of the cyl_h2_arr array.
+    - n, number n of elements in the sequence for computing the orders nu,
+    nu+1, ..., nu+n-1. It is also the size of the cyl_h2_arr array.
     - z, complex argument of H2_nu(z).
     - cyl_h2_arr, array of size n to output H2_nu(z) for the orders nu, nu+1,
     ..., nu+n-1
     - scaled, returns the scaled version H2_nu(z)*exp(i*z)) if 1.
                 
     Implementation: In general, the implementation is based on the D. E. Amos
-    Fortran 77 routines of the Slatec library [3]. Such Fortran routines,
+    Fortran 77 routines from the Slatec library [3]. Such Fortran routines,
     and all their dependencies, were carefully translated to C. Negative
     orders are handled by Eq. (9.1.6) of Ref. [1]. It yields
     INFINITY + I * INFINITY when abs(z)=0.

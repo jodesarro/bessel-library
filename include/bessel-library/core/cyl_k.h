@@ -91,14 +91,14 @@ tpdcomplex_impl_ cyl_k_scal(double nu, tpdcomplex_impl_ z) {
 
     Parameters:
     - nu, real order of K_nu(z).
-    - n, number of elements in the sequence for computing the orders nu, nu+1,
-    ..., nu+n-1 It is also the size of the cyl_k_arr array.
+    - n, number n of elements in the sequence for computing the orders nu,
+    nu+1, ..., nu+n-1. It is also the size of the cyl_k_arr array.
     - z, complex argument of K_nu(z).
     - cyl_k_arr, array of size n to output K_nu(z) for the orders nu,
     nu+1, ..., nu+n-1.
             
     Implementation: In general, the implementation is based on the D. E. Amos
-    Fortran 77 routines of the Slatec library [3]. Such Fortran routines,
+    Fortran 77 routines from the Slatec library [3]. Such Fortran routines,
     and all their dependencies, were carefully translated to C. Negative
     orders are handled by Eqs. (6.5.5) of Ref. [2]. When
     abs(z)=0, it yields INFINITY if nu=0, or INFINITY + I * INFINITY
@@ -112,15 +112,15 @@ void cyl_k_seq(double nu, int n, tpdcomplex_impl_ z,
 }
 
 /*
-    Computes a n-sequency array of the scaled version of the modified
+    Computes a n-sequency array of scaled versions of modified
     cylindrical Bessel functions of the second kind, real order nu, and
     complex argument z, i.e., {K_nu(z)*exp(z), Y_(nu+1)(z)*exp(z),
     ..., Y_(nu+n-1)(z)*exp(z)}.
 
     Parameters:
     - nu, real order of K_nu(z)*exp(z).
-    - n, number of elements in the sequence for computing the orders nu,
-    nu+1, ..., nu+n-1 It is also the size of the cyl_k_scaled_arr array.
+    - n, number n of elements in the sequence for computing the orders nu,
+    nu+1, ..., nu+n-1. It is also the size of the cyl_k_scaled_arr array.
     - z, complex argument of K_nu(z)*exp(z).
     - cyl_k_scaled_arr, array of size n to output K_nu(z)*exp(z) for the
     orders nu, nu+1, ..., nu+n-1.

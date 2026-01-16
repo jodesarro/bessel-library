@@ -13,8 +13,8 @@
         C, or in std::complex<double> for C++, of modified cylindrical Bessel
         functions of the first kind, real order nu, and complex argument z,
         i.e., {I_nu(z), I_(nu+1)(z), ..., I_(nu+n-1)(z)}, for also negative
-        orders, by means of the routines of the Slatec library and recurrence
-        relations for negative orders.
+        orders, by means of the routines from the Slatec library and
+        recurrence relations for negative orders.
 */
 
 #ifndef BESSEL_LIBRARY_CYL_I_FULL_SEQ_IMPL_H
@@ -61,20 +61,20 @@ typedef double complex tpdcomplex_impl_;
     Implements and computes a n-sequency array of modified cylindrical Bessel
     functions of the first kind, real order nu, and complex argument z, i.e.,
     {I_nu(z), I_(nu+1)(z), ..., I_(nu+n-1)(z)}, for also negative orders, by
-    means of the routines of the Slatec library and recurrence relations for
+    means of the routines from the Slatec library and recurrence relations for
     negative orders.
     
     Parameters:
     - nu, real order of I_nu(z).
-    - n, number of elements in the sequence for computing the orders nu, nu+1,
-    ..., nu+n-1 It is also the size of the cyl_i_arr array.
+    - n, number n of elements in the sequence for computing the orders nu,
+    nu+1, ..., nu+n-1. It is also the size of the cyl_i_arr array.
     - z, complex argument of I_nu(z).
     - cyl_i_arr, array of size n to output I_nu(z) for the orders nu, nu+1,
     ..., nu+n-1
     - scaled, returns the scaled version I_nu(z)*exp(-abs(real(z))) if 1.
 
     Implementation: In general, the implementation is based on the D. E. Amos
-    Fortran 77 routines of the Slatec library [3]. Such Fortran routines,
+    Fortran 77 routines from the Slatec library [3]. Such Fortran routines,
     and all their dependencies, were carefully translated to C. Negative
     orders are handled by Eqs. (6.1.5) and (6.5.4) of Ref. [2]
     for, respectively, nu integer and nu real; in

@@ -43,7 +43,7 @@ typedef double complex tpdcomplex_impl_;
     - z, complex argument of Ai(z).
 
     Implementation: In general, the implementation is based on the D. E.
-    Amos Fortran 77 routines of the Slatec library [3]. Such Fortran
+    Amos Fortran 77 routines from the Slatec library [3]. Such Fortran
     routines, and all their dependencies, were carefully translated to C.
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
