@@ -640,10 +640,9 @@ This library uses `__cplusplus` compiler guards with `extern "C"` and
 In this sense, when using C++ compilers, the following C functions are
 automatically mapped to their C++ equivalent: `creal(z)`↦`std::real(z)`,
 `cimag(z)`↦`std::imag(z)`, `cabs(z)`↦`std::abs(z)`,
-`cexp(z)`↦`std::exp(z)`, `sin(z)`↦`std::sin(z)`, and `cos(z)`↦`std::cos(z)`.
-
-Moreover, all the complex variables are handled using the
-`std::complex<double>` type of the C++ `<complex>` library.
+`cexp(z)`↦`std::exp(z)`, `sin(z)`↦`std::sin(z)`, and
+`cos(z)`↦`std::cos(z)`; and all the complex values are handled by means of
+the `std::complex<double>` type of the C++ `<complex>` library.
 
 ## Compiling the library
 
