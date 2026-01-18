@@ -1,7 +1,7 @@
 # Bessel Library: A C library with routines for computing Bessel functions
 
-This project provides a C library (fully
-[compatible with C++](#compatibility-with-c)) designed for the
+This project provides a C library
+([compatible with C++](#compatibility-with-c)) designed for the
 computation of Bessel functions and related special functions for real orders
 and complex arguments.
 
@@ -609,7 +609,7 @@ int main() {
 
 ```cpp
 #include "bessel-library.h" /* The bessel-library */
-#include <iostream> /* For cout */
+#include <iostream> /* For std::cout */
 #include <complex> /* For std::complex<double> type */
 
 int main() {
@@ -635,7 +635,7 @@ the suffix `_impl_` are internal and are not intended to be used by users.
 ## Compatibility with C++
 
 This library uses `__cplusplus` compiler guards with `extern "C"` and
-`#define` macros to ensure C++ compatibility (C++98 standard at least).
+macros to ensure C++ compatibility (C++98 standard at least).
 
 In this sense, when using C++ compilers, the following C functions are
 automatically mapped to their C++ equivalent: `creal(z)`↦`std::real(z)`,
@@ -647,13 +647,16 @@ the `std::complex<double>` type of the C++ `<complex>` library.
 ## Compiling the library
 
 As aforementioned, usually it is not necessary to compile the library.
-However, in any case, the [src](src/) folder contains the file
-[bessel-library-declarations.c](src/bessel-library-declarations.c) with the
-declarations of all functions, and the file
-[bessel-library.c](src/bessel-library.c), which is a C wrapper that may be
-used for compilation.
+However, in any case, the [src](src/) folder contains the files
+[bessel-library-declarations.c](src/bessel-library-declarations.c) and
+[bessel-library-declarations.cpp](src/bessel-library-declarations.cpp), with
+declarations of all functions in respectively C and C++, and the file
+[bessel-library.c](src/bessel-library.c), which is a C wrapper
+([compatible with C++](#compatibility-with-c)) that may be used for
+compilation.
 
-The following are examples of how to compile this library using C compilers.
+The following are examples of how to compile this library using C and C++
+compilers.
 
 <details>
   <summary>
@@ -662,6 +665,16 @@ The following are examples of how to compile this library using C compilers.
 
   ```bash
   gcc -shared -o src/bessel-library.dll src/bessel-library.c -Iinclude
+  ```
+</details>
+
+<details>
+  <summary>
+    <b>Compiling on Windows with MinGW g++</b>
+  </summary>
+
+  ```bash
+  g++ -shared -o src/bessel-library.dll src/bessel-library.c -Iinclude
   ```
 </details>
 
@@ -677,14 +690,23 @@ The following are examples of how to compile this library using C compilers.
 
 <details>
   <summary>
+    <b>Compiling on Linux/macOS with g++</b>
+  </summary>
+
+  ```bash
+  g++ -shared -fPIC -o src/bessel-library.so src/bessel-library.c -Iinclude
+  ```
+</details>
+
+<details>
+  <summary>
     <b>Compiling on Windows with MSVC cl</b>
   </summary> 
 
   Compiling this library with MSVC targeting the C language is discouraged
   because MSVC does not support the `double complex` type from the C
-  `<complex.h>` library. However, as a workaround, you may build it in MSVC
-  targeting the C++ language (e.g., using the `/TP` flag), and then you shall
-  be able to use the `std::complex<double>` from the C++ `<complex>` library.
+  `<complex.h>` library. However, you may build it in MSVC
+  targeting the C++ language (e.g., using the `/TP` flag).
 
   ```bash
   cl /TP src/bessel-library.c
@@ -710,8 +732,9 @@ from cffi import FFI
 
 ffi = FFI()
 
-# Read the C functions declarations
-with open("src/bessel-library-declarations.c", "r") as f:
+# Read the functions declarations
+with open("src/bessel-library-declarations.c", "r") as f: # if C compiled
+# with open("src/bessel-library-declarations.cpp", "r") as f: # if C++ compiled 
     ffi.cdef(f.read())
 
 # Import the compiled file
