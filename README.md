@@ -718,7 +718,7 @@ compilers.
 Once compiled, it is also possible to use this library together with other
 programming languages.
 
-The following is an example on how to load the compiled library in Python
+The following is an example on how to load the C compiled library in Python
 using `numpy` and `cffi`.
 
 <details>
@@ -732,9 +732,8 @@ from cffi import FFI
 
 ffi = FFI()
 
-# Read the functions declarations
-with open("src/bessel-library-declarations.c", "r") as f: # if C compiled
-# with open("src/bessel-library-declarations.cpp", "r") as f: # if C++ compiled 
+# Read the C functions declarations
+with open("src/bessel-library-declarations.c", "r") as f:
     ffi.cdef(f.read())
 
 # Import the compiled file
@@ -745,8 +744,8 @@ bess = ffi.dlopen("src/bessel-library.so") # for Linux/macOS
 z = np.complex128(1.23 + 4.56j)
 
 # Call a function of the library and print the result
-result = bess.cyl_j(1.0, z)
-print("Result: ", result)
+j1z = bess.cyl_j(1.0, z)
+print("Result: ", j1z)
 ```
 </details>
 
