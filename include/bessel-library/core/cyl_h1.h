@@ -4,13 +4,12 @@
     File: include/bessel-library/core/cyl_h1.h
     Version: include/bessel-library/version.h
     Author: Jhonas Olivati de Sarro
-    Language standards: C99 with guards for C++98 compatibility
+    Language standards: C99
     References: include/bessel-library/references.txt
     License: include/bessel-library/license.txt
 
     Description:
-        Computes, in double complex type for C, or in std::complex<double>
-        type for C++, cylindrical Hankel functions of the first kind, real
+        Computes cylindrical Hankel functions of the first kind, real
         order, and complex argument.
 */
 
@@ -21,20 +20,7 @@
 #define BESSEL_LIBRARY_STATIC_INLINE_IMPL_ static inline
 #endif
 
-#ifdef __cplusplus
-
-/* Includes, typedefs and/or macros for C++98 compatibility */
-
-#include <complex> /* For complex numbers */
-typedef std::complex<double> tpdcomplex_impl_;
-
-#else
-
-#include <complex.h> /* For complex numbers */
-typedef double complex tpdcomplex_impl_;
-
-#endif /* __cplusplus */
-
+#include "../impl/cplx_c_cpp_impl_.h"
 #include "../impl/cyl_h1_full_seq_impl_.h"
 
 /*
@@ -48,10 +34,10 @@ typedef double complex tpdcomplex_impl_;
     Implementation: Similar to the cyl_h1_seq() function.
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
-tpdcomplex_impl_ cyl_h1(double nu, tpdcomplex_impl_ z) {
+tpdfcplx_impl_ cyl_h1(double nu, tpdfcplx_impl_ z) {
 
     /* Array of one size */
-    tpdcomplex_impl_ ch1[1];
+    tpdfcplx_impl_ ch1[1];
     
     /* Compute cyl_h1_full_seq_impl_ */
     cyl_h1_full_seq_impl_(nu, 1, z, ch1, 0);
@@ -72,10 +58,10 @@ tpdcomplex_impl_ cyl_h1(double nu, tpdcomplex_impl_ z) {
     Implementation: Similar to the cyl_h1_seq() function.
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
-tpdcomplex_impl_ cyl_h1_scal(double nu, tpdcomplex_impl_ z) {
+tpdfcplx_impl_ cyl_h1_scal(double nu, tpdfcplx_impl_ z) {
 
     /* Array of one size */
-    tpdcomplex_impl_ ch1[1];
+    tpdfcplx_impl_ ch1[1];
     
     /* Compute cyl_h1_full_seq_impl_ */
     cyl_h1_full_seq_impl_(nu, 1, z, ch1, 1);
@@ -105,7 +91,7 @@ tpdcomplex_impl_ cyl_h1_scal(double nu, tpdcomplex_impl_ z) {
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
 void cyl_h1_seq(double nu, int n,
-    tpdcomplex_impl_ z, tpdcomplex_impl_ *cyl_h1_arr) {
+    tpdfcplx_impl_ z, tpdfcplx_impl_ *cyl_h1_arr) {
 
     cyl_h1_full_seq_impl_(nu, n, z, cyl_h1_arr, 0);
 }
@@ -128,7 +114,7 @@ void cyl_h1_seq(double nu, int n,
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
 void cyl_h1_scal_seq(double nu, int n,
-    tpdcomplex_impl_ z, tpdcomplex_impl_ *cyl_h2_scal_arr) {
+    tpdfcplx_impl_ z, tpdfcplx_impl_ *cyl_h2_scal_arr) {
     
     cyl_h1_full_seq_impl_(nu, n, z, cyl_h2_scal_arr, 1);
 }

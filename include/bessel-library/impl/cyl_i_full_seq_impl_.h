@@ -4,7 +4,7 @@
     File: include/bessel-library/impl/cyl_i_full_seq_impl_.h
     Version: include/bessel-library/version.h
     Author: Jhonas Olivati de Sarro
-    Language standards: C99 with guards for C++98 compatibility
+    Language standards: C99
     References: include/bessel-library/references.txt
     License: include/bessel-library/license.txt
 
@@ -20,34 +20,10 @@
 #ifndef BESSEL_LIBRARY_CYL_I_FULL_SEQ_IMPL_H
 #define BESSEL_LIBRARY_CYL_I_FULL_SEQ_IMPL_H
 
-#ifdef __cplusplus
-
-/* Includes, typedefs and/or macros for C++98 compatibility */
-
-#include <complex> /* For complex numbers */
-#include <cstdlib> /* For malloc and free */
-typedef std::complex<double> tpdcomplex_impl_;
-#define CPLX_IMPL_(x, y) tpdcomplex_impl_(x, y)
-#define I_IMPL_ std::complex<double>(0.0, 1.0)
-#define creal(z) std::real(z)
-#define cimag(z) std::imag(z)
-#define cabs(z) std::abs(z)
-#define sin(z) std::sin(z)
-
-extern "C" {
-
-#else
-
-#include <complex.h> /* For complex numbers */
 #include <stdlib.h> /* For malloc and free */
-typedef double complex tpdcomplex_impl_;
-#define I_IMPL_ I
-#define CPLX_IMPL_(x, y) (x + I * y)
-
-#endif /* __cplusplus */
-
-#include <math.h> /* for math operations */
-#include <float.h>  /* for DBL_EPSILON */
+#include <math.h> /* For math operations */
+#include <float.h>  /* For DBL_EPSILON */
+#include "cplx_c_cpp_impl_.h"
 #include "slatec_zbesi_impl_.h"
 #include "slatec_zbesk_impl_.h"
 #include "slatec_flags_impl_.h"
@@ -81,7 +57,7 @@ typedef double complex tpdcomplex_impl_;
     the latter case, it yields INFINITY + I * INFINITY abs(z)=0.
 */
 static inline void cyl_i_full_seq_impl_(double nu, int n,
-    tpdcomplex_impl_ z, tpdcomplex_impl_ *cyl_i_arr, int scaled) {
+    tpdfcplx_impl_ z, tpdfcplx_impl_ *cyl_i_arr, int scaled) {
     
     int kode = (scaled == 1 ? 2 : 1);
     int nz, ierr;
@@ -179,7 +155,7 @@ static inline void cyl_i_full_seq_impl_(double nu, int n,
             slatec_flags_zbesk_impl_(ierr, nz);
 
             /* Treat the scaled version of K_nu(z) for I_nu(z) */
-            tpdcomplex_impl_ c_2_pi_e_m_abs_zr = 2.0/M_PI * (scaled == 1 ?
+            tpdfcplx_impl_ c_2_pi_e_m_abs_zr = 2.0/M_PI * (scaled == 1 ?
                                             exp(-fabs(creal(z))) : 1.0 );      
 
             /* Store in the array */
@@ -268,7 +244,7 @@ static inline void cyl_i_full_seq_impl_(double nu, int n,
             slatec_flags_zbesk_impl_(ierr, nz);
 
             /* Treat the scaled version of K_nu(z) for I_nu(z) */
-            tpdcomplex_impl_ c_2_pi_e_m_abs_zr = 2.0/M_PI * (scaled == 1 ?
+            tpdfcplx_impl_ c_2_pi_e_m_abs_zr = 2.0/M_PI * (scaled == 1 ?
                                             exp(-fabs(creal(z))) : 1.0 );     
 
             /* Store in the array */
@@ -309,9 +285,5 @@ static inline void cyl_i_full_seq_impl_(double nu, int n,
         free(--cir_p); free(--cii_p);
     }
 }
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif /* __cplusplus */
 
 #endif /* BESSEL_LIBRARY_CYL_I_FULL_SEQ_IMPL_H */

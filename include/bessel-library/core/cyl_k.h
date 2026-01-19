@@ -4,13 +4,12 @@
     File: include/bessel-library/core/cyl_k.h
     Version: include/bessel-library/version.h
     Author: Jhonas Olivati de Sarro
-    Language standards: C99 with guards for C++98 compatibility
+    Language standards: C99
     References: include/bessel-library/references.txt
     License: include/bessel-library/license.txt
 
     Description:
-        Computes, in double complex type for C, or in std::complex<double>
-        type for C++, modified cylindrical Bessel functions of the second
+        Computes modified cylindrical Bessel functions of the second
         kind, real order, and complex argument.
 */
 
@@ -21,20 +20,7 @@
 #define BESSEL_LIBRARY_STATIC_INLINE_IMPL_ static inline
 #endif
 
-#ifdef __cplusplus
-
-/* Includes, typedefs and/or macros for C++98 compatibility */
-
-#include <complex> /* For complex numbers */
-typedef std::complex<double> tpdcomplex_impl_;
-
-#else
-
-#include <complex.h> /* For complex numbers */
-typedef double complex tpdcomplex_impl_;
-
-#endif /* __cplusplus */
-
+#include "../impl/cplx_c_cpp_impl_.h"
 #include "../impl/cyl_k_full_seq_impl_.h"
 
 /*
@@ -48,10 +34,10 @@ typedef double complex tpdcomplex_impl_;
     Implementation: Similar to the cyl_k_seq() function.
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
-tpdcomplex_impl_ cyl_k(double nu, tpdcomplex_impl_ z) {
+tpdfcplx_impl_ cyl_k(double nu, tpdfcplx_impl_ z) {
     
     /* Array of one size */
-    tpdcomplex_impl_ ck[1];
+    tpdfcplx_impl_ ck[1];
     
     /* Compute cyl_k_full_seq_impl_ */
     cyl_k_full_seq_impl_(nu, 1, z, ck, 0);
@@ -72,10 +58,10 @@ tpdcomplex_impl_ cyl_k(double nu, tpdcomplex_impl_ z) {
     Implementation: Similar to the cyl_k_seq() function.
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
-tpdcomplex_impl_ cyl_k_scal(double nu, tpdcomplex_impl_ z) {
+tpdfcplx_impl_ cyl_k_scal(double nu, tpdfcplx_impl_ z) {
     
     /* Array of one size */
-    tpdcomplex_impl_ ck[1];
+    tpdfcplx_impl_ ck[1];
     
     /* Compute cyl_k_full_seq_impl_ */
     cyl_k_full_seq_impl_(nu, 1, z, ck, 1);
@@ -105,8 +91,8 @@ tpdcomplex_impl_ cyl_k_scal(double nu, tpdcomplex_impl_ z) {
     otherwise.
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
-void cyl_k_seq(double nu, int n, tpdcomplex_impl_ z,
-    tpdcomplex_impl_ *cyl_k_arr) {
+void cyl_k_seq(double nu, int n, tpdfcplx_impl_ z,
+    tpdfcplx_impl_ *cyl_k_arr) {
 
     cyl_k_full_seq_impl_(nu, n, z, cyl_k_arr, 0);
 }
@@ -129,7 +115,7 @@ void cyl_k_seq(double nu, int n, tpdcomplex_impl_ z,
 */
 BESSEL_LIBRARY_STATIC_INLINE_IMPL_
 void cyl_k_scal_seq(double nu, int n,
-    tpdcomplex_impl_ z, tpdcomplex_impl_ *cyl_k_scaled_arr) {
+    tpdfcplx_impl_ z, tpdfcplx_impl_ *cyl_k_scaled_arr) {
     
     cyl_k_full_seq_impl_(nu, n, z, cyl_k_scaled_arr, 1);
 }
