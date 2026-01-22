@@ -77,9 +77,9 @@ static inline void cyl_y_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
         if (fabs(nu_m - floor(nu_m)) < DBL_EPSILON && n > fnu) {
             /* Complex infinity for i=0 order */
             cyl_y_arr[(int)floor(fnu)] = CPLX_IMPL_(-INFINITY, 0.0);
-        }    
-    }
-    else if (nu >= 0.0) {
+        }
+
+    } else if (nu >= 0.0) {
 
         /* Only positive orders, including the order 0 */
 
@@ -104,8 +104,7 @@ static inline void cyl_y_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
         free(--cyr_ptr); free(--cyi_ptr);
         free(--cwrkr_ptr); free(--cwrki_ptr);
 
-    }
-    else if (nu_m <= 0.0) {
+    } else if (nu_m <= 0.0) {
 
         /* Only negative orders, including the order 0 */
 
@@ -137,8 +136,7 @@ static inline void cyl_y_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
             free(--cyr_ptr); free(--cyi_ptr);
             free(--cwrkr_ptr); free(--cwrki_ptr);
 
-        }
-        else {
+        } else {
 
             /* Non-integer negative orders */
 
@@ -179,8 +177,8 @@ static inline void cyl_y_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
             free(--cwrkr_ptr); free(--cwrki_ptr);
             free(--cjr_ptr); free(--cji_ptr);
         }
-    }
-    else {
+        
+    } else {
 
         /* Mixed negative and positive orders */
 
@@ -216,8 +214,7 @@ static inline void cyl_y_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
             free(--cyr_m_ptr); free(--cyi_m_ptr);
             free(--cwrkr_ptr); free(--cwrki_ptr);
 
-        }
-        else {
+        } else {
             
             /* Negative non-integer orders */
 

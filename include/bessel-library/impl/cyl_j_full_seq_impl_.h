@@ -87,8 +87,8 @@ static inline void cyl_j_full_seq_impl_(double nu, int n,
 
         /* Free auxiliary pointers */
         free(--cjr_ptr); free(--cji_ptr);
-    }
-    else if (nu_m <= 0.0) {
+
+    } else if (nu_m <= 0.0) {
         
         /* Only negative orders */
         if (fabs(floor(fnu) - fnu) < DBL_EPSILON) {
@@ -116,16 +116,15 @@ static inline void cyl_j_full_seq_impl_(double nu, int n,
             /* Free auxiliary pointers */
             free(--cjr_ptr); free(--cji_ptr);
 
-        }
-        else if (fabs(floor(nu_m) - nu_m) >= DBL_EPSILON
+        } else if (fabs(floor(nu_m) - nu_m) >= DBL_EPSILON
                  && cabs(z) < DBL_EPSILON) {
             
             /* Non-int negative orders with abs(z) = 0 */
             for (int i = 0; i < n; i++) {
                 cyl_j_arr[i] = CPLX_IMPL_(INFINITY, INFINITY);
             }
-        }
-        else {
+
+        } else {
 
             /* Non-int negative orders with abs(z) != 0 */
 
@@ -168,8 +167,8 @@ static inline void cyl_j_full_seq_impl_(double nu, int n,
             free(--cyr_ptr); free(--cyi_ptr);
             free(--cwrkr_ptr); free(--cwrki_ptr);
         }
-    }
-    else {
+
+    } else {
 
         /* Mixed negative and positive orders */
         int n_m = (int)floor(fabs(nu)) + 1;
@@ -199,16 +198,15 @@ static inline void cyl_j_full_seq_impl_(double nu, int n,
             /* Free auxiliary pointers */
             free(--cjr_m_ptr); free(--cji_m_ptr);
 
-        }
-        else if (fabs(floor(nu_m) - nu_m) >= DBL_EPSILON
+        } else if (fabs(floor(nu_m) - nu_m) >= DBL_EPSILON
                  && cabs(z) < DBL_EPSILON) {
             
             /* Store in the array */
             for (int i = 0; i < n_m; i++) {
                 cyl_j_arr[i] = CPLX_IMPL_(INFINITY, INFINITY);
             }
-        }
-        else {
+            
+        } else {
 
             /* Dynamic mem alloc of auxiliary arrays */
             double *cjr_m_ptr = (double*)malloc((n_m + 1) * sizeof(double));

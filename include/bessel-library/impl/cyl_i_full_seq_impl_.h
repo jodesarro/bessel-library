@@ -87,8 +87,8 @@ static inline void cyl_i_full_seq_impl_(double nu, int n,
 
         /* Free auxiliary pointers */
         free(--cir); free(--cii);
-    }
-    else if (nu_m <= 0.0) {
+
+    } else if (nu_m <= 0.0) {
     
         /* Array of only negative orders */
 
@@ -116,8 +116,8 @@ static inline void cyl_i_full_seq_impl_(double nu, int n,
 
             /* Free auxiliary pointers */
             free(--cir); free(--cii);
-        }
-        else if (fabs(floor(nu_m) - nu_m) >= DBL_EPSILON
+
+        } else if (fabs(floor(nu_m) - nu_m) >= DBL_EPSILON
             && cabs(z) < DBL_EPSILON) {
         
             /* Non-int negative order with z=0 -> infinity */
@@ -125,8 +125,8 @@ static inline void cyl_i_full_seq_impl_(double nu, int n,
             for (int i = 0; i < n; i++) {
                 cyl_i_arr[i] = CPLX_IMPL_(INFINITY, INFINITY);
             }
-        }
-        else {
+
+        } else {
             
             /* Non-int negative orders with z!=0 */
             
@@ -172,8 +172,8 @@ static inline void cyl_i_full_seq_impl_(double nu, int n,
             free(--cir); free(--cii);
             free(--ckr); free(--cki);
         }
-    }
-    else {
+
+    } else {
         
         /* Negative and positive orders */
 
@@ -206,8 +206,8 @@ static inline void cyl_i_full_seq_impl_(double nu, int n,
 
             /* Free auxiliary pointers */
             free(--cir_m); free(--cii_m);
-        }
-        else if (fabs(floor(nu_m) - nu_m) >= DBL_EPSILON
+
+        } else if (fabs(floor(nu_m) - nu_m) >= DBL_EPSILON
             && cabs(z) == 0.0) {
             
             /* Non-int negative order with z=0 -> infinity */
@@ -215,8 +215,8 @@ static inline void cyl_i_full_seq_impl_(double nu, int n,
             for (int i = 0; i < n_m; i++) {
                 cyl_i_arr[i] = CPLX_IMPL_(INFINITY, INFINITY);
             }
-        }
-        else {
+            
+        } else {
 
             /* Non-int negative orders with z!=0 */
 

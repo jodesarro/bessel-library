@@ -76,8 +76,8 @@ static inline void cyl_k_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
             /* Infinity for integer order 0 */
             cyl_k_arr[(int)floor(fnu)] = CPLX_IMPL_(INFINITY, 0.0);
         }
-    }
-    else if (nu >= 0.0) {
+
+    } else if (nu >= 0.0) {
 
         /* Positive orders */
         
@@ -98,8 +98,8 @@ static inline void cyl_k_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
         
         /* Free auxiliary pointers */
         free(--ckr); free(--cki);
-    }
-    else if (nu_m <= 0.0) {
+
+    } else if (nu_m <= 0.0) {
         
         /* Only negative orders */
         
@@ -122,8 +122,8 @@ static inline void cyl_k_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
         
         /* Free auxiliary pointers */        
         free(--ckr); free(--cki);
-    }
-    else {
+        
+    } else {
     
         /* Negative and positive orders */
         

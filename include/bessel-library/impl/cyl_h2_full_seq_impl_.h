@@ -72,8 +72,8 @@ static inline void cyl_h2_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
         for (int i = 0; i < n; i++) {
             cyl_h2_arr[i] = CPLX_IMPL_(INFINITY, INFINITY);
         }
-    }
-    else if (nu >= 0.0) {
+
+    } else if (nu >= 0.0) {
 
         /* Dynamic mem alloc of auxiliary arrays */
         double *ch2r = (double*)malloc((n + 1) * sizeof(double));
@@ -92,8 +92,8 @@ static inline void cyl_h2_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
 
         /* Free auxiliary pointers */
         free(--ch2r); free(--ch2i);
-    }
-    else if (nu_m <= 0.0) {
+
+    } else if (nu_m <= 0.0) {
         
         /* Array of only negative orders */
 
@@ -119,8 +119,8 @@ static inline void cyl_h2_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
     
         /* Free auxiliary pointers */
         free(--ch2r_m); free(--ch2i_m);
-    }
-    else {
+        
+    } else {
 
         /* Array of negative and positive orders */
         
