@@ -14,12 +14,12 @@
 #ifndef BESSEL_LIBRARY_AIRY_AI_H
 #define BESSEL_LIBRARY_AIRY_AI_H
 
-#ifndef BESSEL_LIBRARY_STATIC_INLINE_IMPL_
-#define BESSEL_LIBRARY_STATIC_INLINE_IMPL_ static inline
-#endif
-
+#include "../impl/api_impl_.h"
 #include "../impl/cplx_c_cpp_impl_.h"
+
+#ifndef BESSEL_LIBRARY_IMPORTS
 #include "../impl/airy_ai_impl_.h"
+#endif
 
 /*
     Returns the Airy function of the first kind and complex argument z, i.e.,
@@ -32,10 +32,15 @@
     Amos Fortran 77 routines from the Slatec library [3]. Such Fortran
     routines, and all their dependencies, were carefully translated to C.
 */
-BESSEL_LIBRARY_STATIC_INLINE_IMPL_
-tpdfcplx_impl_ airy_ai(tpdfcplx_impl_ z) {
+BESSEL_LIBRARY_API_IMPL_
+tpdfcplx_impl_ airy_ai(double complex z)
+#ifndef BESSEL_LIBRARY_IMPORTS
+{
     return airy_ai_impl_(z, 0, 0);
 }
+#else
+;
+#endif
 
 /*
     Returns the first derivative of the Airy function of the first kind and
@@ -46,10 +51,15 @@ tpdfcplx_impl_ airy_ai(tpdfcplx_impl_ z) {
     
     Implementation: Similar to the airy_ai() function.
 */
-BESSEL_LIBRARY_STATIC_INLINE_IMPL_
-tpdfcplx_impl_ airy_ai_diff(tpdfcplx_impl_ z) {
+BESSEL_LIBRARY_API_IMPL_
+tpdfcplx_impl_ airy_ai_diff(tpdfcplx_impl_ z)
+#ifndef BESSEL_LIBRARY_IMPORTS
+{
     return airy_ai_impl_(z, 1, 0);
 }
+#else
+;
+#endif
 
 /*
     Returns the scaled version of the Airy function of the first kind and
@@ -60,10 +70,15 @@ tpdfcplx_impl_ airy_ai_diff(tpdfcplx_impl_ z) {
 
     Implementation: Similar to the airy_ai() function.
 */
-BESSEL_LIBRARY_STATIC_INLINE_IMPL_
-tpdfcplx_impl_ airy_ai_scal(tpdfcplx_impl_ z) {
+BESSEL_LIBRARY_API_IMPL_
+tpdfcplx_impl_ airy_ai_scal(tpdfcplx_impl_ z)
+#ifndef BESSEL_LIBRARY_IMPORTS
+{
     return airy_ai_impl_(z, 0, 1);
 }
+#else
+;
+#endif
 
 /*
     Returns the scaled version of the first derivative of the Airy function of
@@ -75,9 +90,14 @@ tpdfcplx_impl_ airy_ai_scal(tpdfcplx_impl_ z) {
 
     Implementation: Similar to the airy_ai() function.
 */
-BESSEL_LIBRARY_STATIC_INLINE_IMPL_
-tpdfcplx_impl_ airy_ai_diff_scal(tpdfcplx_impl_ z) {
+BESSEL_LIBRARY_API_IMPL_
+tpdfcplx_impl_ airy_ai_diff_scal(tpdfcplx_impl_ z)
+#ifndef BESSEL_LIBRARY_IMPORTS
+{
     return airy_ai_impl_(z, 1, 1);
 }
+#else
+;
+#endif
 
 #endif /* BESSEL_LIBRARY_AIRY_AI_H */

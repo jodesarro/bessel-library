@@ -571,10 +571,12 @@ found in the works listed in the [References](#references) section.
 
 ## How to use
 
-This library is in a header-only style, i.e., there is nothing to build
-(see the section [Compiling the library](#compiling-the-library) if you still
-want to compile it).
-Therefore, you only need to paste all the content of the
+This library is header‑only, meaning there is nothing to build.
+
+If you need a compiled file, refer to the instructions in the
+[Compiling the library](#compiling-the-library) section.
+
+Otherwise, you only need to paste all the content of the
 [include](include/) folder
 inside the include folder of your project (if you do not have an include
 folder in your project, paste the content inside the root folder of your
@@ -626,8 +628,11 @@ int main() {
 ## Some C details
 
 In this library, the implementation is carried out in terms of the C99
-standards. Therefore, all the complex variables are handled using the
-`double complex` type of the C `<complex.h>` library.
+standards.
+
+Therefore, all the complex variables are handled using the
+`tpdfcplx_impl_` type, which is automatically expanded to the `double complex`
+type of the C `<complex.h>` library.
 
 Notice that all functions, macros, constants and files whose names contain
 the suffix `_impl_` are internal and are not intended to be used by users.
@@ -642,15 +647,14 @@ automatically mapped to their C++ equivalent: `creal(z)`↦`std::real(z)`,
 `cimag(z)`↦`std::imag(z)`, `cabs(z)`↦`std::abs(z)`,
 `cexp(z)`↦`std::exp(z)`, `sin(z)`↦`std::sin(z)`, and
 `cos(z)`↦`std::cos(z)`; and all the complex values are handled by means of
-the `std::complex<double>` type of the C++ `<complex>` library.
+the `tpdfcplx_impl_` type, which is automatically expanded to the
+`std::complex<double>` type of the C++ `<complex>` library.
 
 ## Compiling the library
 
 As aforementioned, usually it is not necessary to compile the library.
-However, in any case, the [src](src/) folder contains the files
-[bessel-library-declarations.c](src/bessel-library-declarations.c) and
-[bessel-library-declarations.cpp](src/bessel-library-declarations.cpp), with
-declarations of all functions in respectively C and C++, and the file
+
+However, in any case, the [src](src/) folder contains the file
 [bessel-library.c](src/bessel-library.c), which is a C wrapper
 ([compatible with C++](#compatibility-with-c)) that may be used for
 compilation.
@@ -664,8 +668,8 @@ compilers.
   </summary>
 
   ```bash
-  gcc -shared -o src/bessel-library.dll src/bessel-library.c -Iinclude
-  ```
+  gcc -shared -Iinclude src/bessel-library.c -o bessel-library.dll -Wl,--out-implib,libbessel-library.dll.a
+   ```
 </details>
 
 <details>
@@ -674,27 +678,27 @@ compilers.
   </summary>
 
   ```bash
-  g++ -shared -o src/bessel-library.dll src/bessel-library.c -Iinclude
+  g++ -shared -Iinclude src/bessel-library.c -o bessel-library.dll -Wl,--out-implib,libbessel-library.dll.a
   ```
 </details>
 
 <details>
   <summary>
-    <b>Compiling on Linux/macOS with gcc</b>
+    <b>Compiling on Linux with gcc</b>
   </summary>
 
   ```bash
-  gcc -shared -fPIC -o src/bessel-library.so src/bessel-library.c -Iinclude
+  gcc -fPIC -shared -Iinclude src/bessel-library.c -o libbessel-library.so
   ```
 </details>
 
 <details>
   <summary>
-    <b>Compiling on Linux/macOS with g++</b>
+    <b>Compiling on Linux with g++</b>
   </summary>
 
   ```bash
-  g++ -shared -fPIC -o src/bessel-library.so src/bessel-library.c -Iinclude
+  g++ -fPIC -shared -Iinclude src/bessel-library.c -o libbessel-library.so
   ```
 </details>
 
@@ -709,43 +713,35 @@ compilers.
   targeting the C++ language (e.g., using the `/TP` flag).
 
   ```bash
-  cl /TP src/bessel-library.c
+  cl /LD /TP src/bessel-library.c /I include
   ```
 </details>
 
-## Other programming languages
-
-Once compiled, it is also possible to use this library together with other
-programming languages.
-
-The following is an example on how to load the C compiled library in Python
-using `numpy` and `cffi`.
+Notice that when using a compiled file of the library into C or C++
+projects, you must paste all the content of the
+[include](include/) folder inside the include folder of your project,
+and then write `#define BESSEL_LIBRARY_IMPORTS`
+before the `#include "bessel-library.h"`.
 
 <details>
   <summary>
-    <b>Example of usage in Python</b>
+    <b>Example of usage in C with a compiled file of the library</b>
   </summary>
 
-```python
-import numpy as np
-from cffi import FFI
+```c
+#define BESSEL_LIBRARY_IMPORTS /* Required for using a compiled file */
+#include "bessel-library.h" /* The bessel-library header */
+#include <stdio.h> /* For printf() */
+#include <complex.h> /* For double complex type */
 
-ffi = FFI()
-
-# Read the C functions declarations
-with open("src/bessel-library-declarations.c", "r") as f:
-    ffi.cdef(f.read())
-
-# Import the compiled file
-bess = ffi.dlopen("src/bessel-library.so") # for Linux/macOS
-# bess = ffi.dlopen("src/bessel-library.dll") # for Windows
-
-# Use NumPy complex128 to declare z
-z = np.complex128(1.23 + 4.56j)
-
-# Call a function of the library and print the result
-j1z = bess.cyl_j(1.0, z)
-print("Result: ", j1z)
+int main() {
+  double nu = 3.5;
+  double complex z = 13.0 + I * 2.7;
+  double complex result;
+  result = cyl_j(nu, z);
+  printf("(%f, %f)\n", creal(result), cimag(result));
+  return 0;
+}
 ```
 </details>
 

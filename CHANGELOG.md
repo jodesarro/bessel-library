@@ -3,6 +3,18 @@
 Refer to the [References](README.md#references) section of the
 [README.md](README.md) file for a complete list of references.
 
+## v1.0.2 Feb 05, 2026
+- Section '## Other programming languages' erased from the README.md.
+- Replaced, in the core headers, `BESSEL_LIBRARY_STATIC_INLINE_IMPL_` by the
+`BESSEL_LIBRARY_API_IMPL_` macro.
+- Created the file include/bessel-library/impl/api_impl_.h.
+- Added, in the core headers, the macros `BESSEL_LIBRARY_IMPORTS` and
+`BESSEL_LIBRARY_EXPORTS_IMPL_`, in order to reuse the main header and the core
+headers with compiled files.
+- File src/bessel-library.c adapted to the new compiled conventions.
+- Declaration files deleted.
+- README.me updated.
+
 ## v1.0.1 Jan 13, 2026
 
 - In Airy functions, all `_deriv` terms were changed to `_diff`.

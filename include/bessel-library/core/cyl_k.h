@@ -16,12 +16,12 @@
 #ifndef BESSEL_LIBRARY_CYL_K_H
 #define BESSEL_LIBRARY_CYL_K_H
 
-#ifndef BESSEL_LIBRARY_STATIC_INLINE_IMPL_
-#define BESSEL_LIBRARY_STATIC_INLINE_IMPL_ static inline
-#endif
-
+#include "../impl/api_impl_.h"
 #include "../impl/cplx_c_cpp_impl_.h"
+
+#ifndef BESSEL_LIBRARY_IMPORTS
 #include "../impl/cyl_k_full_seq_impl_.h"
+#endif
 
 /*
     Returns the modified cylindrical Bessel function of the second kind, real
@@ -33,9 +33,10 @@
         
     Implementation: Similar to the cyl_k_seq() function.
 */
-BESSEL_LIBRARY_STATIC_INLINE_IMPL_
-tpdfcplx_impl_ cyl_k(double nu, tpdfcplx_impl_ z) {
-    
+BESSEL_LIBRARY_API_IMPL_
+tpdfcplx_impl_ cyl_k(double nu, tpdfcplx_impl_ z)
+#ifndef BESSEL_LIBRARY_IMPORTS
+{
     /* Array of one size */
     tpdfcplx_impl_ ck[1];
     
@@ -45,6 +46,9 @@ tpdfcplx_impl_ cyl_k(double nu, tpdfcplx_impl_ z) {
     /* Return */
     return ck[0];
 }
+#else
+;
+#endif
 
 /*
     Returns the scaled version of the modified cylindrical Bessel function of
@@ -57,9 +61,10 @@ tpdfcplx_impl_ cyl_k(double nu, tpdfcplx_impl_ z) {
             
     Implementation: Similar to the cyl_k_seq() function.
 */
-BESSEL_LIBRARY_STATIC_INLINE_IMPL_
-tpdfcplx_impl_ cyl_k_scal(double nu, tpdfcplx_impl_ z) {
-    
+BESSEL_LIBRARY_API_IMPL_
+tpdfcplx_impl_ cyl_k_scal(double nu, tpdfcplx_impl_ z)
+#ifndef BESSEL_LIBRARY_IMPORTS
+{
     /* Array of one size */
     tpdfcplx_impl_ ck[1];
     
@@ -69,6 +74,9 @@ tpdfcplx_impl_ cyl_k_scal(double nu, tpdfcplx_impl_ z) {
     /* Return */
     return ck[0];
 }
+#else
+;
+#endif
 
 /*
     Computes a n-sequency array of modified cylindrical Bessel functions of
@@ -90,12 +98,16 @@ tpdfcplx_impl_ cyl_k_scal(double nu, tpdfcplx_impl_ z) {
     abs(z)=0, it yields INFINITY if nu=0, or INFINITY + I * INFINITY
     otherwise.
 */
-BESSEL_LIBRARY_STATIC_INLINE_IMPL_
+BESSEL_LIBRARY_API_IMPL_
 void cyl_k_seq(double nu, int n, tpdfcplx_impl_ z,
-    tpdfcplx_impl_ *cyl_k_arr) {
-
+    tpdfcplx_impl_ *cyl_k_arr)
+#ifndef BESSEL_LIBRARY_IMPORTS
+{
     cyl_k_full_seq_impl_(nu, n, z, cyl_k_arr, 0);
 }
+#else
+;
+#endif
 
 /*
     Computes a n-sequency array of scaled versions of modified
@@ -113,11 +125,15 @@ void cyl_k_seq(double nu, int n, tpdfcplx_impl_ z,
             
     Implementation: Similar to the cyl_k_seq() function.
 */
-BESSEL_LIBRARY_STATIC_INLINE_IMPL_
+BESSEL_LIBRARY_API_IMPL_
 void cyl_k_scal_seq(double nu, int n,
-    tpdfcplx_impl_ z, tpdfcplx_impl_ *cyl_k_scaled_arr) {
-    
+    tpdfcplx_impl_ z, tpdfcplx_impl_ *cyl_k_scaled_arr)
+#ifndef BESSEL_LIBRARY_IMPORTS    
+{
     cyl_k_full_seq_impl_(nu, n, z, cyl_k_scaled_arr, 1);
 }
+#else
+;
+#endif
 
 #endif /* BESSEL_LIBRARY_CYL_K_H */

@@ -16,12 +16,12 @@
 #ifndef BESSEL_LIBRARY_CYL_H1_H
 #define BESSEL_LIBRARY_CYL_H1_H
 
-#ifndef BESSEL_LIBRARY_STATIC_INLINE_IMPL_
-#define BESSEL_LIBRARY_STATIC_INLINE_IMPL_ static inline
-#endif
-
+#include "../impl/api_impl_.h"
 #include "../impl/cplx_c_cpp_impl_.h"
+
+#ifndef BESSEL_LIBRARY_IMPORTS
 #include "../impl/cyl_h1_full_seq_impl_.h"
+#endif
 
 /*
     Returns the cylindrical Hankel function of the first kind, real order nu,
@@ -33,9 +33,10 @@
             
     Implementation: Similar to the cyl_h1_seq() function.
 */
-BESSEL_LIBRARY_STATIC_INLINE_IMPL_
-tpdfcplx_impl_ cyl_h1(double nu, tpdfcplx_impl_ z) {
-
+BESSEL_LIBRARY_API_IMPL_
+tpdfcplx_impl_ cyl_h1(double nu, tpdfcplx_impl_ z)
+#ifndef BESSEL_LIBRARY_IMPORTS
+{
     /* Array of one size */
     tpdfcplx_impl_ ch1[1];
     
@@ -45,6 +46,9 @@ tpdfcplx_impl_ cyl_h1(double nu, tpdfcplx_impl_ z) {
     /* Return */
     return ch1[0];
 }
+#else
+;
+#endif
 
 /*
     Returns the scaled version of the cylindrical Hankel function of the
@@ -57,9 +61,10 @@ tpdfcplx_impl_ cyl_h1(double nu, tpdfcplx_impl_ z) {
                 
     Implementation: Similar to the cyl_h1_seq() function.
 */
-BESSEL_LIBRARY_STATIC_INLINE_IMPL_
-tpdfcplx_impl_ cyl_h1_scal(double nu, tpdfcplx_impl_ z) {
-
+BESSEL_LIBRARY_API_IMPL_
+tpdfcplx_impl_ cyl_h1_scal(double nu, tpdfcplx_impl_ z)
+#ifndef BESSEL_LIBRARY_IMPORTS
+{
     /* Array of one size */
     tpdfcplx_impl_ ch1[1];
     
@@ -69,6 +74,9 @@ tpdfcplx_impl_ cyl_h1_scal(double nu, tpdfcplx_impl_ z) {
     /* Return */
     return ch1[0];
 }
+#else
+;
+#endif
 
 /*
     Computes a n-sequency array of cylindrical Hankel functions of the first
@@ -89,12 +97,16 @@ tpdfcplx_impl_ cyl_h1_scal(double nu, tpdfcplx_impl_ z) {
     orders are handled by Eq. (9.1.6) of Ref. [1].
     It yields INFINITY + I * INFINITY when abs(z)=0.
 */
-BESSEL_LIBRARY_STATIC_INLINE_IMPL_
+BESSEL_LIBRARY_API_IMPL_
 void cyl_h1_seq(double nu, int n,
-    tpdfcplx_impl_ z, tpdfcplx_impl_ *cyl_h1_arr) {
-
+    tpdfcplx_impl_ z, tpdfcplx_impl_ *cyl_h1_arr)
+#ifndef BESSEL_LIBRARY_IMPORTS
+{
     cyl_h1_full_seq_impl_(nu, n, z, cyl_h1_arr, 0);
 }
+#else
+;
+#endif
 
 /*
     Computes a n-sequency array of scaled versions of cylindrical
@@ -112,11 +124,15 @@ void cyl_h1_seq(double nu, int n,
                 
     Implementation: Similar to the cyl_h1_seq() function.
 */
-BESSEL_LIBRARY_STATIC_INLINE_IMPL_
+BESSEL_LIBRARY_API_IMPL_
 void cyl_h1_scal_seq(double nu, int n,
-    tpdfcplx_impl_ z, tpdfcplx_impl_ *cyl_h2_scal_arr) {
-    
+    tpdfcplx_impl_ z, tpdfcplx_impl_ *cyl_h2_scal_arr)
+#ifndef BESSEL_LIBRARY_IMPORTS
+{
     cyl_h1_full_seq_impl_(nu, n, z, cyl_h2_scal_arr, 1);
 }
+#else
+;
+#endif
 
 #endif /* BESSEL_LIBRARY_CYL_H1_H */
