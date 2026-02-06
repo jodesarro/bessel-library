@@ -4,7 +4,7 @@
     File: src/bessel-library.c
     Version: include/bessel-library/version.h
     Author: Jhonas Olivati de Sarro
-    Language standards: C99 with C++ guards
+    Language standards: C99
     References: include/bessel-library/references.txt
     License: include/bessel-library/license.txt
 
