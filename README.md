@@ -571,16 +571,17 @@ found in the works listed in the [References](#references) section.
 
 ## How to use
 
-This library is header‑only, meaning there is nothing to build.
-
-If you need a compiled file, refer to the instructions in the
-[Compiling the library](#compiling-the-library) section.
+This library is header‑only, meaning there is nothing to build (if you still
+need a compiled file for some reason, refer to the instructions in the
+[Compiling the library](#compiling-the-library) section).
 
 Otherwise, you only need to paste all the content of the
 [include](include/) folder
 inside the include folder of your project (if you do not have an include
 folder in your project, paste the content inside the root folder of your
-project). Finally, just write `#include "bessel-library.h"` at the very
+project).
+
+Finally, just write `#include "bessel-library.h"` at the very
 beginning of your code and you shall be ready to use the functions.
 
 <details>
@@ -631,7 +632,7 @@ In this library, the implementation is carried out in terms of the C99
 standards.
 
 Therefore, all the complex variables are handled using the
-`tpdfcplx_impl_` type, which is automatically expanded to the `double complex`
+`tpdfcplx_impl_` type, which  automatically expands to the `double complex`
 type of the C `<complex.h>` library.
 
 Notice that all functions, macros, constants and files whose names contain
@@ -647,7 +648,7 @@ automatically mapped to their C++ equivalent: `creal(z)`↦`std::real(z)`,
 `cimag(z)`↦`std::imag(z)`, `cabs(z)`↦`std::abs(z)`,
 `cexp(z)`↦`std::exp(z)`, `sin(z)`↦`std::sin(z)`, and
 `cos(z)`↦`std::cos(z)`; and all the complex values are handled by means of
-the `tpdfcplx_impl_` type, which is automatically expanded to the
+the `tpdfcplx_impl_` type, which automatically expands to the
 `std::complex<double>` type of the C++ `<complex>` library.
 
 ## Compiling the library
@@ -729,8 +730,8 @@ before the `#include "bessel-library.h"`.
   </summary>
 
 ```c
-#define BESSEL_LIBRARY_IMPORTS /* Required for using a compiled file */
-#include "bessel-library.h" /* The bessel-library header */
+#define BESSEL_LIBRARY_IMPORTS /* Required for using the compiled file */
+#include "bessel-library.h" /* The bessel-library.h header */
 #include <stdio.h> /* For printf() */
 #include <complex.h> /* For double complex type */
 
