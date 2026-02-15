@@ -17,6 +17,7 @@
 #define BESSEL_LIBRARY_SLATEC_ZAIRY_IMPL_H
 
 #include <math.h>
+#include <stdlib.h>
 #include "fortran_d1mach_impl_.h"
 #include "fortran_i1mach_impl_.h"
 #include "slatec_zabs_impl_.h"
