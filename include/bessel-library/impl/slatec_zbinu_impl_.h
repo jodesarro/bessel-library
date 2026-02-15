@@ -16,7 +16,6 @@
 #ifndef BESSEL_LIBRARY_SLATEC_ZBINU_IMPL_H
 #define BESSEL_LIBRARY_SLATEC_ZBINU_IMPL_H
 
-#include <math.h>
 #include "slatec_zabs_impl_.h"
 #include "slatec_zasyi_impl_.h"
 #include "slatec_zbuni_impl_.h"
