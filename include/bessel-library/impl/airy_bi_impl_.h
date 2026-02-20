@@ -1,58 +1,56 @@
-/* 
-    Bessel Library: A C library with routines for computing Bessel functions
+/*
+  Bessel Library: A C library with routines for computing Bessel functions
 
-    File: include/bessel-library/impl/airy_bi_impl_.h
-    Version: include/bessel-library/version.h
-    Author: Jhonas Olivati de Sarro
-    Language standards: C99
-    References: include/bessel-library/references.txt
-    License: include/bessel-library/license.txt
+  File: include/bessel-library/impl/airy_bi_impl_.h
+  Language standards: C99
+  References: include/bessel-library/references.txt
+  License: include/bessel-library/license.txt
+  Repository: <https://github.com/jodesarro/bessel-library>
 
-    Description:
-        Returns the Airy function of the second kind and complex argument z,
-        i.e., Bi(z), in double complex type for C, or in std::complex<double> 
-        type for C++, by means of the routines from the Slatec library.
+  Description: Returns the Airy function of the second kind and complex argument
+  z, i.e., Bi(z), in double complex type for C, or in std::complex<double> type
+  for C++, by means of the routines from the Slatec library.
 */
 
 #ifndef BESSEL_LIBRARY_AIRY_BI_IMPL_H
 #define BESSEL_LIBRARY_AIRY_BI_IMPL_H
 
 #include "cplx_c_cpp_impl_.h"
-#include "slatec_zbiry_impl_.h"
 #include "slatec_flags_impl_.h"
+#include "slatec_zbiry_impl_.h"
 
 /*
-    Returns the Airy function of the second kind and complex argument z,
-    i.e., Bi(z), by means of the routines from the Slatec library.
-    
-    Parameters:
-    - z, complex argument of Bi(z).
-    - derivative, replaces Bi(z) by dBi(z)/dz if 1.
-    - scaled, returns the scaled version
-    Bi(z)*exp(abs(real((2/3)*pow(z,3/2)))) if 1.
+  Returns the Airy function of the second kind and complex argument z, i.e.,
+  Bi(z), by means of the routines from the Slatec library.
 
-    Implementation: In general, the implementation is based on the D. E. Amos
-    Fortran 77 routines from the Slatec library [3] Such Fortran routines,
-    and all their dependencies, were carefully translated to C.
+  Parameters:
+  - z, complex argument of Bi(z).
+  - derivative, replaces Bi(z) by dBi(z)/dz if 1.
+  - scaled, returns the scaled version Bi(z)*exp(abs(real((2/3)*pow(z,3/2))))
+  if 1.
+
+  Implementation: In general, the implementation is based on the D. E. Amos
+  Fortran 77 routines from the Slatec library [3] Such Fortran routines, and all
+  their dependencies, were carefully translated to C.
 */
-static inline tpdfcplx_impl_ airy_bi_impl_(tpdfcplx_impl_ z,
-    int derivative, int scaled) {
-    
-    int kode = ( scaled == 1 ? 2 : 1 );
-    int ierr;
-    double x = creal(z);
-    double y = cimag(z);
+static inline tpdfcplx_impl_ airy_bi_impl_(tpdfcplx_impl_ z, int derivative,
+                                           int scaled) {
 
-    /* Auxiliary arrays */
-    double bir_arr[2] = {0.0, 0.0}, bii_arr[2] = {0.0, 0.0};
+  int kode = (scaled == 1 ? 2 : 1);
+  int ierr;
+  double x = creal(z);
+  double y = cimag(z);
 
-    /* Compute zbiry */
-    slatec_zbiry_impl_(&x, &y, &derivative, &kode, &bir_arr[1], &bii_arr[1],
-        &ierr);
-    slatec_flags_zbiry_impl_(ierr);
+  /* Auxiliary arrays */
+  double bir_arr[2] = {0.0, 0.0}, bii_arr[2] = {0.0, 0.0};
 
-    /* Return */
-    return bir_arr[1] + I_IMPL_ * bii_arr[1];
+  /* Compute zbiry */
+  slatec_zbiry_impl_(&x, &y, &derivative, &kode, &bir_arr[1], &bii_arr[1],
+                     &ierr);
+  slatec_flags_zbiry_impl_(ierr);
+
+  /* Return */
+  return bir_arr[1] + I_IMPL_ * bii_arr[1];
 }
 
 #endif /* BESSEL_LIBRARY_AIRY_BI_IMPL_H */

@@ -1,15 +1,13 @@
-/* 
-    Bessel Library: A C library with routines for computing Bessel functions
+/*
+  Bessel Library: A C library with routines for computing Bessel functions
 
-    File: include/bessel-library/impl/cplx_c_cpp_impl_.h
-    Version: include/bessel-library/version.h
-    Author: Jhonas Olivati de Sarro
-    Language standards: C99 and C++98 guards, macros and typedefs
-    References: include/bessel-library/references.txt
-    License: include/bessel-library/license.txt
+  File: include/bessel-library/impl/cplx_c_cpp_impl_.h
+  Language standards: C99 and C++98
+  References: include/bessel-library/references.txt
+  License: include/bessel-library/license.txt
+  Repository: <https://github.com/jodesarro/bessel-library>
 
-    Description:
-        Defines macros and typedefs for ensuring C++ compatibility
+  Description: Defines macros and typedefs for ensuring C++ compatibility.
 */
 
 #ifndef BESSEL_LIBRARY_CPLX_C_CPP_IMPL_H

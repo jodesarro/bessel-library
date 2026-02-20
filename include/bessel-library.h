@@ -1,22 +1,19 @@
-/* 
-    Bessel Library: A C library with routines for computing Bessel functions
+/*
+  Bessel Library: A C library with routines for computing Bessel functions
 
-    File: include/bessel-library.h
-    Version: include/bessel-library/version.h
-    Author: Jhonas Olivati de Sarro
-    Language standards: C99
-    References: include/bessel-library/references.txt
-    License: include/bessel-library/license.txt
+  File: include/bessel-library.h
+  Language standards: C99
+  References: include/bessel-library/references.txt
+  License: include/bessel-library/license.txt
+  Repository: <https://github.com/jodesarro/bessel-library>
 
-    Description:
-        Include headers of all core functions of the
-        include/bessel-library/core folder.
+  Description: Include headers of all core functions of the
+  include/bessel-library/core folder.
 */
 
 #ifndef BESSEL_LIBRARY_H
 #define BESSEL_LIBRARY_H
 
-#include "bessel-library/version.h"
 #include "bessel-library/core/airy_ai.h"
 #include "bessel-library/core/airy_bi.h"
 #include "bessel-library/core/cyl_h1.h"

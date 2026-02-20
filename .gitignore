@@ -1,0 +1,5 @@
+# Ignore local configs of VS Code
+.vscode/
+
+# Ignore private folder
+.private/

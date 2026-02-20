@@ -591,8 +591,8 @@ beginning of your code and you shall be ready to use the functions.
 
 ```c
 #include "bessel-library.h" /* The bessel-library */
-#include <stdio.h> /* For printf() */
-#include <complex.h> /* For double complex type */
+#include <stdio.h>          /* For printf() */
+#include <complex.h>        /* For double complex type */
 
 int main() {
   double nu = 3.5;
@@ -612,8 +612,8 @@ int main() {
 
 ```cpp
 #include "bessel-library.h" /* The bessel-library */
-#include <iostream> /* For std::cout */
-#include <complex> /* For std::complex<double> type */
+#include <iostream>         /* For std::cout() */
+#include <complex>          /* For std::complex<double> type */
 
 int main() {
   double nu = 3.5;
@@ -731,9 +731,9 @@ before the `#include "bessel-library.h"`.
 
 ```c
 #define BESSEL_LIBRARY_IMPORTS /* Required for using the compiled file */
-#include "bessel-library.h" /* The bessel-library.h header */
-#include <stdio.h> /* For printf() */
-#include <complex.h> /* For double complex type */
+#include "bessel-library.h"    /* The bessel-library.h header */
+#include <stdio.h>             /* For printf() */
+#include <complex.h>           /* For double complex type */
 
 int main() {
   double nu = 3.5;
@@ -746,17 +746,17 @@ int main() {
 ```
 </details>
 
-## Change log
-
-Refer to the [CHANGELOG.md](CHANGELOG.md) file for the latest updates.
-
 ## Authorship
 
-The codes and routines were developed and are updated by
+The library was developed and is updated by
 <a href="https://www.researchgate.net/profile/Jhonas-de-Sarro">
 Jhonas O. de Sarro</a> ([@jodesarro](https://github.com/jodesarro)).
-They are mainly written based on, or a translation of, the works listed in the
-[References](#references) section.
+
+Some improvements and tips are also the result of the efforts of the
+[contributors](https://github.com/jodesarro/bessel-library/graphs/contributors).
+
+The codes and routines are mainly written based on, or a translation of,
+the works listed in the [References](#references) section.
 
 ## Licensing
 

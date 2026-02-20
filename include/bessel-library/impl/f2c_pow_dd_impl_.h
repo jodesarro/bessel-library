@@ -1,24 +1,22 @@
-/* 
-    Bessel Library: A C library with routines for computing Bessel functions
+/*
+  Bessel Library: A C library with routines for computing Bessel functions
 
-    File: include/bessel-library/impl/f2c_pow_dd_impl_.h
-    Version: include/bessel-library/version.h
-    Author: Jhonas Olivati de Sarro
-    Language standards: C99
-    References: include/bessel-library/references.txt
-    License: include/bessel-library/license.txt
+  File: include/bessel-library/impl/f2c_pow_dd_impl_.h
+  Language standards: C99
+  References: include/bessel-library/references.txt
+  License: include/bessel-library/license.txt
+  Repository: <https://github.com/jodesarro/bessel-library>
 
-    Description:
-        Function pow_dd of the f2c library.
+  Description: Function pow_dd of the f2c library.
 */
 
 #ifndef BESSEL_LIBRARY_F2C_POW_DD_IMPL_H
 #define BESSEL_LIBRARY_F2C_POW_DD_IMPL_H
 
-#include <math.h>
+#include <math.h> /* For math operations and constants */
 
 static inline double f2c_pow_dd_impl_(double *x, double *y) {
-    return pow(*x, *y);
+  return pow(*x, *y);
 }
 
 #endif /* BESSEL_LIBRARY_F2C_POW_DD_IMPL_H */
