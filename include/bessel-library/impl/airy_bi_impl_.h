@@ -1,11 +1,10 @@
 /*
   Bessel Library: A C library with routines for computing Bessel functions
 
-  File: include/bessel-library/impl/airy_bi_impl_.h
-  Language standards: C99
-  References: include/bessel-library/references.txt
-  License: include/bessel-library/license.txt
   Repository: <https://github.com/jodesarro/bessel-library>
+  License: Refer to the LICENSE file in the Repository
+  References: Refer to the README.md file in the Repository
+  Language standard: C99
 
   Description: Returns the Airy function of the second kind and complex argument
   z, i.e., Bi(z), in double complex type for C, or in std::complex<double> type

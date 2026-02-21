@@ -1,7 +1,7 @@
 /*
   Bessel Library: A C library with routines for computing Bessel functions
 
-  File: bessel-library/core/airy_ai.h
+
   Version: bessel-library/version.h
   Repository: <https://github.com/jodesarro/bessel-library>
   Language standards: C99

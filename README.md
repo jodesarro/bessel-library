@@ -760,9 +760,7 @@ the works listed in the [References](#references) section.
 
 ## Licensing
 
-This project is protected under [MIT License](LICENSE). A copy of the license
-is also available at
-[include/bessel-library/license.txt](include/bessel-library/license.txt).
+This project is protected under [MIT License](LICENSE).
 
 ## References
 
@@ -780,6 +778,3 @@ of Standards, 1972.
 software library containing over 1400 general purpose mathematical and
 statistical routines written in Fortran 77. Available at
 <https://www.netlib.org/slatec/> (Accessed: May 25, 2024).
-
-A copy of this list is available at
-[include/bessel-library/references.txt](include/bessel-library/references.txt).

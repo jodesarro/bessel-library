@@ -1,11 +1,10 @@
 /*
   Bessel Library: A C library with routines for computing Bessel functions
 
-  File: include/bessel-library/impl/slatec_zmlt_impl_.h
-  Language standards: C99
-  References: include/bessel-library/references.txt
-  License: include/bessel-library/license.txt
   Repository: <https://github.com/jodesarro/bessel-library>
+  License: Refer to the LICENSE file in the Repository
+  References: Refer to the README.md file in the Repository
+  Language standard: C99
 
   Description: Slatec's ZMLT subroutine, originally translated from Fortran to C
   with f2c, and adapted.
