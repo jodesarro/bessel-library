@@ -33,7 +33,7 @@
   all their dependencies, were carefully translated to C.
 */
 BESSEL_LIBRARY_API_IMPL_
-tpdfcplx_impl_ airy_ai(double complex z)
+tpdfcplx_impl_ airy_ai(tpdfcplx_impl_ z)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
   return airy_ai_impl_(z, 0, 0);
