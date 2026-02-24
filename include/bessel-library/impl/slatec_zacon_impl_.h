@@ -34,29 +34,29 @@ static inline int slatec_zacon_impl_(double *zr, double *zi, double *fnu,
                                      double *fnul, double *tol, double *elim,
                                      double *alim) {
   /* Initialized data */
-  static int c_u_1 = 1;
-  static int c_u_2 = 2;
-  static double pi = 3.14159265358979324;
-  static double zeror = 0.;
-  static double coner = 1.;
+  int c_u_1 = 1;
+  int c_u_2 = 2;
+  double pi = 3.14159265358979324;
+  double zeror = 0.;
+  double coner = 1.;
 
   /* System generated locals */
   int i_u_1;
 
   /* Local variables */
-  static int i_u_;
-  static double fn;
-  static int nn, nw;
-  static double yy, c1i, c2i, c1m, as2, c1r, c2r, s1i, s2i, s1r, s2r, cki, arg,
-      ckr, cpn;
-  static int iuf;
-  static double cyi[2], fmr, csr, azn, sgn;
-  static int inu;
-  static double bry[3], cyr[2], pti, spn, sti, zni, rzi, ptr, str, znr, rzr,
-      sc1i, sc2i, sc1r, sc2r, cscl, cscr;
-  static double csrr[3], cssr[3], razn;
-  static int kflag;
-  static double ascle, bscle, csgni, csgnr, cspni, cspnr;
+  int i_u_;
+  double fn;
+  int nn, nw;
+  double yy, c1i, c2i, c1m, as2, c1r, c2r, s1i, s2i, s1r, s2r, cki, arg, ckr,
+      cpn;
+  int iuf;
+  double cyi[2], fmr, csr, azn, sgn;
+  int inu;
+  double bry[3], cyr[2], pti, spn, sti, zni, rzi, ptr, str, znr, rzr, sc1i,
+      sc2i, sc1r, sc2r, cscl, cscr;
+  double csrr[3], cssr[3], razn;
+  int kflag;
+  double ascle, bscle, csgni, csgnr, cspni, cspnr;
 
   /* ***BEGIN PROLOGUE  ZACON */
   /* ***SUBSIDIARY */

@@ -31,31 +31,30 @@ static inline int slatec_zmlri_impl_(double *zr, double *zi, double *fnu,
                                      int *kode, int *n, double *yr, double *yi,
                                      int *nz, double *tol) {
   /* Initialized data */
-  static int c_u_1 = 1;
-  static double zeror = 0.;
-  static double zeroi = 0.;
-  static double coner = 1.;
-  static double conei = 0.;
+  int c_u_1 = 1;
+  double zeror = 0.;
+  double zeroi = 0.;
+  double coner = 1.;
+  double conei = 0.;
 
   /* System generated locals */
   int i_u_1, i_u_2;
   double d_u_1, d_u_2, d_u_3;
 
   /* Local variables */
-  static int i_u_, k, m;
-  static double ak, bk, ap, at;
-  static int kk, km;
-  static double az, p1i, p2i, p1r, p2r, ack, cki, fnf, fkk, ckr;
-  static int iaz;
-  static double rho;
-  static int inu;
-  static double pti, raz, sti, rzi, ptr, str, tst, rzr, rho2, flam, fkap, scle,
-      tfnf;
-  static int idum;
-  static int ifnu;
-  static double sumi, sumr;
-  static int itime;
-  static double cnormi, cnormr;
+  int i_u_, k, m;
+  double ak, bk, ap, at;
+  int kk, km;
+  double az, p1i, p2i, p1r, p2r, ack, cki, fnf, fkk, ckr;
+  int iaz;
+  double rho;
+  int inu;
+  double pti, raz, sti, rzi, ptr, str, tst, rzr, rho2, flam, fkap, scle, tfnf;
+  int idum;
+  int ifnu;
+  double sumi, sumr;
+  int itime;
+  double cnormi, cnormr;
 
   /* ***BEGIN PROLOGUE  ZMLRI */
   /* ***SUBSIDIARY */

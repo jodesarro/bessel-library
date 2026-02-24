@@ -22,7 +22,7 @@
 static inline int slatec_zshch_impl_(double *zr, double *zi, double *cshr,
                                      double *cshi, double *cchr, double *cchi) {
   /* Local variables */
-  static double ch, cn, sh, sn;
+  double ch, cn, sh, sn;
 
   /* ***BEGIN PROLOGUE  ZSHCH */
   /* ***SUBSIDIARY */

@@ -32,53 +32,53 @@ static inline int slatec_zunk2_impl_(double *zr, double *zi, double *fnu,
                                      double *yi, int *nz, double *tol,
                                      double *elim, double *alim) {
   /* Initialized data */
-  static int c_u_0 = 0;
-  static int c_u_1 = 1;
-  static int c_u_2 = 2;
-  static double zeror = 0.;
-  static double aic = 1.26551212348464539;
-  static double cipr[4] = {1., 0., -1., 0.};
-  static double cipi[4] = {0., -1., 0., 1.};
-  static double zeroi = 0.;
-  static double coner = 1.;
-  static double cr1r = 1.;
-  static double cr1i = 1.73205080756887729;
-  static double cr2r = -.5;
-  static double cr2i = -.866025403784438647;
-  static double hpi = 1.57079632679489662;
-  static double pi = 3.14159265358979324;
+  int c_u_0 = 0;
+  int c_u_1 = 1;
+  int c_u_2 = 2;
+  double zeror = 0.;
+  double aic = 1.26551212348464539;
+  double cipr[4] = {1., 0., -1., 0.};
+  double cipi[4] = {0., -1., 0., 1.};
+  double zeroi = 0.;
+  double coner = 1.;
+  double cr1r = 1.;
+  double cr1i = 1.73205080756887729;
+  double cr2r = -.5;
+  double cr2i = -.866025403784438647;
+  double hpi = 1.57079632679489662;
+  double pi = 3.14159265358979324;
 
   /* System generated locals */
   int i_u_1;
 
   /* Local variables */
-  static int i_u_, j, k, ib, ic;
-  static double fn;
-  static int il, kk, in, nw;
-  static double yy, c1i, c2i, c2m, c1r, c2r, s1i, s2i, rs1, s1r, s2r, aii, ang,
-      asc, car, cki, fnf;
-  static int nai;
-  static double air;
-  static int ifn;
-  static double csi, ckr;
-  static int iuf;
-  static double cyi[2], fmr, sar, csr, sgn, zbi;
-  static int inu;
-  static double bry[3], cyr[2], pti, sti, zbr, zni, rzi, ptr, zri, str, znr,
-      rzr, zrr, daii, aarg;
-  static int ndai;
-  static double dair, aphi, argi[2], cscl, phii[2], crsc, argr[2];
-  static int idum;
-  static double phir[2], csrr[3], cssr[3], rast, razr;
-  static int iflag, kflag;
-  static double argdi, ascle;
-  static int kdflg;
-  static double phidi, argdr;
-  static int ipard;
-  static double csgni, phidr, cspni, asumi[2], bsumi[2];
-  static double cspnr, asumr[2], bsumr[2];
-  static double zeta1i[2], zeta2i[2], zet1di, zet2di, zeta1r[2], zeta2r[2],
-      zet1dr, zet2dr, asumdi, bsumdi, asumdr, bsumdr;
+  int i_u_, j, k, ib, ic;
+  double fn;
+  int il, kk, in, nw;
+  double yy, c1i, c2i, c2m, c1r, c2r, s1i, s2i, rs1, s1r, s2r, aii, ang, asc,
+      car, cki, fnf;
+  int nai;
+  double air;
+  int ifn;
+  double csi, ckr;
+  int iuf;
+  double cyi[2], fmr, sar, csr, sgn, zbi;
+  int inu;
+  double bry[3], cyr[2], pti, sti, zbr, zni, rzi, ptr, zri, str, znr, rzr, zrr,
+      daii, aarg;
+  int ndai;
+  double dair, aphi, argi[2], cscl, phii[2], crsc, argr[2];
+  int idum;
+  double phir[2], csrr[3], cssr[3], rast, razr;
+  int iflag, kflag;
+  double argdi, ascle;
+  int kdflg;
+  double phidi, argdr;
+  int ipard;
+  double csgni, phidr, cspni, asumi[2], bsumi[2];
+  double cspnr, asumr[2], bsumr[2];
+  double zeta1i[2], zeta2i[2], zet1di, zet2di, zeta1r[2], zeta2r[2], zet1dr,
+      zet2dr, asumdi, bsumdi, asumdr, bsumdr;
 
   /* ***BEGIN PROLOGUE  ZUNK2 */
   /* ***SUBSIDIARY */

@@ -31,30 +31,30 @@ static inline int slatec_zuni1_impl_(double *zr, double *zi, double *fnu,
                                      int *nz, int *nlast, double *fnul,
                                      double *tol, double *elim, double *alim) {
   /* Initialized data */
-  static int c_u_0 = 0;
-  static int c_u_1 = 1;
-  static int c_u_2 = 2;
-  static double zeror = 0.;
-  static double zeroi = 0.;
-  static double coner = 1.;
+  int c_u_0 = 0;
+  int c_u_1 = 1;
+  int c_u_2 = 2;
+  double zeror = 0.;
+  double zeroi = 0.;
+  double coner = 1.;
 
   /* System generated locals */
   int i_u_1;
 
   /* Local variables */
-  static int i_u_, k, m, nd;
-  static double fn;
-  static int nn, nw;
-  static double c2i, c2m, c1r, c2r, s1i, s2i, rs1, s1r, s2r, cyi[2];
-  static int nuf;
-  static double bry[3], cyr[2], sti, rzi, str, rzr, aphi, cscl, phii, crsc;
-  static double phir;
-  static int init;
-  static double csrr[3], cssr[3], rast, sumi, sumr;
-  static int iflag;
-  static double ascle, cwrki[16];
-  static double cwrkr[16];
-  static double zeta1i, zeta2i, zeta1r, zeta2r;
+  int i_u_, k, m, nd;
+  double fn;
+  int nn, nw;
+  double c2i, c2m, c1r, c2r, s1i, s2i, rs1, s1r, s2r, cyi[2];
+  int nuf;
+  double bry[3], cyr[2], sti, rzi, str, rzr, aphi, cscl, phii, crsc;
+  double phir;
+  int init;
+  double csrr[3], cssr[3], rast, sumi, sumr;
+  int iflag;
+  double ascle, cwrki[16];
+  double cwrkr[16];
+  double zeta1i, zeta2i, zeta1r, zeta2r;
 
   /* ***BEGIN PROLOGUE  ZUNI1 */
   /* ***SUBSIDIARY */

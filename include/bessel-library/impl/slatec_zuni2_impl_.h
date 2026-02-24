@@ -32,38 +32,38 @@ static inline int slatec_zuni2_impl_(double *zr, double *zi, double *fnu,
                                      int *nz, int *nlast, double *fnul,
                                      double *tol, double *elim, double *alim) {
   /* Initialized data */
-  static int c_u_0 = 0;
-  static int c_u_1 = 1;
-  static int c_u_2 = 2;
-  static double zeror = 0.;
-  static double zeroi = 0.;
-  static double coner = 1.;
-  static double cipr[4] = {1., 0., -1., 0.};
-  static double cipi[4] = {0., 1., 0., -1.};
-  static double hpi = 1.57079632679489662;
-  static double aic = 1.265512123484645396;
+  int c_u_0 = 0;
+  int c_u_1 = 1;
+  int c_u_2 = 2;
+  double zeror = 0.;
+  double zeroi = 0.;
+  double coner = 1.;
+  double cipr[4] = {1., 0., -1., 0.};
+  double cipi[4] = {0., 1., 0., -1.};
+  double hpi = 1.57079632679489662;
+  double aic = 1.265512123484645396;
 
   /* System generated locals */
   int i_u_1;
 
   /* Local variables */
-  static int i_u_, j, k, nd;
-  static double fn;
-  static int in, nn, nw;
-  static double c2i, c2m, c1r, c2r, s1i, s2i, rs1, s1r, s2r, aii, ang, car;
-  static int nai;
-  static double air, zbi, cyi[2], sar;
-  static int nuf, inu;
-  static double bry[3], raz, sti, zbr, zni, cyr[2], rzi, str, znr, rzr, daii,
-      cidi, aarg;
-  static int ndai;
-  static double dair, aphi, argi, cscl, phii, crsc, argr;
-  static int idum;
-  static double phir, csrr[3], cssr[3], rast;
-  static int iflag;
-  static double ascle, asumi, bsumi;
-  static double asumr, bsumr;
-  static double zeta1i, zeta2i, zeta1r, zeta2r;
+  int i_u_, j, k, nd;
+  double fn;
+  int in, nn, nw;
+  double c2i, c2m, c1r, c2r, s1i, s2i, rs1, s1r, s2r, aii, ang, car;
+  int nai;
+  double air, zbi, cyi[2], sar;
+  int nuf, inu;
+  double bry[3], raz, sti, zbr, zni, cyr[2], rzi, str, znr, rzr, daii, cidi,
+      aarg;
+  int ndai;
+  double dair, aphi, argi, cscl, phii, crsc, argr;
+  int idum;
+  double phir, csrr[3], cssr[3], rast;
+  int iflag;
+  double ascle, asumi, bsumi;
+  double asumr, bsumr;
+  double zeta1i, zeta2i, zeta1r, zeta2r;
 
   /* ***BEGIN PROLOGUE  ZUNI2 */
   /* ***SUBSIDIARY */

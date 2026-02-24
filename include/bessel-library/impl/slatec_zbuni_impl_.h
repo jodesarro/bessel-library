@@ -30,22 +30,22 @@ static inline int slatec_zbuni_impl_(double *zr, double *zi, double *fnu,
                                      double *fnul, double *tol, double *elim,
                                      double *alim) {
   /* Initialized data */
-  static int c_u_1 = 1;
-  static int c_u_2 = 2;
+  int c_u_1 = 1;
+  int c_u_2 = 2;
 
   /* System generated locals */
   int i_u_1;
 
   /* Local variables */
-  static int i_u_, k;
-  static double ax, ay;
-  static int nl, nw;
-  static double c1i, c1m, c1r, s1i, s2i, s1r, s2r, cyi[2], gnu, raz, cyr[2],
-      sti, bry[3], rzi, str, rzr, dfnu;
-  static double fnui;
-  static int iflag;
-  static double ascle, csclr, cscrr;
-  static int iform;
+  int i_u_, k;
+  double ax, ay;
+  int nl, nw;
+  double c1i, c1m, c1r, s1i, s2i, s1r, s2r, cyi[2], gnu, raz, cyr[2], sti,
+      bry[3], rzi, str, rzr, dfnu;
+  double fnui;
+  int iflag;
+  double ascle, csclr, cscrr;
+  int iform;
 
   /* ***BEGIN PROLOGUE  ZBUNI */
   /* ***SUBSIDIARY */

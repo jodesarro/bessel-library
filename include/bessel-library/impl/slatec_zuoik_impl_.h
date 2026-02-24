@@ -31,28 +31,28 @@ static inline int slatec_zuoik_impl_(double *zr, double *zi, double *fnu,
                                      double *yi, int *nuf, double *tol,
                                      double *elim, double *alim) {
   /* Initialized data */
-  static int c_u_1 = 1;
-  static double zeror = 0.;
-  static double zeroi = 0.;
-  static double aic = 1.265512123484645396;
+  int c_u_1 = 1;
+  double zeror = 0.;
+  double zeroi = 0.;
+  double aic = 1.265512123484645396;
 
   /* System generated locals */
   int i_u_1;
 
   /* Local variables */
-  static int i_u_;
-  static double ax, ay;
-  static int nn, nw;
-  static double fnn, gnn, zbi, czi, gnu, zbr, czr, rcz, sti, zni, zri, str, znr,
-      zrr, aarg, aphi, argi, phii, argr;
-  static int idum;
-  static double phir;
-  static int init;
-  static double sumi, sumr, ascle;
-  static int iform;
-  static double asumi, bsumi, cwrki[16];
-  static double asumr, bsumr, cwrkr[16];
-  static double zeta1i, zeta2i, zeta1r, zeta2r;
+  int i_u_;
+  double ax, ay;
+  int nn, nw;
+  double fnn, gnn, zbi, czi, gnu, zbr, czr, rcz, sti, zni, zri, str, znr, zrr,
+      aarg, aphi, argi, phii, argr;
+  int idum;
+  double phir;
+  int init;
+  double sumi, sumr, ascle;
+  int iform;
+  double asumi, bsumi, cwrki[16];
+  double asumr, bsumr, cwrkr[16];
+  double zeta1i, zeta2i, zeta1r, zeta2r;
 
   /* ***BEGIN PROLOGUE  ZUOIK */
   /* ***SUBSIDIARY */

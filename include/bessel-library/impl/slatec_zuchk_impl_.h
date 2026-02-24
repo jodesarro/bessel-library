@@ -23,7 +23,7 @@
 /* Subroutine */
 static inline int slatec_zuchk_impl_(double *yr, double *yi, int *nz,
                                      double *ascle, double *tol) {
-  static double wi, ss, st, wr;
+  double wi, ss, st, wr;
 
   /* ***BEGIN PROLOGUE  ZUCHK */
   /* ***SUBSIDIARY */

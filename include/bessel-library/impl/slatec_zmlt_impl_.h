@@ -19,7 +19,7 @@
 /* Subroutine */
 static inline int slatec_zmlt_impl_(double *ar, double *ai, double *br,
                                     double *bi, double *cr, double *ci) {
-  static double ca, cb;
+  double ca, cb;
 
   /* ***BEGIN PROLOGUE  ZMLT */
   /* ***SUBSIDIARY */

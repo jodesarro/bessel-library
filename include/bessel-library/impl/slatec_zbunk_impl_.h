@@ -25,7 +25,7 @@ static inline int slatec_zbunk_impl_(double *zr, double *zi, double *fnu,
                                      int *kode, int *mr, int *n, double *yr,
                                      double *yi, int *nz, double *tol,
                                      double *elim, double *alim) {
-  static double ax, ay;
+  double ax, ay;
 
   /* ***BEGIN PROLOGUE  ZBUNK */
   /* ***SUBSIDIARY */

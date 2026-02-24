@@ -24,7 +24,7 @@ static inline double slatec_zabs_impl_(double *zr, double *zi) {
   double ret_val;
 
   /* Local variables */
-  static double q, s, u, v;
+  double q, s, u, v;
 
   /* ***BEGIN PROLOGUE  ZABS */
   /* ***SUBSIDIARY */

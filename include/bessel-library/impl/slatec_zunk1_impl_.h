@@ -31,45 +31,44 @@ static inline int slatec_zunk1_impl_(double *zr, double *zi, double *fnu,
                                      double *yi, int *nz, double *tol,
                                      double *elim, double *alim) {
   /* Initialized data */
-  static int c_u_0 = 0;
-  static int c_u_1 = 1;
-  static int c_u_2 = 2;
-  static double zeror = 0.;
-  static double zeroi = 0.;
-  static double coner = 1.;
-  static double pi = 3.14159265358979324;
+  int c_u_0 = 0;
+  int c_u_1 = 1;
+  int c_u_2 = 2;
+  double zeror = 0.;
+  double zeroi = 0.;
+  double coner = 1.;
+  double pi = 3.14159265358979324;
 
   /* System generated locals */
   int i_u_1;
 
   /* Local variables */
-  static int i_u_, j, k, m, ib, ic;
-  static double fn;
-  static int il, kk, nw;
-  static double c1i, c2i, c2m, c1r, c2r, s1i, s2i, rs1, s1r, s2r, ang, asc, cki,
-      fnf;
-  static int ifn;
-  static double ckr;
-  static int iuf;
-  static double cyi[2], fmr, csr, sgn;
-  static int inu;
-  static double bry[3], cyr[2], sti, rzi, zri, str, rzr, zrr, aphi, cscl,
-      phii[2], crsc;
-  static double phir[2];
-  static int init[2];
-  static double csrr[3], cssr[3], rast, sumi[2], razr;
-  static double sumr[2];
-  static int iflag, kflag;
-  static double ascle;
-  static int kdflg;
-  static double phidi;
-  static int ipard;
-  static double csgni, phidr;
-  static int initd;
-  static double cspni, cwrki[48] /* was [16][3] */, sumdi;
-  static double cspnr, cwrkr[48] /* was [16][3] */, sumdr;
-  static double zeta1i[2], zeta2i[2], zet1di, zet2di, zeta1r[2], zeta2r[2],
-      zet1dr, zet2dr;
+  int i_u_, j, k, m, ib, ic;
+  double fn;
+  int il, kk, nw;
+  double c1i, c2i, c2m, c1r, c2r, s1i, s2i, rs1, s1r, s2r, ang, asc, cki, fnf;
+  int ifn;
+  double ckr;
+  int iuf;
+  double cyi[2], fmr, csr, sgn;
+  int inu;
+  double bry[3], cyr[2], sti, rzi, zri, str, rzr, zrr, aphi, cscl, phii[2],
+      crsc;
+  double phir[2];
+  int init[2];
+  double csrr[3], cssr[3], rast, sumi[2], razr;
+  double sumr[2];
+  int iflag, kflag;
+  double ascle;
+  int kdflg;
+  double phidi;
+  int ipard;
+  double csgni, phidr;
+  int initd;
+  double cspni, cwrki[48] /* was [16][3] */, sumdi;
+  double cspnr, cwrkr[48] /* was [16][3] */, sumdr;
+  double zeta1i[2], zeta2i[2], zet1di, zet2di, zeta1r[2], zeta2r[2], zet1dr,
+      zet2dr;
 
   /* ***BEGIN PROLOGUE  ZUNK1 */
   /* ***SUBSIDIARY */

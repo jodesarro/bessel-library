@@ -35,35 +35,35 @@ static inline int slatec_zbesh_impl_(double *zr, double *zi, double *fnu,
                                      int *kode, int *m, int *n, double *cyr,
                                      double *cyi, int *nz, int *ierr) {
   /* Initialized data */
-  static int c_u_1 = 1;
-  static int c_u_2 = 2;
-  static int c_u_4 = 4;
-  static int c_u_5 = 5;
-  static int c_u_9 = 9;
-  static int c_u_14 = 14;
-  static int c_u_15 = 15;
-  static int c_u_16 = 16;
-  static double hpi = 1.57079632679489662;
+  int c_u_1 = 1;
+  int c_u_2 = 2;
+  int c_u_4 = 4;
+  int c_u_5 = 5;
+  int c_u_9 = 9;
+  int c_u_14 = 14;
+  int c_u_15 = 15;
+  int c_u_16 = 16;
+  double hpi = 1.57079632679489662;
 
   /* System generated locals */
   int i_u_1, i_u_2;
   double d_u_1, d_u_2;
 
   /* Local variables */
-  static int i_u_, k, k1, k2;
-  static double aa, bb, fn;
-  static int mm;
-  static double az;
-  static int ir, nn;
-  static double rl;
-  static int mr, nw;
-  static double dig, arg, aln, fmm, r1m5, ufl, sgn;
-  static int nuf, inu;
-  static double tol, sti, zni, zti, str, znr, alim, elim;
-  static double atol, rhpi;
-  static int inuh;
-  static double fnul, rtol, ascle, csgni;
-  static double csgnr;
+  int i_u_, k, k1, k2;
+  double aa, bb, fn;
+  int mm;
+  double az;
+  int ir, nn;
+  double rl;
+  int mr, nw;
+  double dig, arg, aln, fmm, r1m5, ufl, sgn;
+  int nuf, inu;
+  double tol, sti, zni, zti, str, znr, alim, elim;
+  double atol, rhpi;
+  int inuh;
+  double fnul, rtol, ascle, csgni;
+  double csgnr;
 
   /* ***BEGIN PROLOGUE  ZBESH */
   /* ***PURPOSE  Compute a sequence of the Hankel functions H(m,a,z) */

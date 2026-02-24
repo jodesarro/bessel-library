@@ -27,29 +27,29 @@ static inline int slatec_zrati_impl_(double *zr, double *zi, double *fnu,
                                      int *n, double *cyr, double *cyi,
                                      double *tol) {
   /* Initialized data */
-  static double czeror = 0.;
-  static double czeroi = 0.;
-  static double coner = 1.;
-  static double conei = 0.;
-  static double rt2 = 1.41421356237309505;
+  double czeror = 0.;
+  double czeroi = 0.;
+  double coner = 1.;
+  double conei = 0.;
+  double rt2 = 1.41421356237309505;
 
   /* System generated locals */
   int i_u_1;
   double d_u_1;
 
   /* Local variables */
-  static int i_u_, k;
-  static double ak;
-  static int id, kk;
-  static double az, ap1, ap2, p1i, p2i, t1i, p1r, p2r, t1r, arg, rak, rho;
-  static int inu;
-  static double pti, tti, rzi, ptr, ttr, rzr, rap1, flam, dfnu, fdnu;
-  static int magz;
-  static int idnu;
-  static double fnup;
-  static double test, test1, amagz;
-  static int itime;
-  static double cdfnui, cdfnur;
+  int i_u_, k;
+  double ak;
+  int id, kk;
+  double az, ap1, ap2, p1i, p2i, t1i, p1r, p2r, t1r, arg, rak, rho;
+  int inu;
+  double pti, tti, rzi, ptr, ttr, rzr, rap1, flam, dfnu, fdnu;
+  int magz;
+  int idnu;
+  double fnup;
+  double test, test1, amagz;
+  int itime;
+  double cdfnui, cdfnur;
 
   /* ***BEGIN PROLOGUE  ZRATI */
   /* ***SUBSIDIARY */

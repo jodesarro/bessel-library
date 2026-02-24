@@ -23,12 +23,12 @@
 static inline int slatec_zsqrt_impl_(double *ar, double *ai, double *br,
                                      double *bi) {
   /* Initialized data */
-  static double drt = .7071067811865475244008443621;
-  static double dpi = 3.141592653589793238462643383;
+  double drt = .7071067811865475244008443621;
+  double dpi = 3.141592653589793238462643383;
 
   /* Local variables */
-  static double zm;
-  static double dtheta;
+  double zm;
+  double dtheta;
 
   /* ***BEGIN PROLOGUE  ZSQRT */
   /* ***SUBSIDIARY */

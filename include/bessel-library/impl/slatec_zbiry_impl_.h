@@ -33,36 +33,36 @@
 static inline int slatec_zbiry_impl_(double *zr, double *zi, int *id, int *kode,
                                      double *bir, double *bii, int *ierr) {
   /* Initialized data */
-  static int c_u_1 = 1;
-  static int c_u_2 = 2;
-  static int c_u_4 = 4;
-  static int c_u_5 = 5;
-  static int c_u_9 = 9;
-  static int c_u_14 = 14;
-  static int c_u_15 = 15;
-  static int c_u_16 = 16;
-  static double tth = .666666666666666667;
-  static double c1 = .614926627446000736;
-  static double c2 = .448288357353826359;
-  static double coef = .577350269189625765;
-  static double pi = 3.14159265358979324;
-  static double coner = 1.;
-  static double conei = 0.;
+  int c_u_1 = 1;
+  int c_u_2 = 2;
+  int c_u_4 = 4;
+  int c_u_5 = 5;
+  int c_u_9 = 9;
+  int c_u_14 = 14;
+  int c_u_15 = 15;
+  int c_u_16 = 16;
+  double tth = .666666666666666667;
+  double c1 = .614926627446000736;
+  double c2 = .448288357353826359;
+  double coef = .577350269189625765;
+  double pi = 3.14159265358979324;
+  double coner = 1.;
+  double conei = 0.;
 
   /* System generated locals */
   int i_u_1, i_u_2;
   double d_u_1;
 
   /* Local variables */
-  static int k;
-  static double d1, d2;
-  static int k1, k2;
-  static double aa, bb, ad, cc, ak, bk, ck, dk, az, rl;
-  static int nz;
-  static double s1i, az3, s2i, s1r, s2r, z3i, z3r, eaa, fid, dig, cyi[3], fmr,
-      r1m5, fnu, cyr[3], tol, sti, str, sfac, alim, elim, csqi;
-  static double atrm, fnul, ztai, csqr;
-  static double ztar, trm1i, trm2i, trm1r, trm2r;
+  int k;
+  double d1, d2;
+  int k1, k2;
+  double aa, bb, ad, cc, ak, bk, ck, dk, az, rl;
+  int nz;
+  double s1i, az3, s2i, s1r, s2r, z3i, z3r, eaa, fid, dig, cyi[3], fmr, r1m5,
+      fnu, cyr[3], tol, sti, str, sfac, alim, elim, csqi;
+  double atrm, fnul, ztai, csqr;
+  double ztar, trm1i, trm2i, trm1r, trm2r;
 
   /* ***BEGIN PROLOGUE  ZBIRY */
   /* ***PURPOSE  Compute the Airy function Bi(z) or its derivative dBi/dz */

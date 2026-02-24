@@ -28,20 +28,20 @@ static inline int slatec_zkscl_impl_(double *zrr, double *zri, double *fnu,
                                      double *rzr, double *rzi, double *ascle,
                                      double *tol, double *elim) {
   /* Initialized data */
-  static double zeror = 0.;
-  static double zeroi = 0.;
+  double zeror = 0.;
+  double zeroi = 0.;
 
   /* System generated locals */
   int i_u_1;
 
   /* Local variables */
-  static int i_u_, ic;
-  static double as, fn;
-  static int kk, nn, nw;
-  static double s1i, s2i, s1r, s2r, acs, cki, elm, csi, ckr, cyi[2], zdi, csr,
-      cyr[2], zdr, str, alas;
-  static int idum;
-  static double helim, celmr;
+  int i_u_, ic;
+  double as, fn;
+  int kk, nn, nw;
+  double s1i, s2i, s1r, s2r, acs, cki, elm, csi, ckr, cyi[2], zdi, csr, cyr[2],
+      zdr, str, alas;
+  int idum;
+  double helim, celmr;
 
   /* ***BEGIN PROLOGUE  ZKSCL */
   /* ***SUBSIDIARY */

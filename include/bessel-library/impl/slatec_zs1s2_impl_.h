@@ -28,12 +28,12 @@ static inline int slatec_zs1s2_impl_(double *zrr, double *zri, double *s1r,
                                      int *nz, double *ascle, double *alim,
                                      int *iuf) {
   /* Initialized data */
-  static double zeror = 0.;
-  static double zeroi = 0.;
+  double zeror = 0.;
+  double zeroi = 0.;
 
   /* Local variables */
-  static double aa, c1i, as1, as2, c1r, aln, s1di, s1dr;
-  static int idum;
+  double aa, c1i, as1, as2, c1r, aln, s1di, s1dr;
+  int idum;
 
   /* ***BEGIN PROLOGUE  ZS1S2 */
   /* ***SUBSIDIARY */

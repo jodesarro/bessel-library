@@ -28,17 +28,16 @@ static inline int slatec_zwrsk_impl_(double *zrr, double *zri, double *fnu,
                                      int *nz, double *cwr, double *cwi,
                                      double *tol, double *elim, double *alim) {
   /* Initialized data */
-  static int c_u_1 = 1;
-  static int c_u_2 = 2;
+  int c_u_1 = 1;
+  int c_u_2 = 2;
 
   /* System generated locals */
   int i_u_1;
 
   /* Local variables */
-  static int i_u_, nw;
-  static double c1i, c2i, c1r, c2r, act, acw, cti, ctr, pti, sti, ptr, str,
-      ract;
-  static double ascle, csclr, cinui, cinur;
+  int i_u_, nw;
+  double c1i, c2i, c1r, c2r, act, acw, cti, ctr, pti, sti, ptr, str, ract;
+  double ascle, csclr, cinui, cinur;
 
   /* ***BEGIN PROLOGUE  ZWRSK */
   /* ***SUBSIDIARY */

@@ -38,57 +38,57 @@ static inline int slatec_zbknu_impl_(double *zr, double *zi, double *fnu,
                                      int *nz, double *tol, double *elim,
                                      double *alim) {
   /* Initialized data */
-  static int c_u_1 = 1;
-  static int c_u_2 = 2;
-  static int c_u_5 = 5;
-  static int c_u_14 = 14;
-  static double c_b10 = .5;
-  static double c_b11 = 0.;
-  static int kmax = 30;
-  static double spi = 1.90985931710274403;
-  static double hpi = 1.57079632679489662;
-  static double fpi = 1.89769999331517738;
-  static double tth = .666666666666666666;
-  static double cc[8] = {.577215664901532861,     -.0420026350340952355,
-                         -.0421977345555443367,   .00721894324666309954,
-                         -2.15241674114950973e-4, -2.01348547807882387e-5,
-                         1.13302723198169588e-6,  6.11609510448141582e-9};
-  static double czeror = 0.;
-  static double czeroi = 0.;
-  static double coner = 1.;
-  static double conei = 0.;
-  static double ctwor = 2.;
-  static double r1 = 2.;
-  static double dpi = 3.14159265358979324;
-  static double rthpi = 1.25331413731550025;
+  int c_u_1 = 1;
+  int c_u_2 = 2;
+  int c_u_5 = 5;
+  int c_u_14 = 14;
+  double c_b10 = .5;
+  double c_b11 = 0.;
+  int kmax = 30;
+  double spi = 1.90985931710274403;
+  double hpi = 1.57079632679489662;
+  double fpi = 1.89769999331517738;
+  double tth = .666666666666666666;
+  double cc[8] = {.577215664901532861,     -.0420026350340952355,
+                  -.0421977345555443367,   .00721894324666309954,
+                  -2.15241674114950973e-4, -2.01348547807882387e-5,
+                  1.13302723198169588e-6,  6.11609510448141582e-9};
+  double czeror = 0.;
+  double czeroi = 0.;
+  double coner = 1.;
+  double conei = 0.;
+  double ctwor = 2.;
+  double r1 = 2.;
+  double dpi = 3.14159265358979324;
+  double rthpi = 1.25331413731550025;
 
   /* System generated locals */
   int i_u_1;
   double d_u_1;
 
   /* Local variables */
-  static int i_u_, j, k;
-  static double s, a1, a2, g1, g2, t1, t2, aa, bb, fc, ak, bk;
-  static int ic;
-  static double fi, fk, as;
-  static int kk;
-  static double fr, pi, qi, tm, pr, qr;
-  static int nw;
-  static double p1i, p2i, s1i, s2i, p2m, p1r, p2r, s1r, s2r, cbi, cbr, cki, caz,
-      csi, ckr, fhs, fks, rak, czi, dnu, csr, elm, zdi, bry[3], pti, czr, sti,
-      zdr, cyr[2], rzi, ptr, cyi[2];
-  static int inu;
-  static double str, rzr, dnu2, cchi, cchr, alas, cshi;
-  static int inub, idum;
-  static double cshr, fmui, rcaz;
-  static double csrr[3], cssr[3], fmur;
-  static double smui;
-  static double smur;
-  static int iflag, kflag;
-  static double coefi;
-  static int koded;
-  static double ascle, coefr, helim, celmr, csclr, crscr;
-  static double etest;
+  int i_u_, j, k;
+  double s, a1, a2, g1, g2, t1, t2, aa, bb, fc, ak, bk;
+  int ic;
+  double fi, fk, as;
+  int kk;
+  double fr, pi, qi, tm, pr, qr;
+  int nw;
+  double p1i, p2i, s1i, s2i, p2m, p1r, p2r, s1r, s2r, cbi, cbr, cki, caz, csi,
+      ckr, fhs, fks, rak, czi, dnu, csr, elm, zdi, bry[3], pti, czr, sti, zdr,
+      cyr[2], rzi, ptr, cyi[2];
+  int inu;
+  double str, rzr, dnu2, cchi, cchr, alas, cshi;
+  int inub, idum;
+  double cshr, fmui, rcaz;
+  double csrr[3], cssr[3], fmur;
+  double smui;
+  double smur;
+  int iflag, kflag;
+  double coefi;
+  int koded;
+  double ascle, coefr, helim, celmr, csclr, crscr;
+  double etest;
 
   /* ***BEGIN PROLOGUE  ZBKNU */
   /* ***SUBSIDIARY */

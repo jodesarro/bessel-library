@@ -35,39 +35,39 @@ static inline int slatec_zairy_impl_(double *zr, double *zi, int *id, int *kode,
                                      double *air, double *aii, int *nz,
                                      int *ierr) {
   /* Initialized data */
-  static int c_u_1 = 1;
-  static int c_u_4 = 4;
-  static int c_u_5 = 5;
-  static int c_u_9 = 9;
-  static int c_u_15 = 15;
-  static int c_u_14 = 14;
-  static int c_u_16 = 16;
-  static double tth = .666666666666666667;
-  static double c1 = .35502805388781724;
-  static double c2 = .258819403792806799;
-  static double coef = .183776298473930683;
-  static double zeror = 0.;
-  static double zeroi = 0.;
-  static double coner = 1.;
-  static double conei = 0.;
+  int c_u_1 = 1;
+  int c_u_4 = 4;
+  int c_u_5 = 5;
+  int c_u_9 = 9;
+  int c_u_15 = 15;
+  int c_u_14 = 14;
+  int c_u_16 = 16;
+  double tth = .666666666666666667;
+  double c1 = .35502805388781724;
+  double c2 = .258819403792806799;
+  double coef = .183776298473930683;
+  double zeror = 0.;
+  double zeroi = 0.;
+  double coner = 1.;
+  double conei = 0.;
 
   /* System generated locals */
   int i_u_1, i_u_2;
   double d_u_1;
 
   /* Local variables */
-  static int k;
-  static double d1, d2;
-  static int k1, k2;
-  static double aa, bb, ad, cc, ak, bk, ck, dk, az;
-  static int nn;
-  static double rl;
-  static int mr;
-  static double s1i, az3, s2i, s1r, s2r, z3i, z3r, dig, fid, cyi[3], r1m5, fnu,
-      cyr[3], tol, sti, ptr, str, sfac, alim, elim, alaz, csqi;
-  static double atrm, ztai, csqr, ztar;
-  static double trm1i, trm2i, trm1r, trm2r;
-  static int iflag;
+  int k;
+  double d1, d2;
+  int k1, k2;
+  double aa, bb, ad, cc, ak, bk, ck, dk, az;
+  int nn;
+  double rl;
+  int mr;
+  double s1i, az3, s2i, s1r, s2r, z3i, z3r, dig, fid, cyi[3], r1m5, fnu, cyr[3],
+      tol, sti, ptr, str, sfac, alim, elim, alaz, csqi;
+  double atrm, ztai, csqr, ztar;
+  double trm1i, trm2i, trm1r, trm2r;
+  int iflag;
 
   /* ***BEGIN PROLOGUE  ZAIRY */
   /* ***PURPOSE  Compute the Airy function Ai(z) or its derivative dAi/dz */

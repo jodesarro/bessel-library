@@ -29,32 +29,32 @@ static inline int slatec_zasyi_impl_(double *zr, double *zi, double *fnu,
                                      int *nz, double *rl, double *tol,
                                      double *elim, double *alim) {
   /* Initialized data */
-  static int c_u_1 = 1;
-  static double pi = 3.14159265358979324;
-  static double rtpi = .159154943091895336;
-  static double zeror = 0.;
-  static double zeroi = 0.;
-  static double coner = 1.;
-  static double conei = 0.;
+  int c_u_1 = 1;
+  double pi = 3.14159265358979324;
+  double rtpi = .159154943091895336;
+  double zeror = 0.;
+  double zeroi = 0.;
+  double coner = 1.;
+  double conei = 0.;
 
   /* System generated locals */
   int i_u_1, i_u_2;
   double d_u_1, d_u_2;
 
   /* Local variables */
-  static int i_u_, j, k, m;
-  static double s, aa, bb;
-  static int ib;
-  static double ak, bk;
-  static int il, jl;
-  static double az;
-  static int nn;
-  static double p1i, s2i, p1r, s2r, cki, dki, fdn, arg, aez, arm, ckr, dkr, czi,
-      ezi, sgn;
-  static int inu;
-  static double raz, czr, ezr, sqk, sti, rzi, tzi, str, rzr, tzr, ak1i, ak1r,
-      cs1i, cs2i, cs1r, cs2r, dnu2, rtr1, dfnu, atol;
-  static int koded;
+  int i_u_, j, k, m;
+  double s, aa, bb;
+  int ib;
+  double ak, bk;
+  int il, jl;
+  double az;
+  int nn;
+  double p1i, s2i, p1r, s2r, cki, dki, fdn, arg, aez, arm, ckr, dkr, czi, ezi,
+      sgn;
+  int inu;
+  double raz, czr, ezr, sqk, sti, rzi, tzi, str, rzr, tzr, ak1i, ak1r, cs1i,
+      cs2i, cs1r, cs2r, dnu2, rtr1, dfnu, atol;
+  int koded;
 
   /* ***BEGIN PROLOGUE  ZASYI */
   /* ***SUBSIDIARY */

@@ -33,22 +33,22 @@ static inline int slatec_zbinu_impl_(double *zr, double *zi, double *fnu,
                                      double *fnul, double *tol, double *elim,
                                      double *alim) {
   /* Initialized data */
-  static int c_u_1 = 1;
-  static int c_u_2 = 2;
-  static double zeror = 0.;
-  static double zeroi = 0.;
+  int c_u_1 = 1;
+  int c_u_2 = 2;
+  double zeror = 0.;
+  double zeroi = 0.;
 
   /* System generated locals */
   int i_u_1;
 
   /* Local variables */
-  static int i_u_;
-  static double az;
-  static int nn, nw;
-  static double cwi[2], cwr[2];
-  static int nui, inw;
-  static double dfnu;
-  static int nlast;
+  int i_u_;
+  double az;
+  int nn, nw;
+  double cwi[2], cwr[2];
+  int nui, inw;
+  double dfnu;
+  int nlast;
 
   /* ***BEGIN PROLOGUE  ZBINU */
   /* ***SUBSIDIARY */

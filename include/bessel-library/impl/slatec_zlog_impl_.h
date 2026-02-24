@@ -23,12 +23,12 @@
 static inline int slatec_zlog_impl_(double *ar, double *ai, double *br,
                                     double *bi, int *ierr) {
   /* Initialized data */
-  static double dpi = 3.141592653589793238462643383;
-  static double dhpi = 1.570796326794896619231321696;
+  double dpi = 3.141592653589793238462643383;
+  double dhpi = 1.570796326794896619231321696;
 
   /* Local variables */
-  static double zm;
-  static double dtheta;
+  double zm;
+  double dtheta;
 
   /* ***BEGIN PROLOGUE  ZLOG */
   /* ***SUBSIDIARY */

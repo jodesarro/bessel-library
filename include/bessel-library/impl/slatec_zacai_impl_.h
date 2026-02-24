@@ -32,18 +32,18 @@ static inline int slatec_zacai_impl_(double *zr, double *zi, double *fnu,
                                      double *yi, int *nz, double *rl,
                                      double *tol, double *elim, double *alim) {
   /* Initialized data */
-  static int c_u_1 = 1;
-  static double pi = 3.14159265358979324;
+  int c_u_1 = 1;
+  double pi = 3.14159265358979324;
 
   /* Local variables */
-  static double az;
-  static int nn, nw;
-  static double yy, c1i, c2i, c1r, c2r, arg;
-  static int iuf;
-  static double cyi[2], fmr, sgn;
-  static int inu;
-  static double cyr[2], zni, znr, dfnu;
-  static double ascle, csgni, csgnr, cspni, cspnr;
+  double az;
+  int nn, nw;
+  double yy, c1i, c2i, c1r, c2r, arg;
+  int iuf;
+  double cyi[2], fmr, sgn;
+  int inu;
+  double cyr[2], zni, znr, dfnu;
+  double ascle, csgni, csgnr, cspni, cspnr;
 
   /* ***BEGIN PROLOGUE  ZACAI */
   /* ***SUBSIDIARY */

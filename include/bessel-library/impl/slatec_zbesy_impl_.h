@@ -30,23 +30,22 @@ static inline int slatec_zbesy_impl_(double *zr, double *zi, double *fnu,
                                      double *cyi, int *nz, double *cwrkr,
                                      double *cwrki, int *ierr) {
   /* Initialized data */
-  static int c_u_1 = 1;
-  static int c_u_2 = 2;
-  static int c_u_4 = 4;
-  static int c_u_5 = 5;
-  static int c_u_15 = 15;
-  static int c_u_16 = 16;
+  int c_u_1 = 1;
+  int c_u_2 = 2;
+  int c_u_4 = 4;
+  int c_u_5 = 5;
+  int c_u_15 = 15;
+  int c_u_16 = 16;
 
   /* System generated locals */
   int i_u_1, i_u_2;
   double d_u_1, d_u_2;
 
   /* Local variables */
-  static int i_u_, k, k1, k2;
-  static double aa, bb, ey, c1i, c2i, c1r, c2r;
-  static int nz1, nz2;
-  static double exi, r1m5, exr, sti, tay, tol, str, hcii, elim, atol, rtol,
-      ascle;
+  int i_u_, k, k1, k2;
+  double aa, bb, ey, c1i, c2i, c1r, c2r;
+  int nz1, nz2;
+  double exi, r1m5, exr, sti, tay, tol, str, hcii, elim, atol, rtol, ascle;
 
   /* ***BEGIN PROLOGUE  ZBESY */
   /* ***PURPOSE  Compute a sequence of the Bessel functions Y(a,z) for */

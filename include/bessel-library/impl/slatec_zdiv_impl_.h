@@ -21,7 +21,7 @@
 /* Subroutine */
 static inline int slatec_zdiv_impl_(double *ar, double *ai, double *br,
                                     double *bi, double *cr, double *ci) {
-  static double ca, cb, cc, cd, bm;
+  double ca, cb, cc, cd, bm;
 
   /* ***BEGIN PROLOGUE  ZDIV */
   /* ***SUBSIDIARY */

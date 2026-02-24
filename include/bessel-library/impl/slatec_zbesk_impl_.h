@@ -34,29 +34,29 @@ static inline int slatec_zbesk_impl_(double *zr, double *zi, double *fnu,
                                      int *kode, int *n, double *cyr,
                                      double *cyi, int *nz, int *ierr) {
   /* Initialized data */
-  static int c_u_1 = 1;
-  static int c_u_2 = 2;
-  static int c_u_4 = 4;
-  static int c_u_5 = 5;
-  static int c_u_9 = 9;
-  static int c_u_14 = 14;
-  static int c_u_15 = 15;
-  static int c_u_16 = 16;
+  int c_u_1 = 1;
+  int c_u_2 = 2;
+  int c_u_4 = 4;
+  int c_u_5 = 5;
+  int c_u_9 = 9;
+  int c_u_14 = 14;
+  int c_u_15 = 15;
+  int c_u_16 = 16;
 
   /* System generated locals */
   int i_u_1, i_u_2;
   double d_u_1;
 
   /* Local variables */
-  static int k, k1, k2;
-  static double aa, bb, fn, az;
-  static int nn;
-  static double rl;
-  static int mr, nw;
-  static double dig, arg, aln, r1m5, ufl;
-  static int nuf;
-  static double tol, alim, elim;
-  static double fnul;
+  int k, k1, k2;
+  double aa, bb, fn, az;
+  int nn;
+  double rl;
+  int mr, nw;
+  double dig, arg, aln, r1m5, ufl;
+  int nuf;
+  double tol, alim, elim;
+  double fnul;
 
   /* ***BEGIN PROLOGUE  ZBESK */
   /* ***PURPOSE  Compute a sequence of the Bessel functions K(a,z) for */

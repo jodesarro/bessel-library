@@ -31,31 +31,31 @@ static inline int slatec_zbesj_impl_(double *zr, double *zi, double *fnu,
                                      int *kode, int *n, double *cyr,
                                      double *cyi, int *nz, int *ierr) {
   /* Initialized data */
-  static int c_u_1 = 1;
-  static int c_u_4 = 4;
-  static int c_u_5 = 5;
-  static int c_u_9 = 9;
-  static int c_u_14 = 14;
-  static int c_u_15 = 15;
-  static int c_u_16 = 16;
-  static double hpi = 1.57079632679489662;
+  int c_u_1 = 1;
+  int c_u_4 = 4;
+  int c_u_5 = 5;
+  int c_u_9 = 9;
+  int c_u_14 = 14;
+  int c_u_15 = 15;
+  int c_u_16 = 16;
+  double hpi = 1.57079632679489662;
 
   /* System generated locals */
   int i_u_1, i_u_2;
   double d_u_1, d_u_2;
 
   /* Local variables */
-  static int i_u_, k, k1, k2;
-  static double aa, bb, fn;
-  static int nl;
-  static double az;
-  static int ir;
-  static double rl, dig, cii, arg, r1m5;
-  static int inu;
-  static double tol, sti, zni, str, znr, alim, elim;
-  static double atol;
-  static int inuh;
-  static double fnul, rtol, ascle, csgni, csgnr;
+  int i_u_, k, k1, k2;
+  double aa, bb, fn;
+  int nl;
+  double az;
+  int ir;
+  double rl, dig, cii, arg, r1m5;
+  int inu;
+  double tol, sti, zni, str, znr, alim, elim;
+  double atol;
+  int inuh;
+  double fnul, rtol, ascle, csgni, csgnr;
 
   /* ***BEGIN PROLOGUE  ZBESJ */
   /* ***PURPOSE  Compute a sequence of the Bessel functions J(a,z) for */

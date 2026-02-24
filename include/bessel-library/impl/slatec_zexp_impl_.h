@@ -22,7 +22,7 @@
 static inline int slatec_zexp_impl_(double *ar, double *ai, double *br,
                                     double *bi) {
   /* Local variables */
-  static double ca, cb, zm;
+  double ca, cb, zm;
 
   /* ***BEGIN PROLOGUE  ZEXP */
   /* ***SUBSIDIARY */

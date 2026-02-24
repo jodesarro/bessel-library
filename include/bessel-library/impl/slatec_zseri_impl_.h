@@ -32,32 +32,32 @@ static inline int slatec_zseri_impl_(double *zr, double *zi, double *fnu,
                                      int *nz, double *tol, double *elim,
                                      double *alim) {
   /* Initialized data */
-  static int c_u_1 = 1;
-  static double zeror = 0.;
-  static double zeroi = 0.;
-  static double coner = 1.;
-  static double conei = 0.;
+  int c_u_1 = 1;
+  double zeror = 0.;
+  double zeroi = 0.;
+  double coner = 1.;
+  double conei = 0.;
 
   /* System generated locals */
   int i_u_1;
 
   /* Local variables */
-  static int i_u_, k, l, m;
-  static double s, aa;
-  static int ib;
-  static double ak;
-  static int il;
-  static double az;
-  static int nn;
-  static double wi[2], rs, ss;
-  static int nw;
-  static double wr[2], s1i, s2i, s1r, s2r, cki, acz, arm, ckr, czi, hzi, raz,
-      czr, sti, hzr, rzi, str, rzr, ak1i, ak1r, rtr1, dfnu;
-  static int idum;
-  static double atol;
-  static double fnup;
-  static int iflag;
-  static double coefi, ascle, coefr, crscr;
+  int i_u_, k, l, m;
+  double s, aa;
+  int ib;
+  double ak;
+  int il;
+  double az;
+  int nn;
+  double wi[2], rs, ss;
+  int nw;
+  double wr[2], s1i, s2i, s1r, s2r, cki, acz, arm, ckr, czi, hzi, raz, czr, sti,
+      hzr, rzi, str, rzr, ak1i, ak1r, rtr1, dfnu;
+  int idum;
+  double atol;
+  double fnup;
+  int iflag;
+  double coefi, ascle, coefr, crscr;
 
   /* ***BEGIN PROLOGUE  ZSERI */
   /* ***SUBSIDIARY */
