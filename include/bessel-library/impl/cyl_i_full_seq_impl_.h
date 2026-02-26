@@ -52,8 +52,8 @@
   handled by Eqs. (6.1.5) and (6.5.4) of Ref. [2] for, respectively, nu integer
   and nu real; in the latter case, it yields INFINITY + I * INFINITY abs(z)=0.
 */
-static inline void cyl_i_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
-                                        tpdfcplx_impl_ *cyl_i_arr, int scaled) {
+static inline void cyl_i_full_seq_impl_(double nu, int n, dcomplex z,
+                                        dcomplex *cyl_i_arr, int scaled) {
 
   int kode = (scaled == 1 ? 2 : 1);
   int nz, ierr;
@@ -78,7 +78,7 @@ static inline void cyl_i_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
 
     /* Store in the array */
     for (int i = 0; i < n; i++) {
-      cyl_i_arr[i] = cir[i] + I_IMPL_ * cii[i];
+      cyl_i_arr[i] = cir[i] + I * cii[i];
     }
 
     /* Free auxiliary pointers */
@@ -109,7 +109,7 @@ static inline void cyl_i_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
       for (int i = 0; i < n; i++) {
         int tmp = n - 1 - i;
         /* Eq. (6.1.5) of Ref. [2] */
-        cyl_i_arr[i] = cir[tmp] + I_IMPL_ * cii[tmp];
+        cyl_i_arr[i] = cir[tmp] + I * cii[tmp];
       }
 
       /* Free auxiliary pointers */
@@ -122,7 +122,7 @@ static inline void cyl_i_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
       /* Non-int negative order with z=0 -> infinity */
 
       for (int i = 0; i < n; i++) {
-        cyl_i_arr[i] = CPLX_IMPL_(INFINITY, INFINITY);
+        cyl_i_arr[i] = INFINITY + I * INFINITY;
       }
 
     } else {
@@ -156,7 +156,7 @@ static inline void cyl_i_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
       slatec_flags_zbesk_impl_(ierr, nz);
 
       /* Treat the scaled version of K_nu(z) for I_nu(z) */
-      tpdfcplx_impl_ c_2_pi_e_m_abs_zr =
+      dcomplex c_2_pi_e_m_abs_zr =
           2.0 / M_PI * (scaled == 1 ? exp(-fabs(creal(z))) : 1.0);
 
       /* Store in the array */
@@ -165,8 +165,8 @@ static inline void cyl_i_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
         /* Eq. (6.5.4) of Ref. [2] */
         double tmp2 = (fnu_m + (double)tmp1) * M_PI;
         cyl_i_arr[i] =
-            (cir[tmp1] + I_IMPL_ * cii[tmp1]) +
-            (ckr[tmp1] + I_IMPL_ * cki[tmp1]) * sin(tmp2) * c_2_pi_e_m_abs_zr;
+            (cir[tmp1] + I * cii[tmp1]) +
+            (ckr[tmp1] + I * cki[tmp1]) * sin(tmp2) * c_2_pi_e_m_abs_zr;
       }
 
       /* Free auxiliary pointers */
@@ -205,7 +205,7 @@ static inline void cyl_i_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
       for (int i = 0; i < n_m; i++) {
         int tmp = n_m - 1 - i;
         /* Eq. (6.1.5) of Ref. [2] */
-        cyl_i_arr[i] = cir_m[tmp] + I_IMPL_ * cii_m[tmp];
+        cyl_i_arr[i] = cir_m[tmp] + I * cii_m[tmp];
       }
 
       /* Free auxiliary pointers */
@@ -217,7 +217,7 @@ static inline void cyl_i_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
       /* Non-int negative order with z=0 -> infinity */
 
       for (int i = 0; i < n_m; i++) {
-        cyl_i_arr[i] = CPLX_IMPL_(INFINITY, INFINITY);
+        cyl_i_arr[i] = INFINITY + I * INFINITY;
       }
 
     } else {
@@ -250,7 +250,7 @@ static inline void cyl_i_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
       slatec_flags_zbesk_impl_(ierr, nz);
 
       /* Treat the scaled version of K_nu(z) for I_nu(z) */
-      tpdfcplx_impl_ c_2_pi_e_m_abs_zr =
+      dcomplex c_2_pi_e_m_abs_zr =
           2.0 / M_PI * (scaled == 1 ? exp(-fabs(creal(z))) : 1.0);
 
       /* Store in the array */
@@ -258,9 +258,9 @@ static inline void cyl_i_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
         int tmp1 = n_m - 1 - i;
         /* Eq. (6.5.4) of Ref. [2] */
         double tmp2 = (fnu_m + (double)tmp1) * M_PI;
-        cyl_i_arr[i] = (cir_m[tmp1] + I_IMPL_ * cii_m[tmp1]) +
-                       (ckr_m[tmp1] + I_IMPL_ * cki_m[tmp1]) * sin(tmp2) *
-                           c_2_pi_e_m_abs_zr;
+        cyl_i_arr[i] =
+            (cir_m[tmp1] + I * cii_m[tmp1]) +
+            (ckr_m[tmp1] + I * cki_m[tmp1]) * sin(tmp2) * c_2_pi_e_m_abs_zr;
       }
 
       /* Free auxiliary pointers */
@@ -287,7 +287,7 @@ static inline void cyl_i_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
     /* Store in the array */
     for (int i = n_m; i < n; i++) {
       int tmp1 = i - n_m;
-      cyl_i_arr[i] = cir_p[tmp1] + I_IMPL_ * cii_p[tmp1];
+      cyl_i_arr[i] = cir_p[tmp1] + I * cii_p[tmp1];
     }
 
     /* Free auxiliary pointers */

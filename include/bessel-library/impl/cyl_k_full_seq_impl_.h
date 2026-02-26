@@ -51,8 +51,8 @@
   handled by Eqs. (6.5.5) of Ref. [2]. When abs(z)=0, it yields INFINITY if
   nu=0, or INFINITY + I * INFINITY otherwise.
 */
-static inline void cyl_k_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
-                                        tpdfcplx_impl_ *cyl_k_arr, int scaled) {
+static inline void cyl_k_full_seq_impl_(double nu, int n, dcomplex z,
+                                        dcomplex *cyl_k_arr, int scaled) {
 
   int kode = (scaled == 1 ? 2 : 1);
   int nz, ierr;
@@ -65,12 +65,12 @@ static inline void cyl_k_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
 
     /* Complex infinity for all orders */
     for (int i = 0; i < n; i++) {
-      cyl_k_arr[i] = CPLX_IMPL_(INFINITY, INFINITY);
+      cyl_k_arr[i] = INFINITY + I * INFINITY;
     }
     if (fabs(nu_m - floor(nu_m)) < DBL_EPSILON && n > fnu) {
 
       /* Infinity for integer order 0 */
-      cyl_k_arr[(int)floor(fnu)] = CPLX_IMPL_(INFINITY, 0.0);
+      cyl_k_arr[(int)floor(fnu)] = INFINITY + I * 0.0;
     }
 
   } else if (nu >= 0.0) {
@@ -89,7 +89,7 @@ static inline void cyl_k_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
 
     /* Store in the array */
     for (int i = 0; i < n; i++) {
-      cyl_k_arr[i] = ckr[i] + I_IMPL_ * cki[i];
+      cyl_k_arr[i] = ckr[i] + I * cki[i];
     }
 
     /* Free auxiliary pointers */
@@ -114,7 +114,7 @@ static inline void cyl_k_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
     for (int i = 0; i < n; i++) {
       int tmp = n - 1 - i;
       /* Eq. (6.5.5) of Ref. [2] */
-      cyl_k_arr[i] = ckr[tmp] + I_IMPL_ * cki[tmp];
+      cyl_k_arr[i] = ckr[tmp] + I * cki[tmp];
     }
 
     /* Free auxiliary pointers */
@@ -146,7 +146,7 @@ static inline void cyl_k_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
     for (int i = 0; i < n_m; i++) {
       int tmp = n_m - 1 - i;
       /* Eq. (6.5.5) of Ref. [2] */
-      cyl_k_arr[i] = ckr_m[tmp] + I_IMPL_ * cki_m[tmp];
+      cyl_k_arr[i] = ckr_m[tmp] + I * cki_m[tmp];
     }
 
     /* Free auxiliary pointers */
@@ -170,7 +170,7 @@ static inline void cyl_k_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
     /* Store in the array */
     for (int i = n_m; i < n; i++) {
       int tmp1 = i - n_m;
-      cyl_k_arr[i] = ckr_p[tmp1] + I_IMPL_ * cki_p[tmp1];
+      cyl_k_arr[i] = ckr_p[tmp1] + I * cki_p[tmp1];
     }
 
     /* Free auxiliary pointers */

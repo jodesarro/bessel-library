@@ -571,9 +571,10 @@ found in the works listed in the [References](#references) section.
 
 ## How to use
 
-This library is header‑only, meaning there is nothing to build (if you still
-need a compiled file for some reason, refer to the instructions in the
-[Compiling the library](#compiling-the-library) section).
+This library is header‑only, meaning there is nothing to build.
+
+If you still need a compiled file for some reason, refer to the instructions in
+the [Compiling the library](#compiling-the-library) section.
 
 Otherwise, you only need to paste all the content of the
 [include](include/) folder
@@ -591,8 +592,8 @@ beginning of your code and you shall be ready to use the functions.
 
 ```c
 #include "bessel-library.h" /* The bessel-library */
-#include <stdio.h>          /* For printf() */
 #include <complex.h>        /* For double complex type */
+#include <stdio.h>          /* For printf() */
 
 int main() {
   double nu = 3.5;
@@ -612,8 +613,8 @@ int main() {
 
 ```cpp
 #include "bessel-library.h" /* The bessel-library */
-#include <iostream>         /* For std::cout() */
 #include <complex>          /* For std::complex<double> type */
+#include <iostream>         /* For std::cout() */
 
 int main() {
   double nu = 3.5;
@@ -632,7 +633,7 @@ In this library, the implementation is carried out in terms of the C99
 standards.
 
 Therefore, all the complex variables are handled using the
-`tpdfcplx_impl_` type, which  automatically expands to the `double complex`
+`dcomplex` type, which  automatically expands to the `double complex`
 type of the C `<complex.h>` library.
 
 Notice that all functions, macros, constants and files whose names contain
@@ -645,11 +646,11 @@ macros to ensure C++ compatibility (C++98 standard at least).
 
 In this sense, when using C++ compilers, the following C functions are
 automatically mapped to their C++ equivalent: `creal(z)`↦`std::real(z)`,
-`cimag(z)`↦`std::imag(z)`, `cabs(z)`↦`std::abs(z)`,
-`cexp(z)`↦`std::exp(z)`, `sin(z)`↦`std::sin(z)`, and
-`cos(z)`↦`std::cos(z)`; and all the complex values are handled by means of
-the `tpdfcplx_impl_` type, which automatically expands to the
-`std::complex<double>` type of the C++ `<complex>` library.
+`cimag(z)`↦`std::imag(z)`, `cabs(z)`↦`std::abs(z)`, and
+`cexp(z)`↦`std::exp(z)`; and all the complex values are handled by means of
+the `dcomplex` type, which automatically expands to the
+`std::complex<double>` type of the C++ `<complex>` library, being the macro `I`
+the imaginary unity.
 
 ## Compiling the library
 
@@ -732,8 +733,8 @@ before the `#include "bessel-library.h"`.
 ```c
 #define BESSEL_LIBRARY_IMPORTS /* Required for using the compiled file */
 #include "bessel-library.h"    /* The bessel-library.h header */
-#include <stdio.h>             /* For printf() */
 #include <complex.h>           /* For double complex type */
+#include <stdio.h>             /* For printf() */
 
 int main() {
   double nu = 3.5;

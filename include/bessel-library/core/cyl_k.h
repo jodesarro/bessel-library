@@ -31,11 +31,11 @@
   Implementation: Similar to the cyl_k_seq() function.
 */
 BESSEL_LIBRARY_API_IMPL_
-tpdfcplx_impl_ cyl_k(double nu, tpdfcplx_impl_ z)
+dcomplex cyl_k(double nu, dcomplex z)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
   /* Array of one size */
-  tpdfcplx_impl_ ck[1];
+  dcomplex ck[1];
 
   /* Compute cyl_k_full_seq_impl_ */
   cyl_k_full_seq_impl_(nu, 1, z, ck, 0);
@@ -58,11 +58,11 @@ tpdfcplx_impl_ cyl_k(double nu, tpdfcplx_impl_ z)
   Implementation: Similar to the cyl_k_seq() function.
 */
 BESSEL_LIBRARY_API_IMPL_
-tpdfcplx_impl_ cyl_k_scal(double nu, tpdfcplx_impl_ z)
+dcomplex cyl_k_scal(double nu, dcomplex z)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
   /* Array of one size */
-  tpdfcplx_impl_ ck[1];
+  dcomplex ck[1];
 
   /* Compute cyl_k_full_seq_impl_ */
   cyl_k_full_seq_impl_(nu, 1, z, ck, 1);
@@ -94,7 +94,7 @@ tpdfcplx_impl_ cyl_k_scal(double nu, tpdfcplx_impl_ z)
   nu=0, or INFINITY + I * INFINITY otherwise.
 */
 BESSEL_LIBRARY_API_IMPL_
-void cyl_k_seq(double nu, int n, tpdfcplx_impl_ z, tpdfcplx_impl_ *cyl_k_arr)
+void cyl_k_seq(double nu, int n, dcomplex z, dcomplex *cyl_k_arr)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
   cyl_k_full_seq_impl_(nu, n, z, cyl_k_arr, 0);
@@ -119,8 +119,7 @@ void cyl_k_seq(double nu, int n, tpdfcplx_impl_ z, tpdfcplx_impl_ *cyl_k_arr)
   Implementation: Similar to the cyl_k_seq() function.
 */
 BESSEL_LIBRARY_API_IMPL_
-void cyl_k_scal_seq(double nu, int n, tpdfcplx_impl_ z,
-                    tpdfcplx_impl_ *cyl_k_scaled_arr)
+void cyl_k_scal_seq(double nu, int n, dcomplex z, dcomplex *cyl_k_scaled_arr)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
   cyl_k_full_seq_impl_(nu, n, z, cyl_k_scaled_arr, 1);

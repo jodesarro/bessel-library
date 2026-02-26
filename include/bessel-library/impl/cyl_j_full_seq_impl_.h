@@ -51,8 +51,8 @@
   and nu real; in the latter case, it yields INFINITY + I * INFINITY when
   abs(z)=0.
 */
-static inline void cyl_j_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
-                                        tpdfcplx_impl_ *cyl_j_arr, int scaled) {
+static inline void cyl_j_full_seq_impl_(double nu, int n, dcomplex z,
+                                        dcomplex *cyl_j_arr, int scaled) {
 
   int kode = (scaled == 1 ? 2 : 1);
   int nz, ierr;
@@ -78,7 +78,7 @@ static inline void cyl_j_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
 
     /* Store in the array */
     for (int i = 0; i < n; i++) {
-      cyl_j_arr[i] = cjr_ptr[i] + I_IMPL_ * cji_ptr[i];
+      cyl_j_arr[i] = cjr_ptr[i] + I * cji_ptr[i];
     }
 
     /* Free auxiliary pointers */
@@ -108,7 +108,7 @@ static inline void cyl_j_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
       for (int i = 0; i < n; i++) {
         int tmp = n - 1 - i;
         cyl_j_arr[i] =
-            pow(-1.0, fnu_m + tmp) * (cjr_ptr[tmp] + I_IMPL_ * cji_ptr[tmp]);
+            pow(-1.0, fnu_m + tmp) * (cjr_ptr[tmp] + I * cji_ptr[tmp]);
       }
 
       /* Free auxiliary pointers */
@@ -120,7 +120,7 @@ static inline void cyl_j_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
 
       /* Non-int negative orders with abs(z) = 0 */
       for (int i = 0; i < n; i++) {
-        cyl_j_arr[i] = CPLX_IMPL_(INFINITY, INFINITY);
+        cyl_j_arr[i] = INFINITY + I * INFINITY;
       }
 
     } else {
@@ -159,8 +159,8 @@ static inline void cyl_j_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
         int tmp1 = n - 1 - i;
         double tmp2 = (fnu_m + (double)tmp1) * M_PI;
         /* Eq. (5.5.4) of Ref. [2] */
-        cyl_j_arr[i] = (cjr_ptr[tmp1] + I_IMPL_ * cji_ptr[tmp1]) * cos(tmp2) -
-                       (cyr_ptr[tmp1] + I_IMPL_ * cyi_ptr[tmp1]) * sin(tmp2);
+        cyl_j_arr[i] = (cjr_ptr[tmp1] + I * cji_ptr[tmp1]) * cos(tmp2) -
+                       (cyr_ptr[tmp1] + I * cyi_ptr[tmp1]) * sin(tmp2);
       }
 
       /* Free auxiliary pointers */
@@ -196,8 +196,8 @@ static inline void cyl_j_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
       /* Store in the array */
       for (int i = 0; i < n_m; i++) {
         int tmp = n_m - 1 - i;
-        cyl_j_arr[i] = pow(-1.0, fnu_m + tmp) *
-                       (cjr_m_ptr[tmp] + I_IMPL_ * cji_m_ptr[tmp]);
+        cyl_j_arr[i] =
+            pow(-1.0, fnu_m + tmp) * (cjr_m_ptr[tmp] + I * cji_m_ptr[tmp]);
       }
 
       /* Free auxiliary pointers */
@@ -209,7 +209,7 @@ static inline void cyl_j_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
 
       /* Store in the array */
       for (int i = 0; i < n_m; i++) {
-        cyl_j_arr[i] = CPLX_IMPL_(INFINITY, INFINITY);
+        cyl_j_arr[i] = INFINITY + I * INFINITY;
       }
 
     } else {
@@ -246,9 +246,8 @@ static inline void cyl_j_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
         int tmp1 = n_m - 1 - i;
         double tmp2 = (fnu_m + (double)tmp1) * M_PI;
         /* Eq. (5.5.4) of Ref. [2] */
-        cyl_j_arr[i] =
-            (cjr_m_ptr[tmp1] + I_IMPL_ * cji_m_ptr[tmp1]) * cos(tmp2) -
-            (cyr_m_ptr[tmp1] + I_IMPL_ * cyi_m_ptr[tmp1]) * sin(tmp2);
+        cyl_j_arr[i] = (cjr_m_ptr[tmp1] + I * cji_m_ptr[tmp1]) * cos(tmp2) -
+                       (cyr_m_ptr[tmp1] + I * cyi_m_ptr[tmp1]) * sin(tmp2);
       }
 
       /* Free auxiliary pointers */
@@ -277,7 +276,7 @@ static inline void cyl_j_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
     /* Store in the array */
     for (int i = n_m; i < n; i++) {
       int tmp1 = i - n_m;
-      cyl_j_arr[i] = cjr_p_ptr[tmp1] + I_IMPL_ * cji_p_ptr[tmp1];
+      cyl_j_arr[i] = cjr_p_ptr[tmp1] + I * cji_p_ptr[tmp1];
     }
 
     /* Free auxiliary pointers */

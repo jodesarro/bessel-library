@@ -50,9 +50,8 @@
   handled by Eq. (9.1.6) of Ref. [1]. It yields INFINITY + I * INFINITY when
   abs(z)=0.
 */
-static inline void cyl_h2_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
-                                         tpdfcplx_impl_ *cyl_h2_arr,
-                                         int scaled) {
+static inline void cyl_h2_full_seq_impl_(double nu, int n, dcomplex z,
+                                         dcomplex *cyl_h2_arr, int scaled) {
 
   int kode = (scaled == 1 ? 2 : 1);
   int nz, ierr;
@@ -66,7 +65,7 @@ static inline void cyl_h2_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
 
     /* Complex infinity for all orders */
     for (int i = 0; i < n; i++) {
-      cyl_h2_arr[i] = CPLX_IMPL_(INFINITY, INFINITY);
+      cyl_h2_arr[i] = INFINITY + I * INFINITY;
     }
 
   } else if (nu >= 0.0) {
@@ -84,7 +83,7 @@ static inline void cyl_h2_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
 
     /* Store in the array */
     for (int i = 0; i < n; i++) {
-      cyl_h2_arr[i] = ch2r[i] + I_IMPL_ * ch2i[i];
+      cyl_h2_arr[i] = ch2r[i] + I * ch2i[i];
     }
 
     /* Free auxiliary pointers */
@@ -112,8 +111,7 @@ static inline void cyl_h2_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
       int tmp1 = n - 1 - i;
       double tmp2 = (fnu_m + (double)tmp1) * M_PI;
       /* Eq. (9.1.6) of Ref. [1] */
-      cyl_h2_arr[i] =
-          (ch2r_m[tmp1] + I_IMPL_ * ch2i_m[tmp1]) * cexp(-I_IMPL_ * tmp2);
+      cyl_h2_arr[i] = (ch2r_m[tmp1] + I * ch2i_m[tmp1]) * cexp(-I * tmp2);
     }
 
     /* Free auxiliary pointers */
@@ -146,8 +144,7 @@ static inline void cyl_h2_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
       int tmp1 = n_m - 1 - i;
       double tmp2 = (fnu_m + (double)tmp1) * M_PI;
       /* Eq. (9.1.6) of Ref. [1] */
-      cyl_h2_arr[i] =
-          (ch2r_m[tmp1] + I_IMPL_ * ch2i_m[tmp1]) * cexp(-I_IMPL_ * tmp2);
+      cyl_h2_arr[i] = (ch2r_m[tmp1] + I * ch2i_m[tmp1]) * cexp(-I * tmp2);
     }
 
     /* Free auxiliary pointers */
@@ -171,7 +168,7 @@ static inline void cyl_h2_full_seq_impl_(double nu, int n, tpdfcplx_impl_ z,
     /* Store in the array */
     for (int i = n_m; i < n; i++) {
       int tmp1 = i - n_m;
-      cyl_h2_arr[i] = ch2r_p[tmp1] + I_IMPL_ * ch2i_p[tmp1];
+      cyl_h2_arr[i] = ch2r_p[tmp1] + I * ch2i_p[tmp1];
     }
 
     /* Free auxiliary pointers */

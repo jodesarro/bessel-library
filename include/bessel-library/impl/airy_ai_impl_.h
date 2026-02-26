@@ -31,8 +31,7 @@
   Fortran 77 routines from the Slatec library [3]. Such Fortran routines, and
   all their dependencies, were carefully translated to C.
 */
-static inline tpdfcplx_impl_ airy_ai_impl_(tpdfcplx_impl_ z, int derivative,
-                                           int scaled) {
+static inline dcomplex airy_ai_impl_(dcomplex z, int derivative, int scaled) {
 
   int kode = (scaled == 1 ? 2 : 1);
   int nz, ierr;
@@ -48,7 +47,7 @@ static inline tpdfcplx_impl_ airy_ai_impl_(tpdfcplx_impl_ z, int derivative,
   slatec_flags_zairy_impl_(ierr, nz);
 
   /* Return */
-  return air_arr[1] + I_IMPL_ * aii_arr[1];
+  return air_arr[1] + I * aii_arr[1];
 }
 
 #endif /* BESSEL_LIBRARY_AIRY_AI_IMPL_H */

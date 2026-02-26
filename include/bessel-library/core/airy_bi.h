@@ -32,7 +32,7 @@
   their dependencies, were carefully translated to C.
 */
 BESSEL_LIBRARY_API_IMPL_
-tpdfcplx_impl_ airy_bi(tpdfcplx_impl_ z)
+dcomplex airy_bi(dcomplex z)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
   return airy_bi_impl_(z, 0, 0);
@@ -51,7 +51,7 @@ tpdfcplx_impl_ airy_bi(tpdfcplx_impl_ z)
   Implementation: Similar to the airy_bi() function.
 */
 BESSEL_LIBRARY_API_IMPL_
-tpdfcplx_impl_ airy_bi_diff(tpdfcplx_impl_ z)
+dcomplex airy_bi_diff(dcomplex z)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
   return airy_bi_impl_(z, 1, 0);
@@ -70,7 +70,7 @@ tpdfcplx_impl_ airy_bi_diff(tpdfcplx_impl_ z)
   Implementation: Similar to the airy_bi() function.
 */
 BESSEL_LIBRARY_API_IMPL_
-tpdfcplx_impl_ airy_bi_scal(tpdfcplx_impl_ z)
+dcomplex airy_bi_scal(dcomplex z)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
   return airy_bi_impl_(z, 0, 1);
@@ -90,7 +90,7 @@ tpdfcplx_impl_ airy_bi_scal(tpdfcplx_impl_ z)
   Implementation: Similar to the airy_bi() function.
 */
 BESSEL_LIBRARY_API_IMPL_
-tpdfcplx_impl_ airy_bi_diff_scal(tpdfcplx_impl_ z)
+dcomplex airy_bi_diff_scal(dcomplex z)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
   return airy_bi_impl_(z, 1, 1);
