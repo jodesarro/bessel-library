@@ -66,11 +66,11 @@ static inline void cyl_y_full_seq_impl_(double nu, int n, dcomplex z,
     /* Store in the array */
     for (int i = 0; i < n; i++) {
       /* Complex infinity for i!=0 orders */
-      cyl_y_arr[i] = INFINITY + I * INFINITY;
+      cyl_y_arr[i] = ((dcomplex)INFINITY) + I * ((dcomplex)INFINITY);
     }
     if (fabs(nu_m - floor(nu_m)) < DBL_EPSILON && n > fnu) {
       /* Complex infinity for i=0 order */
-      cyl_y_arr[(int)floor(fnu)] = -INFINITY + I * 0.0;
+      cyl_y_arr[(int)floor(fnu)] = -((dcomplex)INFINITY);
     }
 
   } else if (nu >= 0.0) {

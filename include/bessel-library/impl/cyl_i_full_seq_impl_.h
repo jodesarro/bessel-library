@@ -122,7 +122,7 @@ static inline void cyl_i_full_seq_impl_(double nu, int n, dcomplex z,
       /* Non-int negative order with z=0 -> infinity */
 
       for (int i = 0; i < n; i++) {
-        cyl_i_arr[i] = INFINITY + I * INFINITY;
+        cyl_i_arr[i] = ((dcomplex)INFINITY) + I * ((dcomplex)INFINITY);
       }
 
     } else {
@@ -217,7 +217,7 @@ static inline void cyl_i_full_seq_impl_(double nu, int n, dcomplex z,
       /* Non-int negative order with z=0 -> infinity */
 
       for (int i = 0; i < n_m; i++) {
-        cyl_i_arr[i] = INFINITY + I * INFINITY;
+        cyl_i_arr[i] = ((dcomplex)INFINITY) + I * ((dcomplex)INFINITY);
       }
 
     } else {

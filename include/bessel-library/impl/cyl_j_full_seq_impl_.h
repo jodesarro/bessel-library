@@ -120,7 +120,7 @@ static inline void cyl_j_full_seq_impl_(double nu, int n, dcomplex z,
 
       /* Non-int negative orders with abs(z) = 0 */
       for (int i = 0; i < n; i++) {
-        cyl_j_arr[i] = INFINITY + I * INFINITY;
+        cyl_j_arr[i] = ((dcomplex)INFINITY) + I * ((dcomplex)INFINITY);
       }
 
     } else {
@@ -209,7 +209,7 @@ static inline void cyl_j_full_seq_impl_(double nu, int n, dcomplex z,
 
       /* Store in the array */
       for (int i = 0; i < n_m; i++) {
-        cyl_j_arr[i] = INFINITY + I * INFINITY;
+        cyl_j_arr[i] = ((dcomplex)INFINITY) + I * ((dcomplex)INFINITY);
       }
 
     } else {

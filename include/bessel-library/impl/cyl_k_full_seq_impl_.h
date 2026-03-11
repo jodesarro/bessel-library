@@ -65,12 +65,12 @@ static inline void cyl_k_full_seq_impl_(double nu, int n, dcomplex z,
 
     /* Complex infinity for all orders */
     for (int i = 0; i < n; i++) {
-      cyl_k_arr[i] = INFINITY + I * INFINITY;
+      cyl_k_arr[i] = ((dcomplex)INFINITY) + I * ((dcomplex)INFINITY);
     }
     if (fabs(nu_m - floor(nu_m)) < DBL_EPSILON && n > fnu) {
 
       /* Infinity for integer order 0 */
-      cyl_k_arr[(int)floor(fnu)] = INFINITY + I * 0.0;
+      cyl_k_arr[(int)floor(fnu)] = ((dcomplex)INFINITY);
     }
 
   } else if (nu >= 0.0) {

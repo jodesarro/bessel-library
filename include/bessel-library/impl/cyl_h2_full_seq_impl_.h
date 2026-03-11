@@ -65,7 +65,7 @@ static inline void cyl_h2_full_seq_impl_(double nu, int n, dcomplex z,
 
     /* Complex infinity for all orders */
     for (int i = 0; i < n; i++) {
-      cyl_h2_arr[i] = INFINITY + I * INFINITY;
+      cyl_h2_arr[i] = ((dcomplex)INFINITY) + I * ((dcomplex)INFINITY);
     }
 
   } else if (nu >= 0.0) {
