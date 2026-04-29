@@ -20,6 +20,7 @@
 #include "../impl/cyl_h2_full_seq_impl_.h"
 #endif
 
+BESSEL_LIBRARY_API_IMPL_
 /*
   Returns the cylindrical Hankel function of the second kind, real order nu, and
   complex argument z, i.e., H2_nu(z).
@@ -30,7 +31,6 @@
 
   Implementation: Similar to the cyl_h2_seq() function.
 */
-BESSEL_LIBRARY_API_IMPL_
 dcomplex cyl_h2(double nu, dcomplex z)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
@@ -47,6 +47,7 @@ dcomplex cyl_h2(double nu, dcomplex z)
     ;
 #endif
 
+BESSEL_LIBRARY_API_IMPL_
 /*
   Returns the scaled version of the cylindrical Hankel function of the second
   kind, real order nu, and complex argument z, i.e., H2_nu(z)*exp(i*z).
@@ -57,7 +58,6 @@ dcomplex cyl_h2(double nu, dcomplex z)
 
   Implementation: Similar to the cyl_h2_seq() function.
 */
-BESSEL_LIBRARY_API_IMPL_
 dcomplex cyl_h2_scal(double nu, dcomplex z)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
@@ -74,6 +74,7 @@ dcomplex cyl_h2_scal(double nu, dcomplex z)
     ;
 #endif
 
+BESSEL_LIBRARY_API_IMPL_
 /*
   Computes a n-sequency array of cylindrical Hankel functions of the second
   kind, real order nu, and complex argument z, i.e., {H2_nu(z), H2_(nu+1)(z),
@@ -93,7 +94,6 @@ dcomplex cyl_h2_scal(double nu, dcomplex z)
   handled by Eq. (9.1.6) of Ref. [1]. It yields INFINITY + I * INFINITY when
   abs(z)=0.
 */
-BESSEL_LIBRARY_API_IMPL_
 void cyl_h2_seq(double nu, int n, dcomplex z, dcomplex *cyl_h2_arr)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
@@ -103,10 +103,11 @@ void cyl_h2_seq(double nu, int n, dcomplex z, dcomplex *cyl_h2_arr)
     ;
 #endif
 
+BESSEL_LIBRARY_API_IMPL_
 /*
   Computes a n-sequency array of scaled versions of cylindrical Hankel functions
   of the second kind, real order nu, and complex argument z, i.e.,
-  {H1_nu(z)*exp(i*z), H1_(nu+1)(z)*exp(i*z), ..., H1_(nu+n-1)(z)*exp(i*z)}.
+  {H2_nu(z)*exp(i*z), H2_(nu+1)(z)*exp(i*z), ..., H2_(nu+n-1)(z)*exp(i*z)}.
 
   Parameters:
   - nu, real order of H2_nu(z)*exp(i*z).
@@ -118,7 +119,6 @@ void cyl_h2_seq(double nu, int n, dcomplex z, dcomplex *cyl_h2_arr)
 
   Implementation: Similar to the cyl_h2_seq() function.
 */
-BESSEL_LIBRARY_API_IMPL_
 void cyl_h2_scal_seq(double nu, int n, dcomplex z, dcomplex *cyl_h2_scal_arr)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {

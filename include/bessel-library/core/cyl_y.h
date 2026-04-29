@@ -20,6 +20,7 @@
 #include "../impl/cyl_y_full_seq_impl_.h"
 #endif
 
+BESSEL_LIBRARY_API_IMPL_
 /*
   Returns the cylindrical Bessel function of the second kind, real order nu, and
   complex argument z, i.e., Y_nu(z).
@@ -30,7 +31,6 @@
 
   Implementation: Similar to the cyl_y_seq() function.
 */
-BESSEL_LIBRARY_API_IMPL_
 dcomplex cyl_y(double nu, dcomplex z)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
@@ -47,6 +47,7 @@ dcomplex cyl_y(double nu, dcomplex z)
     ;
 #endif
 
+BESSEL_LIBRARY_API_IMPL_
 /*
   Returns the scaled version of the cylindrical Bessel function of the second
   kind, real order nu, and complex argument z, i.e., Y_nu(z)*exp(-abs(imag(z))).
@@ -57,7 +58,6 @@ dcomplex cyl_y(double nu, dcomplex z)
 
   Implementation: Similar to the cyl_y_seq() function.
 */
-BESSEL_LIBRARY_API_IMPL_
 dcomplex cyl_y_scal(double nu, dcomplex z)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
@@ -74,6 +74,7 @@ dcomplex cyl_y_scal(double nu, dcomplex z)
     ;
 #endif
 
+BESSEL_LIBRARY_API_IMPL_
 /*
   Computes a n-sequency array of cylindrical Bessel functions of the second
   kind, real order nu, and complex argument z, i.e., {Y_nu(z), Y_(nu+1)(z), ...,
@@ -94,7 +95,6 @@ dcomplex cyl_y_scal(double nu, dcomplex z)
   and nu real. When abs(z)=0, it yields -INFINITY if nu=0, or INFINITY + I *
   INFINITY otherwise.
 */
-BESSEL_LIBRARY_API_IMPL_
 void cyl_y_seq(double nu, int n, dcomplex z, dcomplex *cyl_y_arr)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
@@ -104,6 +104,7 @@ void cyl_y_seq(double nu, int n, dcomplex z, dcomplex *cyl_y_arr)
     ;
 #endif
 
+BESSEL_LIBRARY_API_IMPL_
 /*
   Computes a n-sequency array of scaled versions of cylindrical Bessel functions
   of the second kind, real order nu, and complex argument z, i.e.,
@@ -120,7 +121,6 @@ void cyl_y_seq(double nu, int n, dcomplex z, dcomplex *cyl_y_arr)
 
   Implementation: Similar to the cyl_y_seq() function.
 */
-BESSEL_LIBRARY_API_IMPL_
 void cyl_y_scal_seq(double nu, int n, dcomplex z, dcomplex *cyl_y_scaled_arr)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {

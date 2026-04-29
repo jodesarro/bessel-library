@@ -20,6 +20,7 @@
 #include "../impl/cyl_k_full_seq_impl_.h"
 #endif
 
+BESSEL_LIBRARY_API_IMPL_
 /*
   Returns the modified cylindrical Bessel function of the second kind, real
   order nu, and complex argument z, i.e., K_nu(z).
@@ -30,7 +31,6 @@
 
   Implementation: Similar to the cyl_k_seq() function.
 */
-BESSEL_LIBRARY_API_IMPL_
 dcomplex cyl_k(double nu, dcomplex z)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
@@ -47,6 +47,7 @@ dcomplex cyl_k(double nu, dcomplex z)
     ;
 #endif
 
+BESSEL_LIBRARY_API_IMPL_
 /*
   Returns the scaled version of the modified cylindrical Bessel function of the
   second kind, real order nu, and complex argument z, i.e., K_nu(z)*exp(z).
@@ -57,7 +58,6 @@ dcomplex cyl_k(double nu, dcomplex z)
 
   Implementation: Similar to the cyl_k_seq() function.
 */
-BESSEL_LIBRARY_API_IMPL_
 dcomplex cyl_k_scal(double nu, dcomplex z)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
@@ -74,6 +74,7 @@ dcomplex cyl_k_scal(double nu, dcomplex z)
     ;
 #endif
 
+BESSEL_LIBRARY_API_IMPL_
 /*
   Computes a n-sequency array of modified cylindrical Bessel functions of the
   second kind, real order nu, and complex argument z, i.e., {K_nu(z),
@@ -93,7 +94,6 @@ dcomplex cyl_k_scal(double nu, dcomplex z)
   handled by Eqs. (6.5.5) of Ref. [2]. When abs(z)=0, it yields INFINITY if
   nu=0, or INFINITY + I * INFINITY otherwise.
 */
-BESSEL_LIBRARY_API_IMPL_
 void cyl_k_seq(double nu, int n, dcomplex z, dcomplex *cyl_k_arr)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
@@ -103,6 +103,7 @@ void cyl_k_seq(double nu, int n, dcomplex z, dcomplex *cyl_k_arr)
     ;
 #endif
 
+BESSEL_LIBRARY_API_IMPL_
 /*
   Computes a n-sequency array of scaled versions of modified cylindrical Bessel
   functions of the second kind, real order nu, and complex argument z, i.e.,
@@ -118,7 +119,6 @@ void cyl_k_seq(double nu, int n, dcomplex z, dcomplex *cyl_k_arr)
 
   Implementation: Similar to the cyl_k_seq() function.
 */
-BESSEL_LIBRARY_API_IMPL_
 void cyl_k_scal_seq(double nu, int n, dcomplex z, dcomplex *cyl_k_scaled_arr)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {

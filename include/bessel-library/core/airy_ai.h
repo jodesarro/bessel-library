@@ -21,6 +21,7 @@
 #include "../impl/airy_ai_impl_.h"
 #endif
 
+BESSEL_LIBRARY_API_IMPL_
 /*
   Returns the Airy function of the first kind and complex argument z, i.e.,
   Ai(z).
@@ -32,7 +33,6 @@
   Fortran 77 routines from the Slatec library [3]. Such Fortran routines, and
   all their dependencies, were carefully translated to C.
 */
-BESSEL_LIBRARY_API_IMPL_
 dcomplex airy_ai(dcomplex z)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
@@ -42,6 +42,7 @@ dcomplex airy_ai(dcomplex z)
     ;
 #endif
 
+BESSEL_LIBRARY_API_IMPL_
 /*
   Returns the first derivative of the Airy function of the first kind and
   complex argument z, i.e., dAi(z)/dz.
@@ -51,7 +52,6 @@ dcomplex airy_ai(dcomplex z)
 
   Implementation: Similar to the airy_ai() function.
 */
-BESSEL_LIBRARY_API_IMPL_
 dcomplex airy_ai_diff(dcomplex z)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
@@ -61,6 +61,7 @@ dcomplex airy_ai_diff(dcomplex z)
     ;
 #endif
 
+BESSEL_LIBRARY_API_IMPL_
 /*
   Returns the scaled version of the Airy function of the first kind and complex
   argument z, i.e., Ai(z)*exp((2/3)*pow(z,3/2)).
@@ -70,7 +71,6 @@ dcomplex airy_ai_diff(dcomplex z)
 
   Implementation: Similar to the airy_ai() function.
 */
-BESSEL_LIBRARY_API_IMPL_
 dcomplex airy_ai_scal(dcomplex z)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
@@ -80,6 +80,7 @@ dcomplex airy_ai_scal(dcomplex z)
     ;
 #endif
 
+BESSEL_LIBRARY_API_IMPL_
 /*
   Returns the scaled version of the first derivative of the Airy function of the
   first kind and complex argument z, i.e., (dAi(z)/dz)*exp((2/3)*pow(z,3/2)).
@@ -89,7 +90,6 @@ dcomplex airy_ai_scal(dcomplex z)
 
   Implementation: Similar to the airy_ai() function.
 */
-BESSEL_LIBRARY_API_IMPL_
 dcomplex airy_ai_diff_scal(dcomplex z)
 #ifndef BESSEL_LIBRARY_IMPORTS
 {
