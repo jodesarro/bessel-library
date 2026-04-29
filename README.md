@@ -637,7 +637,7 @@ Therefore, all the complex variables are handled using the
 type of the C `<complex.h>` library.
 
 Notice that all functions, macros, constants and files whose names contain
-the suffix `_impl_` are internal and are not intended to be used by users.
+the suffix `_impl_` are internal and are not intended to be used by final users.
 
 ## Compatibility with C++
 
