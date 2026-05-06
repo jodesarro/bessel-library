@@ -747,6 +747,14 @@ int main() {
 ```
 </details>
 
+## Macros
+
+There is a macro that may be used in this library.
+
+- `BESSEL_LIBRARY_IMPORTS`: always and only define this macro when using this library through a compiled file.
+
+Macros must be defined before the inclusion of the header of this library, i.e., you must write `#define BESSEL_LIBRARY_IMPORTS` before `#include "bessel-library.h"`.
+
 ## Authorship
 
 The library was developed and is updated by
