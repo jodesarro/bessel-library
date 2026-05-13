@@ -5,6 +5,7 @@
   License: Refer to the LICENSE file in the Repository
   References: Refer to the README.md file in the Repository
   Language standard: C99
+  Last updated: 2026-05-13
 
   Description: Include headers of all core functions of the
   include/bessel-library/core folder.
