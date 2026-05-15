@@ -5,14 +5,15 @@
   License: Refer to the LICENSE file in the Repository
   References: Refer to the README.md file in the Repository
   Language standard: C99
-  Last updated: 2026-05-13
 
   Description: Include headers of all core functions of the
-  include/bessel-library/core folder.
+  include/bessel-library/core folder and define the version.
 */
 
 #ifndef BESSEL_LIBRARY_H
 #define BESSEL_LIBRARY_H
+
+#define BESSEL_LIBRARY_VERSION "Last updated: 2026-05-15"
 
 #include "bessel-library/core/airy_ai.h"
 #include "bessel-library/core/airy_bi.h"

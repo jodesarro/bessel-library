@@ -569,6 +569,14 @@ found in the works listed in the [References](#references) section.
   - **Implementation:** Similar to the `airy_ai()` function.
 </details>
 
+## Macros
+
+- `BESSEL_LIBRARY_VERSION`: Call this macro to get the date of the last update.
+- `BESSEL_LIBRARY_IMPORTS`: Define this macro always and only when using this
+library as a [compiled file](#compiling-the-library). It must be defined before
+the inclusion of the header of this library, i.e., you must write
+`#define BESSEL_LIBRARY_IMPORTS` before `#include "bessel-library.h"`.
+
 ## How to use
 
 This library is header‑only, meaning there is nothing to build.
@@ -746,14 +754,6 @@ int main() {
 }
 ```
 </details>
-
-## Macros
-
-There is a macro that may be used in this library.
-
-- `BESSEL_LIBRARY_IMPORTS`: always and only define this macro when using this library through a compiled file.
-
-Macros must be defined before the inclusion of the header of this library, i.e., you must write `#define BESSEL_LIBRARY_IMPORTS` before `#include "bessel-library.h"`.
 
 ## Authorship
 
